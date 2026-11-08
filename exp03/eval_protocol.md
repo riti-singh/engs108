@@ -47,6 +47,10 @@ reported on it. Every dev evaluation run in exp03 is listed in the results JSON
   folds; exp02 averaged per-fold scores, which differs slightly). It drives all choices. Ties within
   0.003 go to the simpler or more regularised option.
 - **Dev predictions** come from a single refit on all 2,285 train rows.
+- **Probe C:** `probe_step0` picks C from {0.0003, 0.001, 0.003, 0.01, 0.03, 0.1} by pooled OOF bal-acc,
+  with ties within 0.003 going to the smallest C. exp02 chose C=0.01 from a coarser grid by mean-fold
+  score, so the step-0 probe here differs from exp02's (dev 0.321 vs 0.329). `probe_exp01` keeps exp02's
+  C=0.001.
 
 ## 4. Metrics and confidence intervals
 
@@ -61,6 +65,11 @@ reported on it. Every dev evaluation run in exp03 is listed in the results JSON
   P(delta ≤ 0) (`paired_bootstrap_delta`).
 - **Noise floor:** with 23 dev prompts, a dev CI is roughly ±0.05. Dev differences below about 0.005
   (2 rows) are noise even before sampling error (exp02 batch-padding result).
+- **Optimizer noise:** lbfgs logistic regression at large C (≥100) on the ~10^5-column TF-IDF designs
+  is sensitive to float summation order. Two fits on the identical matrix (equal to 1e-15) agreed on
+  96.4% of dev argmaxes at C=100 (max |Δp| 0.17) and 100% at C=300. Train-CV differences below the
+  0.003 tie margin, and dev differences of about ±0.01 between stylometric configurations, are within
+  this noise. `run_stylo.py` records the refit-to-refit difference as `refit_numerical_noise`.
 
 ## 5. Ensembles: leakage-safe weight fitting
 
@@ -90,7 +99,7 @@ are the leakage-free comparison. The exp01 probe C (0.001) was chosen this way i
 kept unchanged here, so the packaged probe reproduces 0.377.
 
 Removing this limitation needs fold-wise adapters: one QLoRA run per fold, 5× training cost. That
-is the GPU agent's call (§7).
+is the GPU agent's call.
 
 ## 6. Pre-registered dev reports (exp03 stylometry + probe)
 

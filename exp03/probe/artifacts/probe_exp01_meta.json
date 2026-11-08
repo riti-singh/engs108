@@ -1,0 +1,87 @@
+{
+ "model": "probe_exp01",
+ "report_id": "R2",
+ "C": 0.001,
+ "C_selected_by_protocol_oof": 0.001,
+ "C_source": "fixed from exp02 (GroupKFold(5) mean-fold CV, grid 0.001/0.01/0.1)",
+ "features": "pooled_hidden_exp01.npy (2699 x 4096 float16 -> float64)",
+ "hidden_sha256": "39ff2ce4a83e26c4abab18208f06f02874ae325d520ebcd04c0fb9b1eefbb595",
+ "estimator": "StandardScaler + LogisticRegression(lbfgs, multinomial, max_iter=3000)",
+ "oof_honest": false,
+ "oof_note": "exp01 adapter was trained on all train rows: OOF is optimistic",
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "2.2.6",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "scikit-learn": "1.6.1"
+ },
+ "seed": 42,
+ "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+ "npz_sha256": "a46c7332911fb525171a959bb66a4b9fdd4f326db0265007da454e66a8eb53b9",
+ "oof": {
+  "balanced_accuracy": 0.4169756558208002,
+  "macro_f1": 0.4089716422394976,
+  "log_loss": 1.6221798981788333
+ },
+ "dev": {
+  "balanced_accuracy": 0.3768115942028985,
+  "macro_f1": 0.3642615134899058,
+  "log_loss": 1.8233273300702921
+ },
+ "dev_bal_acc_ci95": [
+  0.3164251207729469,
+  0.4347826086956521
+ ],
+ "dev_macro_f1_ci95": [
+  0.3000648330771744,
+  0.4214306693635742
+ ],
+ "npz_vs_sklearn_max_abs_diff": 0.0,
+ "c_sweep": [
+  {
+   "C": 0.0003,
+   "balanced_accuracy": 0.39814814814814814,
+   "macro_f1": 0.38565463720520166,
+   "log_loss": 1.7641347480188025,
+   "mean_fold_bal_acc": 0.397948717948718
+  },
+  {
+   "C": 0.001,
+   "balanced_accuracy": 0.4169756558208002,
+   "macro_f1": 0.4089716422394976,
+   "log_loss": 1.6221798981788333,
+   "mean_fold_bal_acc": 0.416991452991453
+  },
+  {
+   "C": 0.003,
+   "balanced_accuracy": 0.4178644336124651,
+   "macro_f1": 0.41166295702671907,
+   "log_loss": 1.593266827115698,
+   "mean_fold_bal_acc": 0.41784615384615387
+  },
+  {
+   "C": 0.01,
+   "balanced_accuracy": 0.40954950075684987,
+   "macro_f1": 0.4062857410241159,
+   "log_loss": 1.68478069017083,
+   "mean_fold_bal_acc": 0.40950427350427354
+  },
+  {
+   "C": 0.03,
+   "balanced_accuracy": 0.41260814620394676,
+   "macro_f1": 0.40994900758077724,
+   "log_loss": 1.8485105086352,
+   "mean_fold_bal_acc": 0.4125299145299145
+  },
+  {
+   "C": 0.1,
+   "balanced_accuracy": 0.41085489313835777,
+   "macro_f1": 0.40843269330256554,
+   "log_loss": 2.0753032599137247,
+   "mean_fold_bal_acc": 0.4107863247863248
+  }
+ ],
+ "matches_exp02_val_proba_max_abs_diff": 4.997651507632206e-07,
+ "exp02_val_argmax_agreement": 1.0
+}

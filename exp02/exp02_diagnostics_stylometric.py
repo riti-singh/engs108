@@ -37,6 +37,8 @@ from sklearn.preprocessing import FunctionTransformer, StandardScaler
 from sklearn.svm import LinearSVC
 import sklearn
 
+from blend import equal_logprob_blend
+
 warnings.filterwarnings("ignore", message="Unknown solver options")  # scipy/sklearn version notice
 os.environ["PYTHONWARNINGS"] = "ignore:Unknown solver options"  # same, for joblib workers
 
@@ -266,6 +268,35 @@ RESULTS["loss_diagnostics"] = {"log_history_persisted": False, "grad_accum_check
                                "end_of_training": e1}
 
 # %% [markdown]
+# ### 4a'. Does the 8x GA loss scaling change optimisation? (Qwen, learning_rate=0, no weight updates)
+#
+# `qwen-grad-norm/` kernel: exp01 model setup and first train batches, lr=0, Trainer defaults ("default",
+# = exp01) vs `trainer.model_accepts_loss_kwargs=False` ("fixed"), at exp01's step-0 weights and at its
+# trained weights. Non-finite steps are fp16 GradScaler overflow steps (skipped by the optimizer).
+
+# %%
+gn = json.loads((ART / "qwen_grad_norm_check.json").read_text())
+assert gn["lr"] == 0.0
+qgn = {}
+for init, (d_run, f_run) in gn["runs"].items():
+    gd, gf = np.array(d_run["grad_norm_preclip"], float), np.array(f_run["grad_norm_preclip"], float)
+    ok = np.isfinite(gd) & np.isfinite(gf)
+    grp = [(g["score"], g["lora"]) for g in f_run["post_clip_group_norms"] if np.isfinite(g["score"]) and np.isfinite(g["lora"]) and g["lora"] > 0]
+    qgn[init] = {"n_steps": len(gd), "nonfinite_steps_default": int((~np.isfinite(gd)).sum()),
+                 "nonfinite_steps_fixed": int((~np.isfinite(gf)).sum()),
+                 "default_over_fixed_ratio": float(np.median(gd[ok] / gf[ok])),
+                 "true_grad_norm_min": float(np.nanmin(np.where(np.isfinite(gf), gf, np.nan))),
+                 "true_grad_norm_max": float(np.nanmax(np.where(np.isfinite(gf), gf, np.nan))),
+                 "frac_finite_steps_clipped_default": float((gd[np.isfinite(gd)] > gn["max_grad_norm"]).mean()),
+                 "frac_finite_steps_clipped_fixed": float((gf[np.isfinite(gf)] > gn["max_grad_norm"]).mean()),
+                 "head_over_lora_grad_norm_median": float(np.median([a / b for a, b in grp]))}
+print(json.dumps(qgn, indent=1))
+cpu = json.loads((ART / "grad_accum_optimization_check.json").read_text())["results"]
+print(pd.DataFrame(cpu).drop(columns="grad_norm").round(6).to_string(index=False))
+RESULTS["qwen_grad_norm_lr0"] = qgn
+RESULTS["cpu_grad_accum_optimization"] = [{k: v for k, v in r.items() if k != "grad_norm"} for r in cpu]
+
+# %% [markdown]
 # ### 4b. Batch-padding sensitivity of the exp01 logits
 #
 # Same weights, same texts, eval mode; only the batch composition differs. 4-bit NF4 + fp16 logits
@@ -293,13 +324,24 @@ RESULTS["batch_padding_sensitivity"] = batch_sens
 # Logistic regression on the 4096-d last-token hidden state that feeds `score`, for the base model
 # (step 0, no adapter) and for the exp01 LoRA model. Fit on train rows, C chosen by GroupKFold(5) on
 # train prompts, scored once on val. Shows how much signal is linearly available before and after LoRA.
-# Needs `pooled_hidden_*.npy` from the kernel output (not committed: 22 MB each).
+# Needs `pooled_hidden_*.npy` (22 MB each, not committed). Get them with `./fetch_pooled_hidden.sh`
+# (private Kaggle dataset ritisingh123/engs108-exp02-pooled-hidden-states) or regenerate them with the
+# exp02-val-inference kernel. Their sha256 must match artifacts/pooled_hidden_SHA256SUMS unless
+# EXP02_ALLOW_HIDDEN_MISMATCH=1 (regenerated 4-bit/fp16 states need not be bit-identical).
 
 # %%
+import hashlib
+
 HIDDEN_DIR = Path(os.environ.get("EXP02_HIDDEN_DIR", ART))
 y_tr, g_tr = train_df["labels"].to_numpy(), train_df["prompt_id"].to_numpy()
 probe_rows = []
 if (HIDDEN_DIR / "pooled_hidden_step0.npy").exists():
+    expected = dict(l.split()[::-1] for l in (ART / "pooled_hidden_SHA256SUMS").read_text().splitlines())
+    sha_ok = {fn: hashlib.sha256((HIDDEN_DIR / fn).read_bytes()).hexdigest() == h for fn, h in expected.items()}
+    print("pooled hidden sha256 match:", sha_ok)
+    if not all(sha_ok.values()) and os.environ.get("EXP02_ALLOW_HIDDEN_MISMATCH") != "1":
+        raise SystemExit("pooled_hidden_*.npy differ from the exp02 originals; set EXP02_ALLOW_HIDDEN_MISMATCH=1 to proceed")
+    RESULTS["pooled_hidden_sha256_match"] = sha_ok
     order = q_all["id"].to_numpy()
     pos = {k: i for i, k in enumerate(order)}
     tr_pos = np.array([pos[k] for k in train_df["id"]]); va_pos = np.array([pos[k] for k in val_df["id"]])
@@ -314,7 +356,12 @@ if (HIDDEN_DIR / "pooled_hidden_step0.npy").exists():
             if best is None or cvs > best[1]:
                 best = (C, cvs)
         pipe = Pipeline([("z", StandardScaler()), ("lr", LogisticRegression(C=best[0], max_iter=3000))]).fit(H[tr_pos], y_tr)
-        pv = pipe.predict(H[va_pos])
+        pp = pipe.predict_proba(H[va_pos]); pv = pp.argmax(1)
+        assert list(pipe.classes_) == list(range(18))
+        tag = "step0" if "step 0" in name else "exp01"
+        pd.DataFrame({"id": val_df["id"], "prompt_id": g_val, "labels": y_val,
+                      **{f"p_{n}": pp[:, i] for i, n in enumerate(model_names)}}).to_csv(
+            ART / f"linear_probe_{tag}_val_proba.csv", index=False, float_format="%.6g")
         probe_rows.append({"features": name, "C": best[0], "train_cv_bal_acc": best[1],
                            "val_bal_acc": balanced_accuracy_score(y_val, pv), "val_macro_f1": f1_score(y_val, pv, average="macro")})
     probes = pd.DataFrame(probe_rows)
@@ -472,7 +519,7 @@ def fit_blend2(lq, ls, y):
 def ensemble_predict(method, fit_idx, score_idx):
     lq, ls = logp_q, logp_s
     if method == "equal":
-        return (lq + ls)[score_idx], None
+        return equal_logprob_blend(logit_q, p_s)[score_idx], None
     if method == "blend2":
         w = fit_blend2(lq[fit_idx], ls[fit_idx], y_val[fit_idx])
         return (w[0] * lq + w[1] * ls)[score_idx], w

@@ -80,7 +80,7 @@ No Qwen training was run. The exp01 adapter and `score` head were only loaded in
   ```
   cd exp02 && ENGS108_DATA_DIR=<dir with train.csv> EXP02_HIDDEN_DIR=<dir with pooled_hidden_*.npy> python exp02_diagnostics_stylometric.py
   ```
-  Without `EXP02_HIDDEN_DIR` the linear-probe cell is skipped.
+  Without `EXP02_HIDDEN_DIR` the linear-probe cell is skipped. Get the hidden states with `exp02/fetch_pooled_hidden.sh` (see "Reproducing the probes").
 - **Environment (local):** python 3.12, scikit-learn 1.6.1 (the same version as the Kaggle image), numpy 2.2.6, pandas 3.1.1.
 - **Split:** the exp01 split recreated exactly: `GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=42)` on `prompt_id`.
   - Train: 2285 rows from 127 prompts; 126 `claude-fable-5` rows and 127 of every other class.
@@ -98,6 +98,7 @@ No Qwen training was run. The exp01 adapter and `score` head were only loaded in
 |---|---|---|
 | [`ritisingh123/rs2027-engs108-exp02-val-logits`](https://www.kaggle.com/code/ritisingh123/rs2027-engs108-exp02-val-logits) v1 (`exp02/qwen-val-logits/`) | Same code path as the offline inference kernel: `PeftModel.from_pretrained(..., is_trainable=False)`, `model.eval()`, `no_grad`, fp16 autocast, length-sorted batches of 8. Writes the 18 val logits per row → `exp02/artifacts/exp01_val_logits.parquet`. 0 trainable params. Val balanced accuracy **0.2464**, which reproduces exp01. | 2.6 min |
 | [`ritisingh123/rs2027-engs108-exp02-val-inference`](https://www.kaggle.com/code/ritisingh123/rs2027-engs108-exp02-val-inference) v2 (`exp02/qwen-val-inference/`) | Step-0 pass: base model + exp01's seed-42 random `score` head, no adapter. This is exactly the function exp01 started from, because LoRA B=0. Then the exp01 adapter pass over all 2699 rows. Writes logits (`step0_logits.parquet`, `exp01_logits.parquet`), `qwen_diagnostics.json`, and the pooled 4096-d hidden states (`pooled_hidden_{step0,exp01}.npy`, 22 MB each, kept in the kernel output and not committed). | 28.3 min |
+| [`ritisingh123/rs2027-engs108-exp02-grad-norm`](https://www.kaggle.com/code/ritisingh123/rs2027-engs108-exp02-grad-norm) v1 (`exp02/qwen-grad-norm/`) | Gradient-norm / clipping diagnostic at **`learning_rate=0`**: pre-clip grad norms with and without the GA fix, at exp01's step-0 and trained weights. Weights are asserted unchanged. → `exp02/artifacts/qwen_grad_norm_check.json`. | 11.3 min |
 
 **Batch-padding sensitivity.** These are the same weights and texts; only the batch composition changes. 4-bit/fp16 logits shift by up to 0.027:
 
@@ -113,7 +114,16 @@ Even the primary logits do not reproduce exp01's per-class recall table exactly.
 
 - **Cause (measured).** In transformers 5.20.2, `Trainer.training_step` divides the logged loss by `gradient_accumulation_steps` only when it believes the model did not already normalise by `num_items_in_batch`. `Qwen3ForSequenceClassification` reports `model_accepts_loss_kwargs=True`, but `GenericForSequenceClassification.forward` calls `self.loss_function(logits=..., labels=..., pooled_logits=..., config=...)` without `**kwargs`. So `num_items_in_batch` is dropped, the loss is a per-micro-batch mean, and the Trainer sums 8 of them without dividing.
   - `exp02/check_grad_accum_loss_logging.py` reproduces this on CPU with a tiny random `Qwen3ForSequenceClassification` at `learning_rate=0`. Logged/true ratios are exactly **1.0 / 8.0 / 4.0** for GA = 1 / 8 / 4 (`exp02/artifacts/grad_accum_loss_check.json`).
-  - The backward pass uses the same un-divided loss, so gradients carry the same 8× factor. AdamW is nearly invariant to a constant gradient scale, but the default `max_grad_norm=1.0` clipping engages more readily at 8× scale. The effect on exp01's optimisation was not measured.
+- **Effect on optimisation and clipping (measured).** The backward pass uses the same un-divided loss, so gradients are 8× too large. In exp01 that changed almost nothing, because every step was clipped anyway.
+  - *Qwen measurement:* kernel [`ritisingh123/rs2027-engs108-exp02-grad-norm`](https://www.kaggle.com/code/ritisingh123/rs2027-engs108-exp02-grad-norm) v1 (`exp02/qwen-grad-norm/`, output `exp02/artifacts/qwen_grad_norm_check.json`).
+    - Setup: the exp01 setup (`prepare_model_for_kbit_training`, r=8 q/v, fp16, bs 2 × GA 8, seed 42, `max_grad_norm=1.0`) at **`learning_rate=0`**. All 145 trainable tensors are asserted unchanged afterwards, so this is not training.
+    - Runs: 12 optimizer steps on exp01's first train batches, at exp01's step-0 weights and at its trained weights. Each with Trainer defaults (= exp01) and with `trainer.model_accepts_loss_kwargs = False` (the fix).
+  - The default/fixed pre-clip grad-norm ratio is **8.0** at both weight states.
+  - The true pre-clip grad norm is **250–336 at step 0 and 35–72 at exp01's end state**, i.e. 35–336× above `max_grad_norm=1.0`. **100% of finite steps are clipped with and without the fix.** Clipping rescales the gradient to norm 1, so the 8× factor cancels and the AdamW update is the same.
+  - *CPU confirmation* (`exp02/check_grad_accum_optimization.py` → `artifacts/grad_accum_optimization_check.json`): a tiny Qwen3 classifier, AdamW lr 1e-3, 16 steps, with grad norms of about 3 so every step is clipped. Final parameters of the GA=8 default run match the GA=1 reference to a relative L2 of 1e-6, and the fixed runs to 2e-6. With clipping off, the default run drifts by only 1.7e-4, because AdamW is almost scale-invariant (only `eps` sees the scale).
+  - **The one real optimisation effect is in the fp16 GradScaler.** The 8× gradients overflow fp16 for 3 more steps (log2 8) while the loss scale calibrates. That is 8 skipped optimizer steps instead of 5, at both weight states, i.e. about 3 of exp01's 429 steps were lost. Skipped steps don't advance the LR schedule.
+  - **Head gradients dominate the clipped norm.** The `score` head's gradient norm is about **100× the LoRA matrices'** at step 0 and about **10×** at the end. *Inference:* clipping at 1.0 is dominated by the head's gradient, which is consistent with exp01's head and LoRA being driven mostly by AdamW's per-parameter normalisation at lr 1e-4.
+  - **Fix for exp03:** set `trainer.model_accepts_loss_kwargs = False` after constructing the `Trainer`, so the Trainer divides by GA. This gives a correct logged loss, a true `grad_norm`, and no extra GradScaler skips, with no change to the clipped update. An alternative is `compute_loss_func` returning summed CE / `num_items_in_batch`; both match the GA=1 reference on CPU.
 - **Check against the smoke run.** The smoke run logged 147. Divided by 8 that is 18.38, and the measured step-0 CE on the same 64 longest train texts is **18.40**.
 - **Corrected exp01 mean training loss:** 24.645 / 8 = **3.08**.
 
@@ -145,6 +155,14 @@ Even the primary logits do not reproduce exp01's per-class recall table exactly.
   \*Optimistic: the LoRA saw these train rows.
   - The same exp01 features carry a linear signal worth 0.377 val bal-acc, but exp01's head extracts 0.246.
   - Even the frozen base model's features with a fitted linear head (0.329) beat exp01.
+- **Reproducing the probes.**
+  - The pooled hidden states (`pooled_hidden_{step0,exp01}.npy`: 2699 × 4096 float16, 22 MB each) are not committed. Their sha256 sums are in `exp02/artifacts/pooled_hidden_SHA256SUMS`.
+  - Row order = `exp02/artifacts/exp01_logits.parquet`, i.e. exp01's `train_df` rows then `val_df` rows. The script maps rows by `id`.
+  - **Retrieve:** `exp02/fetch_pooled_hidden.sh [dest]` downloads the private Kaggle dataset [`ritisingh123/engs108-exp02-pooled-hidden-states`](https://www.kaggle.com/datasets/ritisingh123/engs108-exp02-pooled-hidden-states) and runs `sha256sum -c`. It needs Kaggle CLI auth with access to that dataset.
+  - **Regenerate:** `kaggle kernels push -p exp02/qwen-val-inference`, then `kaggle kernels output ritisingh123/rs2027-engs108-exp02-val-inference -p <dest>`. That is about 28 min on a T4, inference only. Regenerated 4-bit/fp16 states may not be bit-identical, so run the script with `EXP02_ALLOW_HIDDEN_MISMATCH=1`.
+  - **Run:** `EXP02_HIDDEN_DIR=<dest> python exp02_diagnostics_stylometric.py`. The script refuses to run on a checksum mismatch unless that flag is set, and records `pooled_hidden_sha256_match` in `exp02_results.json`.
+  - Probe val probabilities are committed: `exp02/artifacts/linear_probe_{step0,exp01}_val_proba.csv`.
+  - Verified: the fetch → checksum → rerun path reproduces the probe numbers above, and the rest of `exp02_results.json` is unchanged apart from timings.
 
 ### Diagnostics: exp01 class confusions
 
@@ -234,6 +252,20 @@ Paired differences in val bal-acc, with 95% CIs from the prompt-grouped bootstra
 - **The 36-feature stacker overfits** the ~400 val rows and should not be used.
 - **Caveat:** `equal` was not pre-specified as primary, and choosing it after seeing these numbers would be a mild selection effect.
 
+**Equal log-probability blend: the exact method (for inference).** It is implemented in `exp02/blend.py` as `equal_logprob_blend(qlora_logits, stylo_proba)`, which the analysis script uses.
+
+```
+z_c   = log_softmax(qlora_logits)_c + log(clip(stylo_proba_c, 1e-12, 1))   # weights fixed at (1, 1), nothing fitted
+p_c   = softmax(z)_c                                                        # normalised product of the two distributions
+label = argmax_c z_c                                                        # ties -> lowest class id
+```
+
+- **QLoRA input:** raw `score` logits from the exp01 adapter, computed as in the offline inference notebook (eval mode, fp16 autocast, `max_length=512`, length-sorted batches of 8). No temperature.
+- **Stylometric input:** `predict_proba` of the primary pipeline `char+word+style | lr | C=100`, fit on the exp01 train split (2285 rows). It combines char_wb 3–5 TF-IDF, word 1–2 TF-IDF and the standardised style features, with `LogisticRegression(C=100, max_iter=3000)`. This is the configuration evaluated here.
+  - Refitting it on all 2699 rows for a submission is a reasonable but **unvalidated** change.
+- **Column order:** column c of both inputs is class id c from the adapter's `label_map.json` (= `sorted(model names)`). The script asserts `stylo.classes_ == range(18)`.
+- **Batching caveat:** 4-bit/fp16 logits shift slightly with batch padding (see above), so use the same batching to reproduce exactly.
+
 **Classes corrected or worsened by blend2 (LOPO OOF) vs exp01 QLoRA.** Counts are val rows out of 23 per class.
 
 | Class | QLoRA recall | blend2 recall | Corrected | Worsened |
@@ -273,7 +305,7 @@ Paired differences in val bal-acc, with 95% CIs from the prompt-grouped bootstra
   - Give the `score` head its own higher learning rate (about 10–100× the LoRA LR), or initialise it from the linear probe on the base model's pooled features (linear-probe-then-finetune).
   - Train for more epochs, keeping `load_best_model_at_end`.
   - Persist `trainer.state.log_history` and per-row val logits.
-  - Divide the logged train loss by GA when reading it, or report it from a callback; it is 8× inflated.
+  - Fix the GA loss scaling with `trainer.model_accepts_loss_kwargs = False` (see the clipping section above). This fixes logging and the GradScaler skips; it does not change the clipped update.
 - **Bar for the next run.** It should beat the stylometric baseline (0.336) and ideally the blend (about 0.36), or it adds nothing over a CPU model. If the converged r=8 model still trails its linear probe, or plateaus with train CE well above val CE, that is the point to run the capacity ablation.
 
 **Untested or limitations:**

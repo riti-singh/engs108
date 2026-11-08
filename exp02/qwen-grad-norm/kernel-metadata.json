@@ -1,0 +1,27 @@
+{
+  "id": "ritisingh123/rs2027-engs108-exp02-grad-norm",
+  "title": "RS2027-ENGS108-exp02-grad-norm",
+  "code_file": "rs2027-engs108-exp02-grad-norm.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": false,
+  "keywords": [
+    "gpu"
+  ],
+  "dataset_sources": [
+    "ritisingh123/engs108-offline-wheels",
+    "ritisingh123/engs108-qwen3-8b-lora-adapter"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [
+    "name-that-llm"
+  ],
+  "model_sources": [
+    "qwen-lm/qwen-3/Transformers/8b-base/1"
+  ],
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:de153e6d303881930c51286216393d56f56b26458d0661350305a1e8144eea01",
+  "machine_shape": "NvidiaTeslaT4"
+}

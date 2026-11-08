@@ -1,0 +1,110 @@
+{
+  "inference_only": true,
+  "versions": {
+    "torch": "2.11.0+cu130",
+    "transformers": "5.20.2",
+    "peft": "0.21.2",
+    "accelerate": "1.15.0",
+    "bitsandbytes": "0.50.2",
+    "scikit-learn": "1.6.1"
+  },
+  "adapter_dir": "/kaggle/input/datasets/ritisingh123/engs108-qwen3-8b-lora-adapter",
+  "seed": 42,
+  "val_size": 0.15,
+  "split": {
+    "train_rows": 2285,
+    "train_prompts": 127,
+    "val_rows": 414,
+    "val_prompts": 23
+  },
+  "padding_side": "right",
+  "initializer_range": 0.02,
+  "W0": {
+    "std": 0.019972722977399826,
+    "frob": 5.423206329345703
+  },
+  "W1": {
+    "std": 0.02002742327749729,
+    "frob": 5.438048362731934,
+    "cosine_with_W0": 0.9942498207092285
+  },
+  "pooled_hidden_norm": {
+    "median": 317.66253662109375,
+    "p5": 306.2330017089844,
+    "p95": 325.8736267089844
+  },
+  "pooled_hidden_norm_exp01_median": 254.69244384765625,
+  "step0": {
+    "train_mean_ce": 17.631986387549922,
+    "train_median_ce": 17.70566986177872,
+    "val_mean_ce": 17.705793274106682,
+    "val_median_ce": 17.624765104165675,
+    "val_balanced_accuracy": 0.05555555555555555,
+    "median_row_logit_std": 7.08137845993042,
+    "sim_heads": [
+      {
+        "draw": 0,
+        "train_mean_ce": 10.322105556893353,
+        "val_mean_ce": 10.537994240836216
+      },
+      {
+        "draw": 1,
+        "train_mean_ce": 7.047074198026193,
+        "val_mean_ce": 7.045668073620837
+      },
+      {
+        "draw": 2,
+        "train_mean_ce": 9.924049079111853,
+        "val_mean_ce": 10.00070102467202
+      },
+      {
+        "draw": 3,
+        "train_mean_ce": 9.889655033427712,
+        "val_mean_ce": 9.968700978673922
+      },
+      {
+        "draw": 4,
+        "train_mean_ce": 9.50173434921075,
+        "val_mean_ce": 9.447746227626896
+      },
+      {
+        "draw": 5,
+        "train_mean_ce": 8.499937045775706,
+        "val_mean_ce": 8.531669441645302
+      },
+      {
+        "draw": 6,
+        "train_mean_ce": 11.5550758954893,
+        "val_mean_ce": 11.58933169361923
+      },
+      {
+        "draw": 7,
+        "train_mean_ce": 13.64834135392671,
+        "val_mean_ce": 13.660961212301876
+      },
+      {
+        "draw": 8,
+        "train_mean_ce": 11.353169667450743,
+        "val_mean_ce": 11.43583609240155
+      },
+      {
+        "draw": 9,
+        "train_mean_ce": 13.266333760621631,
+        "val_mean_ce": 13.46842532142679
+      }
+    ]
+  },
+  "exp01": {
+    "val_balanced_accuracy": 0.24396135265700483,
+    "val_mean_ce": 2.2106367471775585,
+    "train_balanced_accuracy": 0.38244524989931816,
+    "train_mean_ce": 1.8249149555756412,
+    "median_row_logit_std": 1.8758293390274048
+  },
+  "uniform_ce": 2.8903717578961645,
+  "runtime_min": {
+    "step0_pass": 13.056447537740071,
+    "exp01_pass": 13.476377912362416,
+    "total": 28.280176611741386
+  }
+}

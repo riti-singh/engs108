@@ -1,0 +1,53 @@
+{
+ "versions": {
+  "torch": "2.11.0+cpu",
+  "transformers": "5.20.2"
+ },
+ "results": [
+  {
+   "per_device_bs": 16,
+   "grad_accum": 1,
+   "steps": 4,
+   "model_accepts_loss_kwargs": true,
+   "true_mean_ce": 2.9046483039855957,
+   "logged_train_loss": 2.9046484231948853,
+   "ratio_logged_over_true": 1.0000000410408687,
+   "step_losses": [
+    2.9212632179260254,
+    2.8977184295654297,
+    2.927659034729004,
+    2.871953010559082
+   ]
+  },
+  {
+   "per_device_bs": 2,
+   "grad_accum": 8,
+   "steps": 4,
+   "model_accepts_loss_kwargs": true,
+   "true_mean_ce": 2.9046483039855957,
+   "logged_train_loss": 23.237187385559082,
+   "ratio_logged_over_true": 8.00000032832695,
+   "step_losses": [
+    23.370107650756836,
+    23.181747436523438,
+    23.42127227783203,
+    22.975622177124023
+   ]
+  },
+  {
+   "per_device_bs": 4,
+   "grad_accum": 4,
+   "steps": 4,
+   "model_accepts_loss_kwargs": true,
+   "true_mean_ce": 2.9046483039855957,
+   "logged_train_loss": 11.618593454360962,
+   "ratio_logged_over_true": 4.000000082081737,
+   "step_losses": [
+    11.685052871704102,
+    11.590873718261719,
+    11.710636138916016,
+    11.487811088562012
+   ]
+  }
+ ]
+}

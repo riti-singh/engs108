@@ -1,0 +1,1719 @@
+{
+ "generated_by": "exp03/research/audit_datasets.py",
+ "seed": 42,
+ "environment": {
+  "python": "3.12.16",
+  "platform": "Linux-6.8.0-1060-aws-x86_64-with-glibc2.35",
+  "numpy": "2.5.4",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "sklearn": "1.6.1"
+ },
+ "status_note": "Candidate augmentation data only; NOT approved for training. Nothing was merged into any training set.",
+ "competition_files": {
+  "train.csv": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+  "test.csv": "4545aa3a3459f4c0724f97ad5bd06c4caa3506bdfea5fab905e8203184fc0c57",
+  "sample_submission.parquet": "ccf86796b80fd7f83d8463664603fd1208e17559abcf416f198776b819646188"
+ },
+ "competition_train": {
+  "rows": 2699,
+  "prompts": 150,
+  "class_counts": {
+   "claude-fable-5": 149,
+   "claude-opus-4-6": 150,
+   "claude-opus-4-8": 150,
+   "claude-opus-5": 150,
+   "claude-sonnet-5": 150,
+   "gemini-3.1-pro-preview": 150,
+   "gemini-3.6-flash": 150,
+   "gemini-3.7-flash": 150,
+   "gemini-3.8-flash": 150,
+   "glm-5.3": 150,
+   "glm-5.3-flash": 150,
+   "gpt-5.5": 150,
+   "gpt-5.6-luna": 150,
+   "gpt-5.6-sol": 150,
+   "gpt-5.6-terra": 150,
+   "gpt-6-astra": 150,
+   "kimi-k3": 150,
+   "qwen3.8-max": 150
+  }
+ },
+ "competition_test_local_rows": 3,
+ "thresholds": {
+  "near_dup_jaccard_word5": 0.5,
+  "near_dup_char35_tfidf_cos": 0.9
+ },
+ "within_train_reference": {
+  "pairs_compared": 3640951,
+  "exact_dup_pairs": 0,
+  "near_dup_pairs_jaccard5>=0.5": 0,
+  "near_dup_pairs_charcos>=0.90": 0,
+  "max_jaccard5": 0.134,
+  "max_charcos": 0.6236
+ },
+ "datasets": {
+  "maniceet/name-that-llm-openrouter-openai-generations": {
+   "ref": "maniceet/name-that-llm-openrouter-openai-generations",
+   "status": "NOT AUDITED: inaccessible",
+   "access_attempts_2026_11_08": {
+    "kaggle datasets files / metadata / status / download (CLI 2.2.5, account ritisingh123)": "403 Forbidden \"You don't have access to this resource.\"",
+    "https://www.kaggle.com/datasets/maniceet/name-that-llm-openrouter-openai-generations (unauthenticated GET)": "HTTP 404",
+    "kaggle datasets list --user maniceet": "only 4 datasets, all from 2018 (histograms, histogram, keyalldays, teamscsv)",
+    "kaggle datasets list -s \"openrouter-openai-generations\" / -s \"name that llm\"": "no dataset with this ref",
+    "dataset_sources of pulled public notebooks (6 kernels) and crtproduction open pool": "not referenced"
+   },
+   "interpretation": "private, deleted, renamed, or a mistyped ref; contents unknown. No version, hash, class count, provenance, duplicate or shift result exists for it, and none is inferred.",
+   "kaggle_version": null,
+   "files": null,
+   "class_counts_18": null
+  },
+  "zakirkhanaleemi/name-that-llm-benchmarks-proxy-generations": {
+   "ref": "zakirkhanaleemi/name-that-llm-benchmarks-proxy-generations",
+   "status": "audited",
+   "kaggle_dataset_id": 12703965,
+   "kaggle_version": 1,
+   "license": "CC BY 4.0 (dataset-metadata.json)",
+   "files": {
+    "README.md": {
+     "sha256": "f3fcb7159573d80b144d3e48aaa9532c121ff9b8b9774300eaed25ca12b0bc1b",
+     "bytes": 2287
+    },
+    "dataset-metadata.json": {
+     "sha256": "8298bf6edeac543492644f9d57ec621ae9c0c4aa0ac3775ca3945101f3d8ba5e",
+     "bytes": 1544
+    },
+    "ntl_proxy_generations.csv": {
+     "sha256": "a8f61b647b5f2b2f99b73f083b7358445d93c3ebbff8607b44423850e9fb5583",
+     "bytes": 928623
+    }
+   },
+   "rows": 834,
+   "columns": [
+    "run",
+    "bank",
+    "prompt_id",
+    "model",
+    "model_slug",
+    "setting",
+    "target_words",
+    "n_words",
+    "single_paragraph",
+    "finish_reason",
+    "created_at",
+    "request",
+    "text"
+   ],
+   "class_counts_18": {
+    "claude-fable-5": 0,
+    "claude-opus-4-6": 0,
+    "claude-opus-4-8": 0,
+    "claude-opus-5": 0,
+    "claude-sonnet-5": 0,
+    "gemini-3.1-pro-preview": 186,
+    "gemini-3.6-flash": 111,
+    "gemini-3.7-flash": 0,
+    "gemini-3.8-flash": 107,
+    "glm-5.3": 0,
+    "glm-5.3-flash": 0,
+    "gpt-5.5": 81,
+    "gpt-5.6-luna": 79,
+    "gpt-5.6-sol": 73,
+    "gpt-5.6-terra": 64,
+    "gpt-6-astra": 133,
+    "kimi-k3": 0,
+    "qwen3.8-max": 0
+   },
+   "classes_present": 8,
+   "classes_absent": [
+    "claude-fable-5",
+    "claude-opus-4-6",
+    "claude-opus-4-8",
+    "claude-opus-5",
+    "claude-sonnet-5",
+    "gemini-3.7-flash",
+    "glm-5.3",
+    "glm-5.3-flash",
+    "kimi-k3",
+    "qwen3.8-max"
+   ],
+   "non_target_labels": [],
+   "model_slug_by_label": {
+    "gemini-3.1-pro-preview": [
+     "google/gemini-3.1-pro-preview"
+    ],
+    "gemini-3.6-flash": [
+     "google/gemini-3.6-flash"
+    ],
+    "gemini-3.8-flash": [
+     "google/gemini-3.8-flash"
+    ],
+    "gpt-5.5": [
+     "openai/gpt-5.5-2026-04-23"
+    ],
+    "gpt-5.6-luna": [
+     "openai/gpt-5.6-luna"
+    ],
+    "gpt-5.6-sol": [
+     "openai/gpt-5.6-sol"
+    ],
+    "gpt-5.6-terra": [
+     "openai/gpt-5.6-terra"
+    ],
+    "gpt-6-astra": [
+     "openai/gpt-6-astra"
+    ]
+   },
+   "run_counts": {
+    "daily": 747,
+    "ab2": 80,
+    "ab_settings": 7
+   },
+   "setting_counts": {
+    "rlow_t1": 747,
+    "rlow_t0": 80,
+    "default": 3,
+    "t1": 3,
+    "t1_rlow": 1
+   },
+   "setting_by_run": {
+    "ab2": {
+     "default": 0,
+     "rlow_t0": 80,
+     "rlow_t1": 0,
+     "t1": 0,
+     "t1_rlow": 0
+    },
+    "ab_settings": {
+     "default": 3,
+     "rlow_t0": 0,
+     "rlow_t1": 0,
+     "t1": 3,
+     "t1_rlow": 1
+    },
+    "daily": {
+     "default": 0,
+     "rlow_t0": 0,
+     "rlow_t1": 747,
+     "t1": 0,
+     "t1_rlow": 0
+    }
+   },
+   "bank_counts": {
+    "sy": 821,
+    "pv": 13
+   },
+   "finish_reason_counts": {
+    "stop": 834
+   },
+   "single_paragraph_counts": {
+    "True": 833,
+    "False": 1
+   },
+   "created_at_range": [
+    "2026-10-19T03:47:56",
+    "2026-10-19T04:09:31"
+   ],
+   "n_prompts": 213,
+   "models_per_prompt_quantiles": {
+    "0.0": 1.0,
+    "0.5": 3.0,
+    "1.0": 8.0
+   },
+   "n_words_vs_target_words": {
+    "corr": 0.9573,
+    "median_ratio": 1.0
+   },
+   "request_template_suffix_example": "Write a single paragraph of about 51 words, with no title or headings.",
+   "duplicates": {
+    "within": {
+     "pairs_compared": 347361,
+     "exact_dup_pairs": 0,
+     "near_dup_pairs_jaccard5>=0.5": 0,
+     "near_dup_pairs_charcos>=0.90": 0,
+     "max_jaccard5": 0.3516,
+     "max_charcos": 0.7992,
+     "flagged_pairs": [],
+     "flagged_pairs_same_model": 0
+    },
+    "vs_train_text": {
+     "pairs_compared": 2250966,
+     "exact_dup_pairs": 0,
+     "rows_with_exact_dup": 0,
+     "near_dup_pairs_jaccard5>=0.5": 0,
+     "near_dup_pairs_charcos>=0.90": 0,
+     "max_jaccard5": 0.0148,
+     "max_charcos": 0.2461,
+     "charcos_rowmax_quantiles": {
+      "0.5": 0.1348,
+      "0.9": 0.1741,
+      "0.99": 0.2148,
+      "1.0": 0.2461
+     }
+    },
+    "vs_test_text": {
+     "pairs_compared": 2502,
+     "exact_dup_pairs": 0,
+     "rows_with_exact_dup": 0,
+     "near_dup_pairs_jaccard5>=0.5": 0,
+     "near_dup_pairs_charcos>=0.90": 0,
+     "max_jaccard5": 0.0038,
+     "max_charcos": 0.1931,
+     "charcos_rowmax_quantiles": {
+      "0.5": 0.0751,
+      "0.9": 0.1067,
+      "0.99": 0.1478,
+      "1.0": 0.1931
+     }
+    },
+    "vs_maniceet": "not computed: maniceet dataset inaccessible"
+   },
+   "prompt_overlap_vs_train": {
+    "method": "content-word TF-IDF (english stop words, alpha tokens >=3 chars, sublinear tf, min_df=2) prompt centroids; train prompt = mean of its passages; null = max cosine of a train half-prompt centroid to any OTHER train prompt half (seed 42)",
+    "train_same_prompt_half_cos_quantiles": {
+     "0.01": 0.4949,
+     "0.05": 0.5734,
+     "0.5": 0.7215
+    },
+    "train_cross_prompt_rowmax_cos_quantiles": {
+     "0.5": 0.1564,
+     "0.9": 0.291,
+     "0.99": 0.5351,
+     "1.0": 0.5447
+    },
+    "flag_threshold_cos (99th pct of train cross-prompt rowmax)": 0.5351,
+    "ext_prompts": 213,
+    "ext_prompt_to_nearest_train_prompt_cos_quantiles": {
+     "0.5": 0.1029,
+     "0.9": 0.1773,
+     "0.99": 0.2566,
+     "1.0": 0.3342
+    },
+    "ext_prompts_above_threshold": 0,
+    "flagged": []
+   },
+   "prompt_id_namespace_overlap_with_train": [],
+   "style_shift_vs_train_same_classes_pooled": {
+    "n_words": {
+     "train_mean": 113.3508,
+     "ext_mean": 111.4496,
+     "ks_stat": 0.0341,
+     "ks_p": 0.6
+    },
+    "n_chars": {
+     "train_mean": 748.6492,
+     "ext_mean": 735.0827,
+     "ks_stat": 0.0305,
+     "ks_p": 0.736
+    },
+    "n_sentences": {
+     "train_mean": 4.8675,
+     "ext_mean": 5.4077,
+     "ks_stat": 0.0696,
+     "ks_p": 0.016
+    },
+    "words_per_sentence": {
+     "train_mean": 23.7372,
+     "ext_mean": 20.6624,
+     "ks_stat": 0.2219,
+     "ks_p": 1.02e-21
+    },
+    "mean_word_len": {
+     "train_mean": 5.509,
+     "ext_mean": 5.4989,
+     "ks_stat": 0.0353,
+     "ks_p": 0.557
+    },
+    "type_token_ratio_first100": {
+     "train_mean": 0.8577,
+     "ext_mean": 0.84,
+     "ks_stat": 0.1479,
+     "ks_p": 7.44e-10
+    },
+    "has_newline": {
+     "train_mean": 0.0,
+     "ext_mean": 0.0012,
+     "ks_stat": 0.0012,
+     "ks_p": 1.0
+    },
+    "digit_per_1k": {
+     "train_mean": 0.4838,
+     "ext_mean": 2.7312,
+     "ks_stat": 0.218,
+     "ks_p": 5.59e-21
+    },
+    "upper_per_1k": {
+     "train_mean": 9.2557,
+     "ext_mean": 12.2866,
+     "ks_stat": 0.2743,
+     "ks_p": 4.43e-33
+    },
+    "comma_per_1k": {
+     "train_mean": 14.0919,
+     "ext_mean": 12.9444,
+     "ks_stat": 0.1272,
+     "ks_p": 2.13e-07
+    },
+    "semicolon_per_1k": {
+     "train_mean": 0.692,
+     "ext_mean": 0.4649,
+     "ks_stat": 0.1404,
+     "ks_p": 6.39e-09
+    },
+    "colon_per_1k": {
+     "train_mean": 0.8926,
+     "ext_mean": 0.7476,
+     "ks_stat": 0.1108,
+     "ks_p": 1.01e-05
+    },
+    "em_dash_per_1k": {
+     "train_mean": 0.2879,
+     "ext_mean": 0.3993,
+     "ks_stat": 0.0489,
+     "ks_p": 0.182
+    },
+    "en_dash_per_1k": {
+     "train_mean": 0.0088,
+     "ext_mean": 0.0435,
+     "ks_stat": 0.0226,
+     "ks_p": 0.957
+    },
+    "hyphen_per_1k": {
+     "train_mean": 0.6053,
+     "ext_mean": 1.1839,
+     "ks_stat": 0.1647,
+     "ks_p": 3.93e-12
+    },
+    "curly_double_per_1k": {
+     "train_mean": 0.2351,
+     "ext_mean": 0.5173,
+     "ks_stat": 0.0566,
+     "ks_p": 0.0817
+    },
+    "curly_single_per_1k": {
+     "train_mean": 0.7939,
+     "ext_mean": 1.0898,
+     "ks_stat": 0.1089,
+     "ks_p": 1.53e-05
+    },
+    "straight_double_per_1k": {
+     "train_mean": 0.0268,
+     "ext_mean": 0.2859,
+     "ks_stat": 0.0689,
+     "ks_p": 0.0177
+    },
+    "straight_single_per_1k": {
+     "train_mean": 0.1677,
+     "ext_mean": 0.2745,
+     "ks_stat": 0.0498,
+     "ks_p": 0.168
+    },
+    "paren_per_1k": {
+     "train_mean": 0.0432,
+     "ext_mean": 0.0565,
+     "ks_stat": 0.0164,
+     "ks_p": 0.999
+    },
+    "exclaim_per_1k": {
+     "train_mean": 0.0062,
+     "ext_mean": 0.006,
+     "ks_stat": 0.0011,
+     "ks_p": 1.0
+    },
+    "question_per_1k": {
+     "train_mean": 0.0569,
+     "ext_mean": 0.0546,
+     "ks_stat": 0.0065,
+     "ks_p": 1.0
+    },
+    "asterisk_per_1k": {
+     "train_mean": 0.0013,
+     "ext_mean": 0.0917,
+     "ks_stat": 0.0243,
+     "ks_p": 0.923
+    },
+    "has_em_dash": {
+     "train_mean": 0.1358,
+     "ext_mean": 0.1835,
+     "ks_stat": 0.0476,
+     "ks_p": 0.206
+    },
+    "has_curly_quote": {
+     "train_mean": 0.3842,
+     "ext_mean": 0.5132,
+     "ks_stat": 0.129,
+     "ks_p": 1.32e-07
+    }
+   },
+   "style_shift_vs_train_per_class": {
+    "gemini-3.1-pro-preview": {
+     "n_train": 150,
+     "n_ext": 186,
+     "features": {
+      "n_words": {
+       "train_mean": 119.347,
+       "ext_mean": 105.984,
+       "ks_stat": 0.143
+      },
+      "n_chars": {
+       "train_mean": 782.967,
+       "ext_mean": 700.097,
+       "ks_stat": 0.132
+      },
+      "n_sentences": {
+       "train_mean": 5.767,
+       "ext_mean": 5.215,
+       "ks_stat": 0.116
+      },
+      "words_per_sentence": {
+       "train_mean": 20.259,
+       "ext_mean": 20.064,
+       "ks_stat": 0.065
+      },
+      "mean_word_len": {
+       "train_mean": 5.504,
+       "ext_mean": 5.526,
+       "ks_stat": 0.063
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.836,
+       "ext_mean": 0.829,
+       "ks_stat": 0.082
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.293,
+       "ext_mean": 2.238,
+       "ks_stat": 0.24
+      },
+      "upper_per_1k": {
+       "train_mean": 10.278,
+       "ext_mean": 12.235,
+       "ks_stat": 0.199
+      },
+      "comma_per_1k": {
+       "train_mean": 11.468,
+       "ext_mean": 12.06,
+       "ks_stat": 0.108
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.238,
+       "ext_mean": 0.196,
+       "ks_stat": 0.07
+      },
+      "colon_per_1k": {
+       "train_mean": 0.246,
+       "ext_mean": 0.209,
+       "ks_stat": 0.028
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.26,
+       "ks_stat": 0.124
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.176,
+       "ext_mean": 1.175,
+       "ks_stat": 0.353
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "curly_single_per_1k": {
+       "train_mean": 0.078,
+       "ext_mean": 0.58,
+       "ks_stat": 0.237
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.04,
+       "ext_mean": 0.435,
+       "ks_stat": 0.108
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.185,
+       "ext_mean": 0.657,
+       "ks_stat": 0.224
+      },
+      "paren_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.04,
+       "ks_stat": 0.027
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.008,
+       "ext_mean": 0.016,
+       "ks_stat": 0.005
+      },
+      "question_per_1k": {
+       "train_mean": 0.085,
+       "ext_mean": 0.101,
+       "ks_stat": 0.014
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.068,
+       "ks_stat": 0.016
+      },
+      "has_em_dash": {
+       "train_mean": 0.0,
+       "ext_mean": 0.124,
+       "ks_stat": 0.124
+      },
+      "has_curly_quote": {
+       "train_mean": 0.06,
+       "ext_mean": 0.29,
+       "ks_stat": 0.23
+      }
+     }
+    },
+    "gemini-3.6-flash": {
+     "n_train": 150,
+     "n_ext": 111,
+     "features": {
+      "n_words": {
+       "train_mean": 111.153,
+       "ext_mean": 113.306,
+       "ks_stat": 0.11
+      },
+      "n_chars": {
+       "train_mean": 758.56,
+       "ext_mean": 767.856,
+       "ks_stat": 0.094
+      },
+      "n_sentences": {
+       "train_mean": 4.593,
+       "ext_mean": 5.009,
+       "ks_stat": 0.177
+      },
+      "words_per_sentence": {
+       "train_mean": 24.655,
+       "ext_mean": 22.239,
+       "ks_stat": 0.116
+      },
+      "mean_word_len": {
+       "train_mean": 5.72,
+       "ext_mean": 5.646,
+       "ks_stat": 0.173
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.854,
+       "ext_mean": 0.842,
+       "ks_stat": 0.141
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.192,
+       "ext_mean": 1.954,
+       "ks_stat": 0.264
+      },
+      "upper_per_1k": {
+       "train_mean": 8.679,
+       "ext_mean": 11.894,
+       "ks_stat": 0.297
+      },
+      "comma_per_1k": {
+       "train_mean": 12.312,
+       "ext_mean": 12.18,
+       "ks_stat": 0.139
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.289,
+       "ext_mean": 0.285,
+       "ks_stat": 0.046
+      },
+      "colon_per_1k": {
+       "train_mean": 0.255,
+       "ext_mean": 0.349,
+       "ks_stat": 0.081
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.459,
+       "ks_stat": 0.216
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.043,
+       "ks_stat": 0.018
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.199,
+       "ext_mean": 1.382,
+       "ks_stat": 0.411
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "curly_single_per_1k": {
+       "train_mean": 0.298,
+       "ext_mean": 0.591,
+       "ks_stat": 0.191
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.093,
+       "ext_mean": 0.82,
+       "ks_stat": 0.178
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.368,
+       "ext_mean": 0.507,
+       "ks_stat": 0.086
+      },
+      "paren_per_1k": {
+       "train_mean": 0.009,
+       "ext_mean": 0.055,
+       "ks_stat": 0.038
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "question_per_1k": {
+       "train_mean": 0.065,
+       "ext_mean": 0.073,
+       "ks_stat": 0.023
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.241,
+       "ks_stat": 0.063
+      },
+      "has_em_dash": {
+       "train_mean": 0.0,
+       "ext_mean": 0.216,
+       "ks_stat": 0.216
+      },
+      "has_curly_quote": {
+       "train_mean": 0.193,
+       "ext_mean": 0.36,
+       "ks_stat": 0.167
+      }
+     }
+    },
+    "gemini-3.8-flash": {
+     "n_train": 150,
+     "n_ext": 107,
+     "features": {
+      "n_words": {
+       "train_mean": 100.68,
+       "ext_mean": 105.299,
+       "ks_stat": 0.126
+      },
+      "n_chars": {
+       "train_mean": 706.2,
+       "ext_mean": 724.757,
+       "ks_stat": 0.126
+      },
+      "n_sentences": {
+       "train_mean": 4.42,
+       "ext_mean": 4.617,
+       "ks_stat": 0.053
+      },
+      "words_per_sentence": {
+       "train_mean": 22.728,
+       "ext_mean": 22.598,
+       "ks_stat": 0.128
+      },
+      "mean_word_len": {
+       "train_mean": 5.902,
+       "ext_mean": 5.74,
+       "ks_stat": 0.183
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.88,
+       "ext_mean": 0.857,
+       "ks_stat": 0.215
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.009,
+       "ks_stat": 0.009
+      },
+      "digit_per_1k": {
+       "train_mean": 0.176,
+       "ext_mean": 3.996,
+       "ks_stat": 0.219
+      },
+      "upper_per_1k": {
+       "train_mean": 8.638,
+       "ext_mean": 10.879,
+       "ks_stat": 0.262
+      },
+      "comma_per_1k": {
+       "train_mean": 12.218,
+       "ext_mean": 12.214,
+       "ks_stat": 0.091
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.411,
+       "ext_mean": 0.271,
+       "ks_stat": 0.093
+      },
+      "colon_per_1k": {
+       "train_mean": 0.265,
+       "ext_mean": 1.055,
+       "ks_stat": 0.092
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.334,
+       "ks_stat": 0.178
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.03,
+       "ks_stat": 0.019
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.232,
+       "ext_mean": 1.342,
+       "ks_stat": 0.339
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.077,
+       "ext_mean": 0.182,
+       "ks_stat": 0.021
+      },
+      "curly_single_per_1k": {
+       "train_mean": 0.458,
+       "ext_mean": 0.791,
+       "ks_stat": 0.163
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.009,
+       "ext_mean": 0.622,
+       "ks_stat": 0.178
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.214,
+       "ext_mean": 0.452,
+       "ks_stat": 0.083
+      },
+      "paren_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.059,
+       "ks_stat": 0.037
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "question_per_1k": {
+       "train_mean": 0.042,
+       "ext_mean": 0.028,
+       "ks_stat": 0.02
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.3,
+       "ks_stat": 0.075
+      },
+      "has_em_dash": {
+       "train_mean": 0.0,
+       "ext_mean": 0.178,
+       "ks_stat": 0.178
+      },
+      "has_curly_quote": {
+       "train_mean": 0.26,
+       "ext_mean": 0.421,
+       "ks_stat": 0.161
+      }
+     }
+    },
+    "gpt-5.5": {
+     "n_train": 150,
+     "n_ext": 81,
+     "features": {
+      "n_words": {
+       "train_mean": 110.273,
+       "ext_mean": 121.506,
+       "ks_stat": 0.14
+      },
+      "n_chars": {
+       "train_mean": 698.647,
+       "ext_mean": 756.605,
+       "ks_stat": 0.116
+      },
+      "n_sentences": {
+       "train_mean": 4.333,
+       "ext_mean": 5.568,
+       "ks_stat": 0.206
+      },
+      "words_per_sentence": {
+       "train_mean": 26.278,
+       "ext_mean": 21.746,
+       "ks_stat": 0.303
+      },
+      "mean_word_len": {
+       "train_mean": 5.214,
+       "ext_mean": 5.148,
+       "ks_stat": 0.119
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.856,
+       "ext_mean": 0.82,
+       "ks_stat": 0.327
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.603,
+       "ext_mean": 2.099,
+       "ks_stat": 0.174
+      },
+      "upper_per_1k": {
+       "train_mean": 9.367,
+       "ext_mean": 12.059,
+       "ks_stat": 0.281
+      },
+      "comma_per_1k": {
+       "train_mean": 17.37,
+       "ext_mean": 15.14,
+       "ks_stat": 0.275
+      },
+      "semicolon_per_1k": {
+       "train_mean": 1.193,
+       "ext_mean": 0.515,
+       "ks_stat": 0.344
+      },
+      "colon_per_1k": {
+       "train_mean": 1.302,
+       "ext_mean": 1.078,
+       "ks_stat": 0.165
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.281,
+       "ext_mean": 0.141,
+       "ks_stat": 0.072
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.053,
+       "ks_stat": 0.037
+      },
+      "hyphen_per_1k": {
+       "train_mean": 1.135,
+       "ext_mean": 1.168,
+       "ks_stat": 0.087
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.43,
+       "ext_mean": 1.555,
+       "ks_stat": 0.252
+      },
+      "curly_single_per_1k": {
+       "train_mean": 1.076,
+       "ext_mean": 1.218,
+       "ks_stat": 0.122
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.073,
+       "ext_mean": 0.0,
+       "ks_stat": 0.013
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.246,
+       "ext_mean": 0.0,
+       "ks_stat": 0.113
+      },
+      "paren_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.023,
+       "ext_mean": 0.0,
+       "ks_stat": 0.007
+      },
+      "question_per_1k": {
+       "train_mean": 0.028,
+       "ext_mean": 0.0,
+       "ks_stat": 0.02
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "has_em_dash": {
+       "train_mean": 0.133,
+       "ext_mean": 0.074,
+       "ks_stat": 0.059
+      },
+      "has_curly_quote": {
+       "train_mean": 0.467,
+       "ext_mean": 0.679,
+       "ks_stat": 0.212
+      }
+     }
+    },
+    "gpt-5.6-luna": {
+     "n_train": 150,
+     "n_ext": 79,
+     "features": {
+      "n_words": {
+       "train_mean": 115.393,
+       "ext_mean": 111.734,
+       "ks_stat": 0.093
+      },
+      "n_chars": {
+       "train_mean": 766.633,
+       "ext_mean": 728.228,
+       "ks_stat": 0.085
+      },
+      "n_sentences": {
+       "train_mean": 4.893,
+       "ext_mean": 5.633,
+       "ks_stat": 0.126
+      },
+      "words_per_sentence": {
+       "train_mean": 23.685,
+       "ext_mean": 19.865,
+       "ks_stat": 0.395
+      },
+      "mean_word_len": {
+       "train_mean": 5.553,
+       "ext_mean": 5.504,
+       "ks_stat": 0.144
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.861,
+       "ext_mean": 0.84,
+       "ks_stat": 0.243
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.65,
+       "ext_mean": 3.205,
+       "ks_stat": 0.23
+      },
+      "upper_per_1k": {
+       "train_mean": 9.35,
+       "ext_mean": 13.059,
+       "ks_stat": 0.362
+      },
+      "comma_per_1k": {
+       "train_mean": 15.462,
+       "ext_mean": 14.164,
+       "ks_stat": 0.131
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.675,
+       "ext_mean": 0.612,
+       "ks_stat": 0.067
+      },
+      "colon_per_1k": {
+       "train_mean": 1.326,
+       "ext_mean": 1.122,
+       "ks_stat": 0.15
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.731,
+       "ext_mean": 0.899,
+       "ks_stat": 0.088
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.027,
+       "ext_mean": 0.072,
+       "ks_stat": 0.025
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.807,
+       "ext_mean": 1.085,
+       "ks_stat": 0.105
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.354,
+       "ext_mean": 0.776,
+       "ks_stat": 0.086
+      },
+      "curly_single_per_1k": {
+       "train_mean": 1.071,
+       "ext_mean": 1.537,
+       "ks_stat": 0.154
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.026,
+       "ext_mean": 0.0,
+       "ks_stat": 0.007
+      },
+      "paren_per_1k": {
+       "train_mean": 0.207,
+       "ext_mean": 0.275,
+       "ks_stat": 0.036
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.008,
+       "ks_stat": 0.013
+      },
+      "question_per_1k": {
+       "train_mean": 0.069,
+       "ext_mean": 0.014,
+       "ks_stat": 0.04
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.011,
+       "ext_mean": 0.023,
+       "ks_stat": 0.013
+      },
+      "has_em_dash": {
+       "train_mean": 0.367,
+       "ext_mean": 0.367,
+       "ks_stat": 0.0
+      },
+      "has_curly_quote": {
+       "train_mean": 0.547,
+       "ext_mean": 0.646,
+       "ks_stat": 0.099
+      }
+     }
+    },
+    "gpt-5.6-sol": {
+     "n_train": 150,
+     "n_ext": 73,
+     "features": {
+      "n_words": {
+       "train_mean": 118.927,
+       "ext_mean": 111.699,
+       "ks_stat": 0.139
+      },
+      "n_chars": {
+       "train_mean": 779.353,
+       "ext_mean": 729.411,
+       "ks_stat": 0.143
+      },
+      "n_sentences": {
+       "train_mean": 4.94,
+       "ext_mean": 5.767,
+       "ks_stat": 0.14
+      },
+      "words_per_sentence": {
+       "train_mean": 24.901,
+       "ext_mean": 19.28,
+       "ks_stat": 0.478
+      },
+      "mean_word_len": {
+       "train_mean": 5.458,
+       "ext_mean": 5.387,
+       "ks_stat": 0.132
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.863,
+       "ext_mean": 0.844,
+       "ks_stat": 0.169
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.707,
+       "ext_mean": 2.433,
+       "ks_stat": 0.228
+      },
+      "upper_per_1k": {
+       "train_mean": 9.471,
+       "ext_mean": 13.047,
+       "ks_stat": 0.36
+      },
+      "comma_per_1k": {
+       "train_mean": 15.398,
+       "ext_mean": 14.09,
+       "ks_stat": 0.168
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.991,
+       "ext_mean": 1.081,
+       "ks_stat": 0.117
+      },
+      "colon_per_1k": {
+       "train_mean": 1.2,
+       "ext_mean": 0.779,
+       "ks_stat": 0.236
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.511,
+       "ext_mean": 0.277,
+       "ks_stat": 0.136
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.017,
+       "ext_mean": 0.081,
+       "ks_stat": 0.041
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.789,
+       "ext_mean": 1.127,
+       "ks_stat": 0.121
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.543,
+       "ext_mean": 0.62,
+       "ks_stat": 0.065
+      },
+      "curly_single_per_1k": {
+       "train_mean": 1.23,
+       "ext_mean": 1.333,
+       "ks_stat": 0.106
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.029,
+       "ks_stat": 0.014
+      },
+      "paren_per_1k": {
+       "train_mean": 0.016,
+       "ext_mean": 0.014,
+       "ks_stat": 0.007
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.019,
+       "ext_mean": 0.0,
+       "ks_stat": 0.007
+      },
+      "question_per_1k": {
+       "train_mean": 0.047,
+       "ext_mean": 0.015,
+       "ks_stat": 0.02
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "has_em_dash": {
+       "train_mean": 0.273,
+       "ext_mean": 0.137,
+       "ks_stat": 0.136
+      },
+      "has_curly_quote": {
+       "train_mean": 0.58,
+       "ext_mean": 0.63,
+       "ks_stat": 0.05
+      }
+     }
+    },
+    "gpt-5.6-terra": {
+     "n_train": 150,
+     "n_ext": 64,
+     "features": {
+      "n_words": {
+       "train_mean": 113.26,
+       "ext_mean": 107.719,
+       "ks_stat": 0.133
+      },
+      "n_chars": {
+       "train_mean": 746.58,
+       "ext_mean": 700.531,
+       "ks_stat": 0.135
+      },
+      "n_sentences": {
+       "train_mean": 4.447,
+       "ext_mean": 4.938,
+       "ks_stat": 0.159
+      },
+      "words_per_sentence": {
+       "train_mean": 26.264,
+       "ext_mean": 22.288,
+       "ks_stat": 0.295
+      },
+      "mean_word_len": {
+       "train_mean": 5.447,
+       "ext_mean": 5.434,
+       "ks_stat": 0.076
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.857,
+       "ext_mean": 0.857,
+       "ks_stat": 0.121
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.582,
+       "ext_mean": 3.496,
+       "ks_stat": 0.248
+      },
+      "upper_per_1k": {
+       "train_mean": 8.642,
+       "ext_mean": 12.842,
+       "ks_stat": 0.351
+      },
+      "comma_per_1k": {
+       "train_mean": 16.152,
+       "ext_mean": 14.144,
+       "ks_stat": 0.248
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.803,
+       "ext_mean": 0.658,
+       "ks_stat": 0.17
+      },
+      "colon_per_1k": {
+       "train_mean": 1.365,
+       "ext_mean": 1.074,
+       "ks_stat": 0.194
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.568,
+       "ext_mean": 0.748,
+       "ks_stat": 0.077
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.025,
+       "ext_mean": 0.09,
+       "ks_stat": 0.049
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.937,
+       "ext_mean": 1.463,
+       "ks_stat": 0.181
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.232,
+       "ext_mean": 1.261,
+       "ks_stat": 0.159
+      },
+      "curly_single_per_1k": {
+       "train_mean": 1.085,
+       "ext_mean": 1.648,
+       "ks_stat": 0.158
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.077,
+       "ext_mean": 0.0,
+       "ks_stat": 0.053
+      },
+      "paren_per_1k": {
+       "train_mean": 0.093,
+       "ext_mean": 0.0,
+       "ks_stat": 0.02
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "question_per_1k": {
+       "train_mean": 0.014,
+       "ext_mean": 0.0,
+       "ks_stat": 0.013
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "has_em_dash": {
+       "train_mean": 0.227,
+       "ext_mean": 0.297,
+       "ks_stat": 0.07
+      },
+      "has_curly_quote": {
+       "train_mean": 0.48,
+       "ext_mean": 0.672,
+       "ks_stat": 0.192
+      }
+     }
+    },
+    "gpt-6-astra": {
+     "n_train": 150,
+     "n_ext": 133,
+     "features": {
+      "n_words": {
+       "train_mean": 117.773,
+       "ext_mean": 117.857,
+       "ks_stat": 0.096
+      },
+      "n_chars": {
+       "train_mean": 750.253,
+       "ext_mean": 775.669,
+       "ks_stat": 0.079
+      },
+      "n_sentences": {
+       "train_mean": 5.547,
+       "ext_mean": 6.444,
+       "ks_stat": 0.16
+      },
+      "words_per_sentence": {
+       "train_mean": 21.127,
+       "ext_mean": 18.416,
+       "ks_stat": 0.297
+      },
+      "mean_word_len": {
+       "train_mean": 5.275,
+       "ext_mean": 5.448,
+       "ks_stat": 0.179
+      },
+      "type_token_ratio_first100": {
+       "train_mean": 0.853,
+       "ext_mean": 0.841,
+       "ks_stat": 0.12
+      },
+      "has_newline": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "digit_per_1k": {
+       "train_mean": 0.667,
+       "ext_mean": 2.951,
+       "ks_stat": 0.207
+      },
+      "upper_per_1k": {
+       "train_mean": 9.621,
+       "ext_mean": 12.813,
+       "ks_stat": 0.341
+      },
+      "comma_per_1k": {
+       "train_mean": 12.354,
+       "ext_mean": 12.14,
+       "ks_stat": 0.098
+      },
+      "semicolon_per_1k": {
+       "train_mean": 0.936,
+       "ext_mean": 0.599,
+       "ks_stat": 0.201
+      },
+      "colon_per_1k": {
+       "train_mean": 1.182,
+       "ext_mean": 0.988,
+       "ks_stat": 0.107
+      },
+      "em_dash_per_1k": {
+       "train_mean": 0.212,
+       "ext_mean": 0.356,
+       "ks_stat": 0.093
+      },
+      "en_dash_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.049,
+       "ks_stat": 0.045
+      },
+      "hyphen_per_1k": {
+       "train_mean": 0.567,
+       "ext_mean": 0.87,
+       "ks_stat": 0.189
+      },
+      "curly_double_per_1k": {
+       "train_mean": 0.245,
+       "ext_mean": 0.742,
+       "ks_stat": 0.137
+      },
+      "curly_single_per_1k": {
+       "train_mean": 1.055,
+       "ext_mean": 1.713,
+       "ks_stat": 0.251
+      },
+      "straight_double_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.0,
+       "ks_stat": 0.0
+      },
+      "straight_single_per_1k": {
+       "train_mean": 0.227,
+       "ext_mean": 0.0,
+       "ks_stat": 0.087
+      },
+      "paren_per_1k": {
+       "train_mean": 0.02,
+       "ext_mean": 0.034,
+       "ks_stat": 0.015
+      },
+      "exclaim_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.011,
+       "ks_stat": 0.008
+      },
+      "question_per_1k": {
+       "train_mean": 0.104,
+       "ext_mean": 0.1,
+       "ks_stat": 0.024
+      },
+      "asterisk_per_1k": {
+       "train_mean": 0.0,
+       "ext_mean": 0.024,
+       "ks_stat": 0.015
+      },
+      "has_em_dash": {
+       "train_mean": 0.087,
+       "ext_mean": 0.173,
+       "ks_stat": 0.086
+      },
+      "has_curly_quote": {
+       "train_mean": 0.487,
+       "ext_mean": 0.707,
+       "ks_stat": 0.22
+      }
+     }
+    }
+   },
+   "length_by_class": {
+    "gemini-3.1-pro-preview": {
+     "train_median_words": 104.0,
+     "ext_median_words": 98.0
+    },
+    "gemini-3.6-flash": {
+     "train_median_words": 95.5,
+     "ext_median_words": 108.0
+    },
+    "gemini-3.8-flash": {
+     "train_median_words": 84.0,
+     "ext_median_words": 101.0
+    },
+    "gpt-5.5": {
+     "train_median_words": 103.5,
+     "ext_median_words": 102.0
+    },
+    "gpt-5.6-luna": {
+     "train_median_words": 104.5,
+     "ext_median_words": 101.0
+    },
+    "gpt-5.6-sol": {
+     "train_median_words": 111.5,
+     "ext_median_words": 87.0
+    },
+    "gpt-5.6-terra": {
+     "train_median_words": 100.5,
+     "ext_median_words": 88.5
+    },
+    "gpt-6-astra": {
+     "train_median_words": 105.5,
+     "ext_median_words": 97.0
+    }
+   },
+   "domain_classifier": {
+    "features": "char_wb 2-4 TF-IDF (sublinear, min_df=3, max 100k)",
+    "model": "LogisticRegression(C=4, class_weight=balanced)",
+    "cv": "GroupKFold(5) by prompt (train prompt_id / ext bank:prompt_id)",
+    "rows_train": 1016,
+    "rows_ext": 834,
+    "oof_auc_train_vs_ext": 0.8318
+   },
+   "label_consistency": {
+    "note": "8-way char-TF-IDF LR fit on exp01 training rows of these classes; ext rows scored as an external test set",
+    "train_grouped_cv_balanced_acc": 0.4026,
+    "ext_balanced_acc": 0.3168,
+    "train_cv_family_acc": 0.9636,
+    "ext_family_acc": 0.8729,
+    "per_class": {
+     "gemini-3.1-pro-preview": {
+      "train_cv_recall": 0.598,
+      "ext_recall": 0.441
+     },
+     "gemini-3.6-flash": {
+      "train_cv_recall": 0.48,
+      "ext_recall": 0.378
+     },
+     "gemini-3.8-flash": {
+      "train_cv_recall": 0.504,
+      "ext_recall": 0.402
+     },
+     "gpt-5.5": {
+      "train_cv_recall": 0.512,
+      "ext_recall": 0.346
+     },
+     "gpt-5.6-luna": {
+      "train_cv_recall": 0.323,
+      "ext_recall": 0.19
+     },
+     "gpt-5.6-sol": {
+      "train_cv_recall": 0.102,
+      "ext_recall": 0.178
+     },
+     "gpt-5.6-terra": {
+      "train_cv_recall": 0.181,
+      "ext_recall": 0.156
+     },
+     "gpt-6-astra": {
+      "train_cv_recall": 0.52,
+      "ext_recall": 0.444
+     }
+    }
+   },
+   "provenance": {
+    "published": "2026-10-19 10:03:15 UTC (kaggle datasets list --user zakirkhanaleemi); generation 03:47-04:09 UTC same day",
+    "uploader": "zakirkhanaleemi",
+    "source_model_identity": {
+     "value": "Kaggle Benchmarks Model Proxy slugs (model_slug column), e.g. openai/gpt-5.5-2026-04-23, google/gemini-3.6-flash",
+     "verification": "per-row metadata + README only (CLAIMED). No generation code or proxy logs are published; the proxy slug -> competition label mapping is the uploader's. Indirect check: an 8-way char TF-IDF classifier fit on competition train rows recovers family 87% and exact label at 0.317 balanced accuracy (vs 0.403 grouped-CV on train), i.e. labels are mostly consistent with train styles but shifted."
+    },
+    "generation_settings": {
+     "value": "daily: reasoning=low, temperature=1.0, max_tokens=4096 (rlow_t1, 747 rows); ab2: reasoning=low, temperature=0.0 (rlow_t0, 80); ab_settings: default / t1 / t1_rlow (7)",
+     "verification": "setting column + README (CLAIMED). Request template verified from the request column: \"<prompt>\\n\\nWrite a single paragraph of about N words, with no title or headings.\" Target length N tracks n_words (corr 0.957, median ratio 1.00)."
+    },
+    "prompts": {
+     "value": "sy = prompts.csv of seyitkaangunes/ntl-extra-api-passages (821 rows), pv = prompts.csv of prvsiyan/prvsiyans-extended-name-that-llm-dataset (13 rows); 213 distinct prompts",
+     "verification": "bank column + README (CLAIMED); README states no prompt was derived from competition data, consistent with the topic-overlap check (0/213 prompts above the train cross-prompt 99th pct)."
+    },
+    "text_processing": "README: surrounding whitespace stripped, otherwise unedited, unfiltered (CLAIMED)."
+   },
+   "family_prompt_coverage": {
+    "gpt": {
+     "target_labels": [
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra"
+     ],
+     "labels_present": [
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra"
+     ],
+     "rows": 430,
+     "prompts": 146,
+     "prompts_by_n_labels": {
+      "1": 72,
+      "2": 9,
+      "3": 18,
+      "4": 3,
+      "5": 44
+     }
+    },
+    "gemini": {
+     "target_labels": [
+      "gemini-3.1-pro-preview",
+      "gemini-3.6-flash",
+      "gemini-3.7-flash",
+      "gemini-3.8-flash"
+     ],
+     "labels_present": [
+      "gemini-3.1-pro-preview",
+      "gemini-3.6-flash",
+      "gemini-3.8-flash"
+     ],
+     "rows": 404,
+     "prompts": 182,
+     "prompts_by_n_labels": {
+      "1": 84,
+      "2": 4,
+      "3": 94
+     }
+    }
+   },
+   "rows_by_model_and_setting": {
+    "gemini-3.1-pro-preview": {
+     "default": 0,
+     "rlow_t0": 10,
+     "rlow_t1": 176,
+     "t1": 0,
+     "t1_rlow": 0
+    },
+    "gemini-3.6-flash": {
+     "default": 1,
+     "rlow_t0": 10,
+     "rlow_t1": 100,
+     "t1": 0,
+     "t1_rlow": 0
+    },
+    "gemini-3.8-flash": {
+     "default": 0,
+     "rlow_t0": 10,
+     "rlow_t1": 97,
+     "t1": 0,
+     "t1_rlow": 0
+    },
+    "gpt-5.5": {
+     "default": 0,
+     "rlow_t0": 10,
+     "rlow_t1": 70,
+     "t1": 1,
+     "t1_rlow": 0
+    },
+    "gpt-5.6-luna": {
+     "default": 1,
+     "rlow_t0": 10,
+     "rlow_t1": 66,
+     "t1": 1,
+     "t1_rlow": 1
+    },
+    "gpt-5.6-sol": {
+     "default": 1,
+     "rlow_t0": 10,
+     "rlow_t1": 61,
+     "t1": 1,
+     "t1_rlow": 0
+    },
+    "gpt-5.6-terra": {
+     "default": 0,
+     "rlow_t0": 10,
+     "rlow_t1": 54,
+     "t1": 0,
+     "t1_rlow": 0
+    },
+    "gpt-6-astra": {
+     "default": 0,
+     "rlow_t0": 10,
+     "rlow_t1": 123,
+     "t1": 0,
+     "t1_rlow": 0
+    }
+   }
+  }
+ },
+ "cross_dataset_duplicates": "not computed: maniceet dataset inaccessible",
+ "rule_compliance": {
+  "sources": [
+   "competition Rules page (external data must be publicly and equally accessible at no cost, or meet the reasonableness criteria)",
+   "Code Requirements page (external data allowed; offline; 9 h)",
+   "discussion 752084: host posts 2026-10-28 and 2026-10-29"
+  ],
+  "host_quotes": [
+   "\"Existing public community datasets on Kaggle are fine to train on.\" (2026-10-28)",
+   "\"It is not the intent of the Benchmarks proxy quota to be used for non-benchmarking work; however, we will not penalize participants who have already used it ... Public community datasets on Kaggle (including those generated via the proxy) are fine to train on.\" (2026-10-29)"
+  ],
+  "zakirkhanaleemi": "LIKELY COMPLIANT as external training data: public Kaggle dataset, CC BY 4.0, free, published 2026-10-19 (before the host clarifications); host explicitly allows public proxy-generated datasets. Attribution to the dataset and both prompt banks required by CC BY 4.0. We must NOT generate more data with the proxy ourselves.",
+  "maniceet": "UNDETERMINED: not publicly accessible to us (403/404), so it currently fails the \"publicly and equally accessible\" test; re-check if the ref is corrected."
+ }
+}

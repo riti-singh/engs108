@@ -118,3 +118,13 @@ def test_tiny_training_without_fix_logs_ga_times_loss():
     tr, mon = _tiny_run(fix=False, epochs=1)
     chk = A.ga_fix_check(mon.rows, tr.state.log_history)
     assert math.isclose(chk[0]["logged"] / chk[0]["recorded_mean"], 8.0, rel_tol=1e-3)
+
+
+def test_skip_detection_uses_scaler_scale():
+    import types
+    scale = {"v": 4096.0}
+    scaler = types.SimpleNamespace(get_scale=lambda: scale["v"], is_enabled=lambda: True)
+    tr = types.SimpleNamespace(accelerator=types.SimpleNamespace(scaler=scaler, optimizer_step_was_skipped=False))
+    assert A.scaler_scale(tr) == 4096.0
+    tr.accelerator.scaler = None
+    assert A.scaler_scale(tr) == 1.0

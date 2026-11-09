@@ -74,7 +74,7 @@
   },
   "lr_scheduler_type": "linear",
   "warmup_steps": 0,
-  "schedule_note": "Same scheduler and warmup as exp01 (Trainer defaults: linear decay to 0, no warmup). The decay now spans 6 epochs (858 steps) instead of 3 (429); each group decays from its own peak LR. Steps skipped by the fp16 GradScaler do not advance the schedule (Trainer/accelerate behaviour).",
+  "schedule_note": "Same scheduler and warmup as exp01 (Trainer defaults: linear decay to 0, no warmup). The decay now spans 6 epochs (858 steps) instead of 3 (429); each group decays from its own peak LR. As in exp01 (same fused AdamW default), the scheduler also advances on GradScaler-skipped steps, because accelerate does not flag skips for fused optimizers.",
   "max_grad_norm": 1.0,
   "fp16": true,
   "gradient_checkpointing": true,
@@ -173,5 +173,15 @@
   ],
   "expected_runtime_h": 4.0,
   "leaderboard_submission": false
- }
+ },
+ "amendments_before_full_run": [
+  {
+   "after": "smoke kernel v1",
+   "what": "documentation + instrumentation only; no hyper-parameter or stop-criterion change",
+   "details": [
+    "schedule_note corrected: smoke v1 showed the scheduler advancing on the 5 GradScaler calibration skips (fused AdamW; identical behaviour to exp01). The earlier note said it did not.",
+    "skip detection for S3/logging fixed: accelerate.optimizer_step_was_skipped was False on the 5 skipped steps of smoke v1; skipped is now 'GradScaler scale decreased during the step'."
+   ]
+  }
+ ]
 }

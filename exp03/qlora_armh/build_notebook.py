@@ -281,8 +281,8 @@ def build(smoke=False):
              ("code", SETUP.replace("__SMOKE__", str(bool(smoke))).replace("__CONFIG__", config)),
              ("code", "# ---- armh_core.py (inlined) ----\n" + core),
              ("code", DATA), ("code", MODEL), ("code", TRAINER), ("code", TRAIN), ("code", OUTPUTS), ("code", SUMMARY)]
-    nb = {"cells": [{"cell_type": t, "metadata": {}, "source": s.splitlines(keepends=True),
-                     **({"outputs": [], "execution_count": None} if t == "code" else {})} for t, s in cells],
+    nb = {"cells": [{"cell_type": t, "id": f"cell-{i:02d}", "metadata": {}, "source": s.splitlines(keepends=True),
+                     **({"outputs": [], "execution_count": None} if t == "code" else {})} for i, (t, s) in enumerate(cells)],
           "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
                        "language_info": {"name": "python"}},
           "nbformat": 4, "nbformat_minor": 5}

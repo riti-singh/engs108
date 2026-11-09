@@ -62,14 +62,18 @@ class ArmHTrainer(Trainer):
         return out
 
     def _clip_grad_norm(self, model):
-        scaler = getattr(self.accelerator, "scaler", None)
-        scale = float(scaler.get_scale()) if scaler is not None and scaler.is_enabled() else 1.0
+        scale = scaler_scale(self)
         head = _norm(self.head_params, scale)
         lora = _norm(self.lora_params, scale)
         total = super()._clip_grad_norm(model)
         self.last_clip = {"grad_norm_head_preclip": head, "grad_norm_lora_preclip": lora,
                           "grad_norm_total_preclip": float(total), "scaler_scale": scale}
         return total
+
+
+def scaler_scale(trainer):
+    scaler = getattr(trainer.accelerator, "scaler", None)
+    return float(scaler.get_scale()) if scaler is not None and scaler.is_enabled() else 1.0
 
 
 def check_stop(rows, params):
@@ -114,7 +118,11 @@ class ArmHMonitor(TrainerCallback):
                "grad_norm_head_postclip": self._post[0], "grad_norm_lora_postclip": self._post[1],
                "update_norm_head": upd["head"], "update_norm_lora": upd["lora"],
                "lr_head": self._lrs.get("head"), "lr_lora": self._lrs.get("lora"),
-               "skipped": bool(self.tr.accelerator.optimizer_step_was_skipped),
+               # GradScaler halves its scale exactly when it skips a step (found inf/nan). accelerate's
+               # optimizer_step_was_skipped misses skips with fused AdamW (step() is still called with found_inf).
+               "scaler_scale_after": scaler_scale(self.tr),
+               "skipped": scaler_scale(self.tr) < clip.get("scaler_scale", 1.0),
+               "skipped_accelerate_flag": bool(self.tr.accelerator.optimizer_step_was_skipped),
                "head_cos_init": float(torch.nn.functional.cosine_similarity(w, w0, dim=0)),
                "head_frob": float(w.norm()), "head_delta_frob": float((w - w0).norm())}
         self.rows.append(row)

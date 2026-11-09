@@ -1,0 +1,559 @@
+{
+ "status": "completed",
+ "completed_epoch6": true,
+ "error": null,
+ "smoke_test": false,
+ "global_step": 858,
+ "expected_steps": 858,
+ "stop_reason": null,
+ "train_minutes": 177.6830070455869,
+ "total_minutes": 198.39398737748465,
+ "peak_gpu_memory": {
+  "allocated_gb": 6.97785856,
+  "reserved_gb": 7.51828992
+ },
+ "versions": {
+  "torch": "2.11.0+cu130",
+  "transformers": "5.20.2",
+  "peft": "0.21.2",
+  "accelerate": "1.15.0",
+  "bitsandbytes": "0.50.2",
+  "datasets": "4.8.5",
+  "scikit-learn": "1.6.1",
+  "numpy": "2.1.3"
+ },
+ "optimizer": {
+  "class": "AdamW",
+  "kwargs": {
+   "betas": "(0.9, 0.999)",
+   "eps": "1e-08",
+   "fused": "True"
+  }
+ },
+ "n_gpu": 1,
+ "model_accepts_loss_kwargs": false,
+ "skipped_steps": 5,
+ "ga_fix_check_max_rel_diff": 2.173060524471854e-07,
+ "epoch_dev_history": [
+  {
+   "eval_loss": 2.549107074737549,
+   "eval_balanced_accuracy": 0.2004830917874396,
+   "eval_macro_f1": 0.15307612704671528,
+   "eval_log_loss_proba": 2.5491097050210265,
+   "eval_runtime": 105.3201,
+   "eval_samples_per_second": 3.931,
+   "eval_steps_per_second": 0.494,
+   "epoch": 1.0,
+   "step": 143
+  },
+  {
+   "eval_loss": 1.7973880767822266,
+   "eval_balanced_accuracy": 0.429951690821256,
+   "eval_macro_f1": 0.3905935559625873,
+   "eval_log_loss_proba": 1.7973975104109152,
+   "eval_runtime": 105.038,
+   "eval_samples_per_second": 3.941,
+   "eval_steps_per_second": 0.495,
+   "epoch": 2.0,
+   "step": 286
+  },
+  {
+   "eval_loss": 1.8802335262298584,
+   "eval_balanced_accuracy": 0.4082125603864734,
+   "eval_macro_f1": 0.3712400570324827,
+   "eval_log_loss_proba": 1.8802901203546163,
+   "eval_runtime": 105.1592,
+   "eval_samples_per_second": 3.937,
+   "eval_steps_per_second": 0.494,
+   "epoch": 3.0,
+   "step": 429
+  },
+  {
+   "eval_loss": 2.727276086807251,
+   "eval_balanced_accuracy": 0.3695652173913044,
+   "eval_macro_f1": 0.3468891463989924,
+   "eval_log_loss_proba": 2.727289971388143,
+   "eval_runtime": 104.7543,
+   "eval_samples_per_second": 3.952,
+   "eval_steps_per_second": 0.496,
+   "epoch": 4.0,
+   "step": 572
+  },
+  {
+   "eval_loss": 3.643984079360962,
+   "eval_balanced_accuracy": 0.40096618357487923,
+   "eval_macro_f1": 0.3812431427274259,
+   "eval_log_loss_proba": 3.643984525524697,
+   "eval_runtime": 105.0535,
+   "eval_samples_per_second": 3.941,
+   "eval_steps_per_second": 0.495,
+   "epoch": 5.0,
+   "step": 715
+  },
+  {
+   "eval_loss": 3.5396108627319336,
+   "eval_balanced_accuracy": 0.4057971014492754,
+   "eval_macro_f1": 0.3957794409261951,
+   "eval_log_loss_proba": 3.539595451561535,
+   "eval_runtime": 105.2019,
+   "eval_samples_per_second": 3.935,
+   "eval_steps_per_second": 0.494,
+   "epoch": 6.0,
+   "step": 858
+  }
+ ],
+ "dev_bal_acc_sorted_predict": 0.4033816425120773,
+ "pooled_logit_reconstruction_max_abs": 0.024286270141601562,
+ "final_checkpoint": "/kaggle/working/checkpoints/checkpoint-858",
+ "checkpoints": [
+  "checkpoint-143",
+  "checkpoint-286",
+  "checkpoint-429",
+  "checkpoint-572",
+  "checkpoint-715",
+  "checkpoint-858"
+ ],
+ "config": {
+  "experiment": "exp03 Arm H: QLoRA with a higher classification-head learning rate, LoRA capacity unchanged",
+  "frozen_before_training": true,
+  "approval": "User approved Arm H only (GPU), option C: six fixed epochs, epoch 6 is the primary checkpoint; head LR 1e-3, LoRA LR 1e-4",
+  "seed": 42,
+  "data": {
+   "competition": "name-that-llm",
+   "file": "train.csv",
+   "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+   "external_data": false,
+   "split": "exp01: GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=42) on prompt_id over train[[id,prompt_id,text,model]] in file order",
+   "train_rows": 2285,
+   "train_prompts": 127,
+   "dev_rows": 414,
+   "dev_prompts": 23,
+   "training_rows": "all 2285 train rows; the 414 dev rows are never trained on"
+  },
+  "model": {
+   "base": "Kaggle model qwen-lm/qwen-3/Transformers/8b-base/1 (Qwen3-8B-Base)",
+   "class": "AutoModelForSequenceClassification(num_labels=18), id2label = sorted model names (exp01 label_map.json)",
+   "quantization": {
+    "load_in_4bit": true,
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_compute_dtype": "float16",
+    "bnb_4bit_use_double_quant": true
+   },
+   "torch_dtype": "float16",
+   "device_map": {
+    "": 0
+   },
+   "init": "set_seed(42) immediately before from_pretrained (as exp01), so the score head init equals exp01's",
+   "prepare_model_for_kbit_training": {
+    "use_gradient_checkpointing": true
+   }
+  },
+  "lora": {
+   "task_type": "SEQ_CLS",
+   "r": 8,
+   "lora_alpha": 16,
+   "lora_dropout": 0.05,
+   "target_modules": [
+    "q_proj",
+    "v_proj"
+   ],
+   "modules_to_save": [
+    "score",
+    "classifier",
+    "score"
+   ],
+   "bias": "none",
+   "expected_trainable_params": {
+    "total": 3907584,
+    "head": 73728,
+    "lora": 3833856
+   }
+  },
+  "training": {
+   "max_length": 512,
+   "per_device_train_batch_size": 2,
+   "gradient_accumulation_steps": 8,
+   "effective_batch_size": 16,
+   "per_device_eval_batch_size": 8,
+   "num_train_epochs": 6,
+   "expected_optimizer_steps": 858,
+   "steps_per_epoch": 143,
+   "optimizer": "Trainer default optim (adamw_torch_fused on torch>=2.8) built via Trainer.get_optimizer_cls_and_kwargs, betas (0.9, 0.999), eps 1e-8, weight_decay 0.0 for both groups (= exp01)",
+   "param_groups": {
+    "head": {
+     "match": "trainable params whose name contains 'score' (modules_to_save copy)",
+     "lr": 0.001
+    },
+    "lora": {
+     "match": "trainable params whose name contains 'lora_'",
+     "lr": 0.0001
+    }
+   },
+   "lr_scheduler_type": "linear",
+   "warmup_steps": 0,
+   "schedule_note": "Same scheduler and warmup as exp01 (Trainer defaults: linear decay to 0, no warmup). The decay now spans 6 epochs (858 steps) instead of 3 (429); each group decays from its own peak LR. As in exp01 (same fused AdamW default), the scheduler also advances on GradScaler-skipped steps, because accelerate does not flag skips for fused optimizers.",
+   "max_grad_norm": 1.0,
+   "fp16": true,
+   "gradient_checkpointing": true,
+   "gradient_checkpointing_kwargs": {
+    "use_reentrant": false
+   },
+   "ga_fix": "trainer.model_accepts_loss_kwargs = False after building the Trainer (the Trainer then divides each micro-batch loss by GA): logged train loss = true mean CE, grad_norm = true norm",
+   "eval_strategy": "epoch (diagnostics only; never used to select a checkpoint)",
+   "save_strategy": "epoch, save_only_model=True, all 6 epoch checkpoints kept",
+   "load_best_model_at_end": false,
+   "logging_steps": 10,
+   "data_order": "Trainer default RandomSampler seeded by args.seed=42"
+  },
+  "primary_checkpoint": "end of epoch 6 = optimizer step 858 (the Trainer counts GradScaler-skipped steps in global_step), fixed before training. No early stopping on any metric. Per-epoch dev metrics are diagnostics only.",
+  "stop_criteria": {
+   "note": "Training stops early ONLY for these predefined criteria. A stopped run is reported as failed/partial; its last state is not substituted as 'epoch 6'.",
+   "S1_nonfinite_loss": "mean micro-batch training loss non-finite on 3 consecutive optimizer steps",
+   "S2_nonfinite_grad": "pre-clip total gradient norm non-finite (GradScaler skips the step) on 10 consecutive optimizer steps",
+   "S3_skip_rate": "cumulative GradScaler skip rate above 5% of optimizer steps, checked from optimizer step 100 onward",
+   "S4_operational": "CUDA OOM, Python exception, kernel crash or Kaggle session limit. The same frozen config may be relaunched after fixing an operational bug, documented in the README.",
+   "params": {
+    "S1_k": 3,
+    "S2_k": 10,
+    "S3_max_rate": 0.05,
+    "S3_min_step": 100
+   }
+  },
+  "logging": {
+   "per_optimizer_step": [
+    "mean micro-batch train CE (raw, before GA division)",
+    "pre-clip grad norm total and per group (head, lora)",
+    "post-clip clip coefficient",
+    "update norm ||delta theta|| per group",
+    "lr per group",
+    "GradScaler scale and skipped flag",
+    "cosine(head weight, head init)",
+    "head weight Frobenius norm"
+   ],
+   "per_epoch": [
+    "dev eval_loss, balanced accuracy, macro F1, log loss (Trainer evaluate, val order, batch 8)",
+    "dev logits"
+   ],
+   "trainer_log_history": true,
+   "ga_fix_check": "Trainer-logged loss at each logging step vs the mean of the recorded raw micro-batch losses over the same optimizer steps (should agree to ~1e-4 relative)"
+  },
+  "post_training_epoch6": {
+   "predictions": "length-sorted predict loop of inference/rs2027-engs108-inference.ipynb (batch 8, fp16 autocast, eval mode): dev 414, train 2285, test rows -> logits -> softmax probabilities. These are the primary head predictions.",
+   "hidden_states": "exp02 pooled_forward (hook on score input, last non-pad token, batch 8) over train_df then dev_df order (same order as exp02 pooled_hidden_*.npy) -> pooled_hidden_armh.npy (2699 x 4096 float16) + the logits of the same pass; sha256 recorded. Test rows separately.",
+   "adapter": "model.save_pretrained(adapter/) + label_map.json",
+   "intermediate_layers": "not extracted (proposal only, needs approval)"
+  },
+  "pre_registered_dev_reports": {
+   "note": "Written before training. Dev is reported once for exactly these rows; nothing is selected on dev. Each row gets bal-acc with a 23-prompt bootstrap CI, macro F1, log loss, and paired prompt-bootstrap deltas vs B1 (0.399, exp03/probe/artifacts/blend_B1_dev.csv) and vs R2 probe_exp01 (0.377). stylo_exp03 = exp03/stylo/artifacts/stylo_exp03_dev.csv.",
+   "H1": {
+    "model": "armh_head",
+    "desc": "trained classification head at epoch 6 (length-sorted predict loop), softmax(logits)",
+    "weights": "-"
+   },
+   "H2": {
+    "model": "probe_armh",
+    "desc": "new linear probe (protocol probe: StandardScaler + LR) on epoch-6 adapted pooled hidden states; C chosen from {0.0003,0.001,0.003,0.01,0.03,0.1} by pooled train-CV OOF bal-acc on the frozen folds (ties within 0.003 -> smallest C). The CV level is optimistic: the adapter saw every train label (oof_honest false).",
+    "weights": "-"
+   },
+   "H3": {
+    "model": "probe_armh + stylo_exp03",
+    "weights": "equal"
+   },
+   "H4": {
+    "model": "armh_head + stylo_exp03",
+    "weights": "equal"
+   },
+   "H5": {
+    "model": "probe_armh + armh_head + stylo_exp03",
+    "weights": "equal"
+   },
+   "H6": {
+    "model": "probe_armh + armh_head + stylo_exp03",
+    "weights": "dev LOPO (protocol 5b, leave-one-prompt-out over 23 dev prompts)",
+    "why_fixed_components": "the 3-component LOPO pool is fixed in advance instead of 'LOPO of the best equal blend', because picking the best equal blend would itself be a dev selection; LOPO can drive any component weight to 0"
+   },
+   "diagnostics_not_reports": [
+    "per-epoch dev metrics from the training log",
+    "H1 vs H2 paired delta (does the improved head catch up to the probe?)",
+    "train-set fit of the head (in-sample)",
+    "pooled_forward logits vs length-sorted logits argmax agreement"
+   ]
+  },
+  "kaggle": {
+   "kernel": "ritisingh123/rs2027-engs108-exp03-armh",
+   "smoke_kernel": "ritisingh123/rs2027-engs108-exp03-armh-smoke",
+   "accelerator": "NvidiaTeslaT4 (CUDA_VISIBLE_DEVICES=0, one T4 used)",
+   "docker_image": "gcr.io/kaggle-private-byod/python@sha256:de153e6d303881930c51286216393d56f56b26458d0661350305a1e8144eea01 (same as exp01/exp02 kernels)",
+   "internet": false,
+   "datasets": [
+    "ritisingh123/engs108-offline-wheels (bitsandbytes 0.50.2 wheel)"
+   ],
+   "expected_runtime_h": 4.0,
+   "leaderboard_submission": false
+  },
+  "amendments_before_full_run": [
+   {
+    "after": "smoke kernel v1",
+    "what": "documentation + instrumentation only; no hyper-parameter or stop-criterion change",
+    "details": [
+     "schedule_note corrected: smoke v1 showed the scheduler advancing on the 5 GradScaler calibration skips (fused AdamW; identical behaviour to exp01). The earlier note said it did not.",
+     "skip detection for S3/logging fixed: accelerate.optimizer_step_was_skipped was False on the 5 skipped steps of smoke v1; skipped is now 'GradScaler scale decreased during the step'."
+    ]
+   }
+  ]
+ },
+ "files": {
+  "ga_fix_check.csv": {
+   "bytes": 4744,
+   "sha256": "c26c302d6fe84be88560ac2a4f4393bb29bfbfe30628c64c1e529fe612872628"
+  },
+  "armh_pooled_pass_test_logits.parquet": {
+   "bytes": 12471,
+   "sha256": "5b130e64afd0165d5089f14e0066a319d3cab41940a2e3d1768d30ea34b0e1df"
+  },
+  "armh_sorted_logits.parquet": {
+   "bytes": 292603,
+   "sha256": "e9359a49a04392d49c830b0a0696b6713016a96c606a488febc0d30659c267ce"
+  },
+  "pooled_hidden_armh_test.npy": {
+   "bytes": 24704,
+   "sha256": "8f82e0d89507eeba41690b059ec8263cdefa56a1fa42c824230743f935c5f7e7"
+  },
+  "score_head_init.npy": {
+   "bytes": 295040,
+   "sha256": "295d9d01545e1b10c7d8a548b46cdc035e5e161e8844fc6fe5319f4ce7a551c6"
+  },
+  "armh_pooled_pass_logits.parquet": {
+   "bytes": 292339,
+   "sha256": "0e0e90a36628565d5381ab08d9e7a8ea1f273c04890698bc633232b9e6a224fc"
+  },
+  "__notebook__.ipynb": {
+   "bytes": 108634,
+   "sha256": "65fa586f0fa936fee254877476f03cc3321310071ce9d26686ac4c1d55da63ab"
+  },
+  "pooled_hidden_armh.npy": {
+   "bytes": 22110336,
+   "sha256": "388160d7d4cdffed749b7d03fae65f3eb7ddec760bb7bcb07534bb9265ad925d"
+  },
+  "trainer_log_history.json": {
+   "bytes": 15478,
+   "sha256": "d83bd95c55b976c5fb0a8f8e133c55cbb7aabba82e460c6aca6b30c24db0213c"
+  },
+  "step_log.csv": {
+   "bytes": 260071,
+   "sha256": "1fb0e926e714d1615b438a18134d29e089fdd210584e4779a4683ace51292d9b"
+  },
+  "epoch_dev_logits.npy": {
+   "bytes": 178976,
+   "sha256": "648dcd2f056641b2d4b3cb96612fa11977e3393a0835f44590251bec6735784c"
+  },
+  "checkpoints/checkpoint-572/trainer_state.json": {
+   "bytes": 12612,
+   "sha256": "75dc1d5a90abcce1b6cc28cf55f4de9144d51c8529bd216aafd450fbb60cc4da"
+  },
+  "checkpoints/checkpoint-572/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "91d472b39c6a967742b234fe983b328834ef6525b33ae562b9088de224bc2dad"
+  },
+  "checkpoints/checkpoint-572/tokenizer.json": {
+   "bytes": 11422748,
+   "sha256": "b064181fd20c7d19d5613f061552279d7dcbb8210ffde80386e2a9a6ddf996e7"
+  },
+  "checkpoints/checkpoint-572/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "checkpoints/checkpoint-572/chat_template.jinja": {
+   "bytes": 4116,
+   "sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5"
+  },
+  "checkpoints/checkpoint-572/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "checkpoints/checkpoint-572/tokenizer_config.json": {
+   "bytes": 692,
+   "sha256": "1cc816812993bff176eb4f7495433b736f06fba9b6e7b05cac7b4a1780650c95"
+  },
+  "checkpoints/checkpoint-572/training_args.bin": {
+   "bytes": 5265,
+   "sha256": "8a45cccad9be0b5eba2fc1f430a5ac2434baf17cdd995dd5089c875de54f2ca5"
+  },
+  "checkpoints/checkpoint-858/trainer_state.json": {
+   "bytes": 18498,
+   "sha256": "817ea192e42f9daece13c5719ac2002bbe2e5f734d59db6cb430c5612633864c"
+  },
+  "checkpoints/checkpoint-858/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "dae9601c1f5cfba01da3c1c189c893a7e011ed274e26c50a775fe51a42084354"
+  },
+  "checkpoints/checkpoint-858/tokenizer.json": {
+   "bytes": 11422748,
+   "sha256": "b064181fd20c7d19d5613f061552279d7dcbb8210ffde80386e2a9a6ddf996e7"
+  },
+  "checkpoints/checkpoint-858/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "checkpoints/checkpoint-858/chat_template.jinja": {
+   "bytes": 4116,
+   "sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5"
+  },
+  "checkpoints/checkpoint-858/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "checkpoints/checkpoint-858/tokenizer_config.json": {
+   "bytes": 692,
+   "sha256": "1cc816812993bff176eb4f7495433b736f06fba9b6e7b05cac7b4a1780650c95"
+  },
+  "checkpoints/checkpoint-858/training_args.bin": {
+   "bytes": 5265,
+   "sha256": "8a45cccad9be0b5eba2fc1f430a5ac2434baf17cdd995dd5089c875de54f2ca5"
+  },
+  "checkpoints/checkpoint-143/trainer_state.json": {
+   "bytes": 3677,
+   "sha256": "6d5b1ef2c2de64908f73bc7200953487f573b6c65d827e5d46d2b1b2338a5007"
+  },
+  "checkpoints/checkpoint-143/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "769cf4bc98de1646e3e2059181c7467303614600fef17f8c618d1615ef2a67b9"
+  },
+  "checkpoints/checkpoint-143/tokenizer.json": {
+   "bytes": 11422748,
+   "sha256": "b064181fd20c7d19d5613f061552279d7dcbb8210ffde80386e2a9a6ddf996e7"
+  },
+  "checkpoints/checkpoint-143/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "checkpoints/checkpoint-143/chat_template.jinja": {
+   "bytes": 4116,
+   "sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5"
+  },
+  "checkpoints/checkpoint-143/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "checkpoints/checkpoint-143/tokenizer_config.json": {
+   "bytes": 692,
+   "sha256": "1cc816812993bff176eb4f7495433b736f06fba9b6e7b05cac7b4a1780650c95"
+  },
+  "checkpoints/checkpoint-143/training_args.bin": {
+   "bytes": 5265,
+   "sha256": "8a45cccad9be0b5eba2fc1f430a5ac2434baf17cdd995dd5089c875de54f2ca5"
+  },
+  "checkpoints/checkpoint-286/trainer_state.json": {
+   "bytes": 6588,
+   "sha256": "c707a40b8e65ab200bf4ffa243d56ee91f09d54668701e471ffd21ac68c71bbc"
+  },
+  "checkpoints/checkpoint-286/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "f063511b148e6f3ab9148b0d084f97f8b79e66bedc57d0a53741cacbf4b11a63"
+  },
+  "checkpoints/checkpoint-286/tokenizer.json": {
+   "bytes": 11422748,
+   "sha256": "b064181fd20c7d19d5613f061552279d7dcbb8210ffde80386e2a9a6ddf996e7"
+  },
+  "checkpoints/checkpoint-286/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "checkpoints/checkpoint-286/chat_template.jinja": {
+   "bytes": 4116,
+   "sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5"
+  },
+  "checkpoints/checkpoint-286/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "checkpoints/checkpoint-286/tokenizer_config.json": {
+   "bytes": 692,
+   "sha256": "1cc816812993bff176eb4f7495433b736f06fba9b6e7b05cac7b4a1780650c95"
+  },
+  "checkpoints/checkpoint-286/training_args.bin": {
+   "bytes": 5265,
+   "sha256": "8a45cccad9be0b5eba2fc1f430a5ac2434baf17cdd995dd5089c875de54f2ca5"
+  },
+  "checkpoints/checkpoint-715/trainer_state.json": {
+   "bytes": 15547,
+   "sha256": "652d918f62298914bf5761085745769747097ddb49480f41868a8b6785db9395"
+  },
+  "checkpoints/checkpoint-715/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "bda207dc8b537d1601fbe8f3f65938eaa9f769dde246822c5138d574076644c1"
+  },
+  "checkpoints/checkpoint-715/tokenizer.json": {
+   "bytes": 11422748,
+   "sha256": "b064181fd20c7d19d5613f061552279d7dcbb8210ffde80386e2a9a6ddf996e7"
+  },
+  "checkpoints/checkpoint-715/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "checkpoints/checkpoint-715/chat_template.jinja": {
+   "bytes": 4116,
+   "sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5"
+  },
+  "checkpoints/checkpoint-715/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "checkpoints/checkpoint-715/tokenizer_config.json": {
+   "bytes": 692,
+   "sha256": "1cc816812993bff176eb4f7495433b736f06fba9b6e7b05cac7b4a1780650c95"
+  },
+  "checkpoints/checkpoint-715/training_args.bin": {
+   "bytes": 5265,
+   "sha256": "8a45cccad9be0b5eba2fc1f430a5ac2434baf17cdd995dd5089c875de54f2ca5"
+  },
+  "checkpoints/checkpoint-429/trainer_state.json": {
+   "bytes": 9512,
+   "sha256": "b06e782d850d58728e92eb73a012881eb94febf7b875ee73aa3d1a29abc5d126"
+  },
+  "checkpoints/checkpoint-429/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "eda068038710ba4cea22e6f81f4124fe47d7a8716632292537f85088173d4219"
+  },
+  "checkpoints/checkpoint-429/tokenizer.json": {
+   "bytes": 11422748,
+   "sha256": "b064181fd20c7d19d5613f061552279d7dcbb8210ffde80386e2a9a6ddf996e7"
+  },
+  "checkpoints/checkpoint-429/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "checkpoints/checkpoint-429/chat_template.jinja": {
+   "bytes": 4116,
+   "sha256": "87a2728cb8dc9fe424d624542f6060ec05a1d285ebbec578bb078900e33396b5"
+  },
+  "checkpoints/checkpoint-429/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "checkpoints/checkpoint-429/tokenizer_config.json": {
+   "bytes": 692,
+   "sha256": "1cc816812993bff176eb4f7495433b736f06fba9b6e7b05cac7b4a1780650c95"
+  },
+  "checkpoints/checkpoint-429/training_args.bin": {
+   "bytes": 5265,
+   "sha256": "8a45cccad9be0b5eba2fc1f430a5ac2434baf17cdd995dd5089c875de54f2ca5"
+  },
+  "adapter/adapter_model.safetensors": {
+   "bytes": 15649528,
+   "sha256": "dae9601c1f5cfba01da3c1c189c893a7e011ed274e26c50a775fe51a42084354"
+  },
+  "adapter/adapter_config.json": {
+   "bytes": 1178,
+   "sha256": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a"
+  },
+  "adapter/README.md": {
+   "bytes": 5240,
+   "sha256": "6e9dc1edc9557b2f7a8b074ca5ddd13b4e52fc5491fb914af219c878f02579b3"
+  },
+  "adapter/label_map.json": {
+   "bytes": 498,
+   "sha256": "820b6c166aa933d1c92902dbcf4f380b188b0de1a4d6e9e228a7e30ac307aff8"
+  }
+ }
+}

@@ -1,0 +1,31 @@
+{
+ "protocol": "exp03/eval_protocol.md",
+ "seed": 42,
+ "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "2.2.6",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "scikit-learn": "1.6.1"
+ },
+ "kaggle_kernel": "ritisingh123/rs2027-engs108-exp03-armh",
+ "epoch6_checkpoint": "/kaggle/working/checkpoints/checkpoint-858",
+ "global_step": 858,
+ "model": "armh_head",
+ "report_id": "H1",
+ "source": "armh_sorted_logits.parquet (length-sorted predict loop, batch 8, fp16 autocast)",
+ "oof_honest": false,
+ "train_file": "armh_head_train_insample.csv",
+ "oof_note": "no train OOF exists: one adapter+head trained on all 2285 train rows; train predictions are in-sample",
+ "train_insample": {
+  "balanced_accuracy": 1.0,
+  "macro_f1": 1.0,
+  "log_loss": 0.0025633117803257146
+ },
+ "dev": {
+  "balanced_accuracy": 0.4033816425120773,
+  "macro_f1": 0.39358023566269434,
+  "log_loss": 3.540129564145568
+ }
+}

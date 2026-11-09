@@ -1,0 +1,147 @@
+{
+ "protocol": "exp03/eval_protocol.md",
+ "seed": 42,
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "2.2.6",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "scikit-learn": "1.6.1"
+ },
+ "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+ "folds_sha256": "ea6a145239efac7fab99948f443d16ba79c087ecbc7f13c46f196753d073e4fa",
+ "tie_rule": "within 0.003 of best OOF bal-acc -> fewest groups, then smallest C",
+ "selected": {
+  "config": "char+word+style | C=300",
+  "groups": [
+   "char",
+   "word",
+   "style"
+  ],
+  "C": 300
+ },
+ "best_oof_config": "char+word+style+fwng | C=100",
+ "dev_evaluations": [
+  {
+   "id": "R1",
+   "model": "stylo_exp03",
+   "balanced_accuracy": 0.3405797101449275,
+   "macro_f1": 0.3252970216853322,
+   "log_loss": 2.8078783759850303
+  },
+  {
+   "id": "R0",
+   "model": "stylo_exp02ref",
+   "balanced_accuracy": 0.3357487922705314,
+   "macro_f1": 0.3157800352441487,
+   "log_loss": 2.609698885402114
+  }
+ ],
+ "stylo_exp03": {
+  "model": "stylo_exp03",
+  "report_id": "R1",
+  "config": "char+word+style | C=300",
+  "groups": [
+   "char",
+   "word",
+   "style"
+  ],
+  "C": 300,
+  "classifier": "LogisticRegression(C=300, max_iter=5000, lbfgs, multinomial)",
+  "oof_honest": true,
+  "oof": {
+   "balanced_accuracy": 0.3552437889708231,
+   "macro_f1": 0.34232222436441617,
+   "log_loss": 2.527912698060529
+  },
+  "oof_bal_acc_ci95": [
+   0.336832895888014,
+   0.37550546273179264
+  ],
+  "dev": {
+   "balanced_accuracy": 0.3405797101449275,
+   "macro_f1": 0.3252970216853322,
+   "log_loss": 2.8078783759850303
+  },
+  "dev_bal_acc_ci95": [
+   0.2874396135265701,
+   0.3888888888888889
+  ],
+  "dev_macro_f1_ci95": [
+   0.2754967678114678,
+   0.36972539470169696
+  ],
+  "refit_numerical_noise": {
+   "max_abs_proba_diff": 0.25976250352420827,
+   "argmax_agreement": 0.9516908212560387,
+   "bal_acc_cached_path": 0.34541062801932365
+  },
+  "n_features": 101066,
+  "versions": {
+   "python": "3.12.16",
+   "numpy": "2.2.6",
+   "pandas": "3.1.1",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.6.1"
+  },
+  "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+  "seed": 42
+ },
+ "model_artifact": {
+  "path": "exp03/stylo/artifacts/stylo_exp03_model.joblib",
+  "sha256": "4377983503ab5b4afb6675f273ca21f1699c1b9f46bad7c311212e25d1ee87df"
+ },
+ "stylo_exp02ref": {
+  "model": "stylo_exp02ref",
+  "report_id": "R0",
+  "config": "char+word+style | C=100",
+  "groups": [
+   "char",
+   "word",
+   "style"
+  ],
+  "C": 100,
+  "classifier": "LogisticRegression(C=100, max_iter=5000, lbfgs, multinomial)",
+  "oof_honest": true,
+  "oof": {
+   "balanced_accuracy": 0.3478141621186241,
+   "macro_f1": 0.3348215439414981,
+   "log_loss": 2.2623883322022373
+  },
+  "oof_bal_acc_ci95": [
+   0.3280839895013124,
+   0.3683810357038703
+  ],
+  "dev": {
+   "balanced_accuracy": 0.3357487922705314,
+   "macro_f1": 0.3157800352441487,
+   "log_loss": 2.609698885402114
+  },
+  "dev_bal_acc_ci95": [
+   0.28502415458937197,
+   0.38405797101449274
+  ],
+  "dev_macro_f1_ci95": [
+   0.2664181467790426,
+   0.35901515523022476
+  ],
+  "refit_numerical_noise": {
+   "max_abs_proba_diff": 0.04858866838197512,
+   "argmax_agreement": 0.9903381642512077,
+   "bal_acc_cached_path": 0.3333333333333333
+  },
+  "n_features": 101066,
+  "versions": {
+   "python": "3.12.16",
+   "numpy": "2.2.6",
+   "pandas": "3.1.1",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.6.1"
+  },
+  "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+  "seed": 42
+ },
+ "exp02ref_matches_exp02_val_proba_max_abs_diff": 4.991920396352212e-07,
+ "ablation_csv": "exp03/stylo/artifacts/ablation.csv",
+ "runtime_s": 896.1741733551025
+}

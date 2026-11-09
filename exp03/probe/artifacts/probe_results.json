@@ -1,0 +1,220 @@
+{
+ "protocol": "exp03/eval_protocol.md",
+ "seed": 42,
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "2.2.6",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "scikit-learn": "1.6.1"
+ },
+ "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+ "folds_sha256": "ea6a145239efac7fab99948f443d16ba79c087ecbc7f13c46f196753d073e4fa",
+ "hidden_states": {
+  "kaggle_dataset": "ritisingh123/engs108-exp02-pooled-hidden-states",
+  "producer": "Kaggle kernel ritisingh123/rs2027-engs108-exp02-val-inference v2",
+  "sha256": {
+   "pooled_hidden_exp01.npy": "39ff2ce4a83e26c4abab18208f06f02874ae325d520ebcd04c0fb9b1eefbb595",
+   "pooled_hidden_step0.npy": "bdf96687e913b03a259978f5d9aa338ce7414c6868af40cc823dccac67fa68ae"
+  }
+ },
+ "c_grid": [
+  0.0003,
+  0.001,
+  0.003,
+  0.01,
+  0.03,
+  0.1
+ ],
+ "dev_evaluations": [
+  {
+   "id": "R2",
+   "model": "probe_exp01",
+   "balanced_accuracy": 0.3768115942028985,
+   "macro_f1": 0.3642615134899058,
+   "log_loss": 1.8233273300702921
+  },
+  {
+   "id": "R3",
+   "model": "probe_step0",
+   "balanced_accuracy": 0.3212560386473431,
+   "macro_f1": 0.31181304484899347,
+   "log_loss": 2.0340206199687985
+  }
+ ],
+ "probe_exp01": {
+  "model": "probe_exp01",
+  "report_id": "R2",
+  "C": 0.001,
+  "C_selected_by_protocol_oof": 0.001,
+  "C_source": "fixed from exp02 (GroupKFold(5) mean-fold CV, grid 0.001/0.01/0.1)",
+  "features": "pooled_hidden_exp01.npy (2699 x 4096 float16 -> float64)",
+  "hidden_sha256": "39ff2ce4a83e26c4abab18208f06f02874ae325d520ebcd04c0fb9b1eefbb595",
+  "estimator": "StandardScaler + LogisticRegression(lbfgs, multinomial, max_iter=3000)",
+  "oof_honest": false,
+  "oof_note": "exp01 adapter was trained on all train rows: OOF is optimistic",
+  "versions": {
+   "python": "3.12.16",
+   "numpy": "2.2.6",
+   "pandas": "3.1.1",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.6.1"
+  },
+  "seed": 42,
+  "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+  "npz_sha256": "a46c7332911fb525171a959bb66a4b9fdd4f326db0265007da454e66a8eb53b9",
+  "oof": {
+   "balanced_accuracy": 0.4169756558208002,
+   "macro_f1": 0.4089716422394976,
+   "log_loss": 1.6221798981788333
+  },
+  "dev": {
+   "balanced_accuracy": 0.3768115942028985,
+   "macro_f1": 0.3642615134899058,
+   "log_loss": 1.8233273300702921
+  },
+  "dev_bal_acc_ci95": [
+   0.3164251207729469,
+   0.4347826086956521
+  ],
+  "dev_macro_f1_ci95": [
+   0.3000648330771744,
+   0.4214306693635742
+  ],
+  "npz_vs_sklearn_max_abs_diff": 0.0,
+  "c_sweep": [
+   {
+    "C": 0.0003,
+    "balanced_accuracy": 0.39814814814814814,
+    "macro_f1": 0.38565463720520166,
+    "log_loss": 1.7641347480188025,
+    "mean_fold_bal_acc": 0.397948717948718
+   },
+   {
+    "C": 0.001,
+    "balanced_accuracy": 0.4169756558208002,
+    "macro_f1": 0.4089716422394976,
+    "log_loss": 1.6221798981788333,
+    "mean_fold_bal_acc": 0.416991452991453
+   },
+   {
+    "C": 0.003,
+    "balanced_accuracy": 0.4178644336124651,
+    "macro_f1": 0.41166295702671907,
+    "log_loss": 1.593266827115698,
+    "mean_fold_bal_acc": 0.41784615384615387
+   },
+   {
+    "C": 0.01,
+    "balanced_accuracy": 0.40954950075684987,
+    "macro_f1": 0.4062857410241159,
+    "log_loss": 1.68478069017083,
+    "mean_fold_bal_acc": 0.40950427350427354
+   },
+   {
+    "C": 0.03,
+    "balanced_accuracy": 0.41260814620394676,
+    "macro_f1": 0.40994900758077724,
+    "log_loss": 1.8485105086352,
+    "mean_fold_bal_acc": 0.4125299145299145
+   },
+   {
+    "C": 0.1,
+    "balanced_accuracy": 0.41085489313835777,
+    "macro_f1": 0.40843269330256554,
+    "log_loss": 2.0753032599137247,
+    "mean_fold_bal_acc": 0.4107863247863248
+   }
+  ],
+  "matches_exp02_val_proba_max_abs_diff": 4.997651507632206e-07,
+  "exp02_val_argmax_agreement": 1.0
+ },
+ "probe_step0": {
+  "model": "probe_step0",
+  "report_id": "R3",
+  "C": 0.003,
+  "C_selected_by_protocol_oof": 0.003,
+  "C_source": "protocol pooled-OOF selection",
+  "features": "pooled_hidden_step0.npy (2699 x 4096 float16 -> float64)",
+  "hidden_sha256": "bdf96687e913b03a259978f5d9aa338ce7414c6868af40cc823dccac67fa68ae",
+  "estimator": "StandardScaler + LogisticRegression(lbfgs, multinomial, max_iter=3000)",
+  "oof_honest": true,
+  "oof_note": null,
+  "versions": {
+   "python": "3.12.16",
+   "numpy": "2.2.6",
+   "pandas": "3.1.1",
+   "scipy": "1.18.1",
+   "scikit-learn": "1.6.1"
+  },
+  "seed": 42,
+  "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+  "npz_sha256": "995b4f9d9b08b54b12fcfdff2255aebd0cd0a62002cf6ca6b0d6b548cdbb9433",
+  "oof": {
+   "balanced_accuracy": 0.3246538627116055,
+   "macro_f1": 0.31519194326796357,
+   "log_loss": 2.003299320038095
+  },
+  "dev": {
+   "balanced_accuracy": 0.3212560386473431,
+   "macro_f1": 0.31181304484899347,
+   "log_loss": 2.0340206199687985
+  },
+  "dev_bal_acc_ci95": [
+   0.27294685990338163,
+   0.3671497584541063
+  ],
+  "dev_macro_f1_ci95": [
+   0.2557753713019463,
+   0.3598280583126355
+  ],
+  "npz_vs_sklearn_max_abs_diff": 0.0,
+  "c_sweep": [
+   {
+    "C": 0.0003,
+    "balanced_accuracy": 0.2861309003041287,
+    "macro_f1": 0.264721373454523,
+    "log_loss": 2.2165735341499193,
+    "mean_fold_bal_acc": 0.28605128205128205
+   },
+   {
+    "C": 0.001,
+    "balanced_accuracy": 0.31414823147106613,
+    "macro_f1": 0.3002103772551583,
+    "log_loss": 2.0355428367479207,
+    "mean_fold_bal_acc": 0.3141880341880342
+   },
+   {
+    "C": 0.003,
+    "balanced_accuracy": 0.3246538627116055,
+    "macro_f1": 0.31519194326796357,
+    "log_loss": 2.003299320038095,
+    "mean_fold_bal_acc": 0.3245811965811966
+   },
+   {
+    "C": 0.01,
+    "balanced_accuracy": 0.31896707356024945,
+    "macro_f1": 0.3125680313499077,
+    "log_loss": 2.1524832968589434,
+    "mean_fold_bal_acc": 0.318940170940171
+   },
+   {
+    "C": 0.03,
+    "balanced_accuracy": 0.3141586468358122,
+    "macro_f1": 0.30976428627585634,
+    "log_loss": 2.3956785173769184,
+    "mean_fold_bal_acc": 0.31417094017094016
+   },
+   {
+    "C": 0.1,
+    "balanced_accuracy": 0.31065561249288287,
+    "macro_f1": 0.30740860063387765,
+    "log_loss": 2.7261065910385844,
+    "mean_fold_bal_acc": 0.3106666666666667
+   }
+  ],
+  "matches_exp02_val_proba_max_abs_diff": 0.35498840085492234,
+  "exp02_val_argmax_agreement": 0.8961352657004831
+ },
+ "runtime_s": 822.0802645683289
+}

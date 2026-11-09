@@ -1,0 +1,26 @@
+{
+ "registered_before_fitting": true,
+ "candidate": "stylegram 4-view LinearSVC (exp03/stylo/stylegram.py, SPEC from lucasboesen/lora-x-adaptive-centering v5)",
+ "svc": {
+  "random_state": 42,
+  "max_iter": 4000
+ },
+ "C_grid": [
+  0.1,
+  0.25,
+  0.5,
+  1.0
+ ],
+ "comparators_oof": {
+  "R1": "stylo_exp03 LR (char+word+style, C=300), existing artifacts/stylo_exp03_oof_train.csv",
+  "exp02_svc": "exp02 calibrated LinearSVC: char+word+style, CalibratedClassifierCV(LinearSVC(C=0.5, max_iter=20000), method='sigmoid', cv=3), refit on the frozen folds"
+ },
+ "selection": "pooled train OOF balanced accuracy; within 0.003 of best -> smallest C",
+ "calibration": "softmax(a * decision); a fit by NLL on train OOF decisions only (cross-fitted for OOF rows)",
+ "dev_reports": {
+  "S1": "selected stylegram SVC alone",
+  "S2": "equal log-prob blend: probe_exp01 + S1",
+  "paired_deltas": "each of S1, S2 vs R1 (stylo_exp03 dev) and vs B1 (probe_exp01 + stylo_exp03, 0.3986)"
+ },
+ "data": "official train.csv only"
+}

@@ -155,3 +155,11 @@ Every model that may be blended must write CSV files with this layout, via `prot
 
 A model that can only produce dev predictions (e.g. a single QLoRA run) can still be blended with
 equal weights or via dev LOPO (§5b), but not via train-OOF weights.
+
+## 8. Follow-up: stylegram LinearSVC (pre-registered in `stylo/artifacts/svc_preregistration.json`)
+
+- **Model.** `stylo/stylegram.py` implements four views, with view definitions copied from `lucasboesen/lora-x-adaptive-centering` v5 (`SPEC`, `shape_text`, `function_text`, `FUNCTION_WORDS`). The views are char 3–5, word 1–3, token shape 2–6 (char), and function-word/`CONTENT` 1–3 (word). Each is sublinear TF-IDF with `min_df=2`, the notebook's `max_features`, and block weights 1.0/0.7/0.5/0.5. They feed `LinearSVC(random_state=42, max_iter=4000)`. Only official train rows are used: no external data, gates, or centering.
+- **Grid and selection.** C ∈ {0.1, 0.25, 0.5, 1.0} was committed before any fit (commit "pre-register stylegram …"). The model is selected by pooled GroupKFold(5) OOF balanced accuracy using the §3 tie rule (within 0.003 of the best, pick the smallest C).
+- **OOF comparators.** R1 is `stylo_exp03` LR. Exp02's `CalibratedClassifierCV(LinearSVC(C=0.5, max_iter=20000), sigmoid, cv=3)` on char+word+style is refit on the frozen folds. Its inner cv=3 is internal to each training fold.
+- **Calibration.** p = softmax(a · decision). The scalar a is fit by NLL on train OOF decisions only: OOF rows in fold k use an a fit on the other four folds, and dev uses an a fit on all train OOF. Argmax, and therefore balanced accuracy and selection, does not depend on a.
+- **Dev reports.** Only S1 (the selected SVC) and S2 (an equal log-prob blend of probe_exp01 + S1) are reported. Each gets a prompt CI and paired deltas against R1 and B1. Artifacts follow §7: `stylo_svc_{oof_train,dev}.csv` and `stylo_svc_meta.json`.

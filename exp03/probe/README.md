@@ -53,3 +53,15 @@ Column `c` is class id `c` of the exp01 `label_map.json` (sorted model names, `P
 The exp01 adapter was trained on all 2,285 train rows, so `probe_exp01` OOF scores are optimistic
 (`oof_honest: false` in its meta) and must not be used to select or weight it; see protocol §5.
 `probe_step0` OOF is honest.
+
+## Offline inference smoke test
+
+`tests/test_inference_smoke.py` loads `artifacts/probe_exp01.npz` and `../stylo/artifacts/stylo_exp03_model.joblib`. It runs them on the 3-row Kaggle test stub `$ENGS108_DATA_DIR/test.csv` (only `id`, `text`) and is skipped if the stub is absent. The probe gets a synthetic (3, 4096) `H`, because test hidden states are not built here.
+
+The test checks:
+- both outputs and their equal blend are (3, 18) with rows summing to 1;
+- class order equals `protocol.CLASS_NAMES` (sorted names = label_map.json);
+- the inference calls open no file at all, so no train, dev, OOF, fold or label file;
+- the input frame has no `labels` or `model` column.
+
+Competition data is not committed.

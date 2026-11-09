@@ -38,17 +38,38 @@ the later commits on `exp03-stylo-probe` add stylegram/SVC models that H5 does n
 `h5_dev_reference.csv`, `SHA256SUMS`) and `ritisingh123/engs108-offline-wheels` (bitsandbytes).
 
 What the notebook does:
-1. Checks SHA-256 hashes for all artifacts, loads `test.csv` (does not assume a row count) and rebuilds the exp01 dev split (414 rows / 23 prompts).
+1. Checks SHA-256 hashes for the adapter and H5 artifacts and loads `test.csv` (does not assume a row count). `train.csv` is
+   only hashed and read, and the exp01 dev split (414 rows / 23 prompts) only rebuilt, when `run_dev_check` is true (see below).
 2. Loads `Qwen3ForSequenceClassification` in 4-bit NF4 (fp16 compute, double quant), `num_labels=18`, alphabetical classes, then
    `prepare_model_for_kbit_training(use_gradient_checkpointing=False)` and the frozen epoch-6 adapter (`PeftModel`, `is_trainable=False`).
-   Asserts identical class order across the head config, `label_map.json`, the probe npz and stylo `classes_`.
+   Asserts identical class order across `CLASS_NAMES`, the head config, `label_map.json`, the probe npz and stylo `classes_`
+   (plus the `train.csv` model names when the dev check runs).
 3. One forward pass per batch of 8 (`armh_core.pooled_forward`, fp16 autocast, MAX_LENGTH 512) returns the head logits and
    the pooled hidden state together. The probe uses the hidden state, cast to fp16 as in its training features.
-4. Dev reproduction. Raises an error before any test prediction unless all of these hold: balanced accuracy within 1e-3 of
-   0.43237, argmax identical to `blend_H5_dev.csv` on every row, and max |Δp| ≤ 0.01 against `h5_dev_reference.csv`.
-5. Takes the argmax of the test H5 blend and writes `/kaggle/working/submission.parquet` with exactly `id`, `model` (schema cast to
-   `sample_submission.parquet`). Then checks unique non-null ids that match `test.csv` and labels within the 18 classes.
-6. Logs time and peak GPU memory for each batch and extrapolates the runtime to 4,000 rows.
+4. Optional dev reproduction (`run_dev_check`, default `false`). When on, raises an error before any test prediction unless all of
+   these hold: balanced accuracy within 1e-3 of 0.43237, argmax identical to `blend_H5_dev.csv` on every row, and max |Δp| ≤ 0.01
+   against `h5_dev_reference.csv`. When off, `dev_report = {"skipped": True}`.
+5. Coerces test rows whose `text` is null or not a string to `""` (logged as `test.csv: N null/non-string text rows coerced to
+   empty string`); every other text is passed through unchanged. Takes the argmax of the test H5 blend and writes
+   `/kaggle/working/submission.parquet` with exactly `id`, `model` (schema cast to `sample_submission.parquet`, whose names must be
+   `["id", "model"]`; columns are never renamed). Then checks unique non-null ids that match `test.csv` and labels within the
+   18 classes.
+6. Only after the submission is written and validated: logs time and peak GPU memory for each batch, writes `h5_batch_log.csv`,
+   extrapolates the runtime to 4,000 rows and writes `h5_run_summary.json`. These diagnostics are wrapped in `try/except` and only
+   print warnings, so they cannot fail the run.
+
+## Dev check (optional)
+
+The official hidden-test scoring run of the version with a mandatory dev gate failed with "Notebook Threw Exception", while the
+same notebook completed on the 3-row visible stub. That version hashed `train.csv`, rebuilt the dev split with strict asserts and
+could raise in `dev_reproduction` before any test prediction, so any data or numeric difference in the scoring environment stopped
+the run before `submission.parquet` existed. The gate is now off by default (`"run_dev_check": false` in `config.json`) and the
+official path never touches `train.csv`.
+
+Saved version 3 already verified the gate end-to-end with the unchanged inference path: dev balanced accuracy 0.432367,
+argmax identical to `blend_H5_dev.csv` on 414/414 rows, max |Δp| 5e-11 vs the shared-pass reference (`kaggle_run_v3/`). The
+diagnostic code and tolerances are unchanged; set `"run_dev_check": true` and rebuild the notebook to run it again. If `train.csv`
+is missing, the notebook prints a warning and skips the check.
 
 Why `prepare_model_for_kbit_training` is needed: the Arm H kernel computed `pooled_hidden_armh.npy` and the head logits after
 that call, which upcasts the embeddings, RMSNorms and score layer to fp32. Kernel v2 loaded those layers in fp16 and the dev check

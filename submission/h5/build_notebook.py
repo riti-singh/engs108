@@ -56,6 +56,8 @@ RUN_START = time.time()
 CONFIG = json.loads(r"""__CONFIG__""")
 MC, DC, SHA = CONFIG["model"], CONFIG["dev_check"], CONFIG["sha256"]
 SEED, MAX_LENGTH, BATCH, N_CLASSES = CONFIG["seed"], MC["max_length"], MC["batch_size"], len(CONFIG["class_names"])
+# Optional 414-row dev reproduction (diagnostic). Off for the official run: then train.csv is never hashed or read.
+RUN_DEV_CHECK = CONFIG.get("run_dev_check", False)
 DATA_DIR = "/kaggle/input/competitions/name-that-llm"
 MODEL_PATH = MC["base_path"]
 OUT = "/kaggle/working"
@@ -111,8 +113,7 @@ __H5CORE__'''
 ARTIFACTS = r'''import joblib
 from sklearn.model_selection import GroupShuffleSplit
 
-checks = {"train.csv": f"{DATA_DIR}/train.csv",
-          "adapter/adapter_model.safetensors": f"{ADAPTER_DIR}/adapter_model.safetensors",
+checks = {"adapter/adapter_model.safetensors": f"{ADAPTER_DIR}/adapter_model.safetensors",
           "adapter/adapter_config.json": f"{ADAPTER_DIR}/adapter_config.json",
           "adapter/label_map.json": f"{ADAPTER_DIR}/label_map.json",
           **{k: f"{H5_DIR}/{k}" for k in ["probe_armh.npz", "stylo_exp03_model.joblib", "blend_H5_dev.csv", "h5_dev_reference.csv"]}}
@@ -121,20 +122,29 @@ for k, path in checks.items():
     assert got == SHA[k], f"{k}: sha256 {got} != expected {SHA[k]}"
 print("all artifact sha256 verified:", list(checks))
 
-train = pd.read_csv(f"{DATA_DIR}/train.csv")
 test = pd.read_csv(f"{DATA_DIR}/test.csv")  # row count not assumed: the hidden rerun has ~4,000 rows
 assert {"id", "text"} <= set(test.columns) and len(test) > 0
 print("test:", test.shape)
 
 label2id = {n: i for i, n in enumerate(CLASS_NAMES)}
 id2label = {i: n for n, i in label2id.items()}
-df = train[["id", "prompt_id", "text", "model"]].copy()
-df["labels"] = df["model"].map(label2id).astype(int)
-_, va_idx = next(GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=SEED).split(df, groups=df["prompt_id"]))
-dev_df = df.iloc[va_idx].reset_index(drop=True)
-assert (len(dev_df), dev_df["prompt_id"].nunique()) == (DC["rows"], DC["prompts"])
-assert (dev_df["model"].value_counts() == 23).all() and dev_df["model"].nunique() == N_CLASSES
-print("dev split verified: 414 rows / 23 prompts (exp01 split)")
+if RUN_DEV_CHECK:
+    TRAIN_CSV = f"{DATA_DIR}/train.csv"
+    if not os.path.exists(TRAIN_CSV):
+        print(f"WARNING: run_dev_check=true but {TRAIN_CSV} does not exist; dev check skipped")
+        RUN_DEV_CHECK = False
+if RUN_DEV_CHECK:
+    got = sha256_file(TRAIN_CSV)
+    assert got == SHA["train.csv"], f"train.csv: sha256 {got} != expected {SHA['train.csv']}"
+    train = pd.read_csv(TRAIN_CSV)
+    df = train[["id", "prompt_id", "text", "model"]].copy()
+    df["labels"] = df["model"].map(label2id).astype(int)
+    _, va_idx = next(GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=SEED).split(df, groups=df["prompt_id"]))
+    dev_df = df.iloc[va_idx].reset_index(drop=True)
+    assert (len(dev_df), dev_df["prompt_id"].nunique()) == (DC["rows"], DC["prompts"])
+    assert (dev_df["model"].value_counts() == 23).all() and dev_df["model"].nunique() == N_CLASSES
+    print("train.csv sha256 verified; dev split verified: 414 rows / 23 prompts (exp01 split)")
+print("run_dev_check:", RUN_DEV_CHECK)
 
 with open(f"{ADAPTER_DIR}/label_map.json") as f:
     label_map_names = [n for _, n in sorted((int(k), v) for k, v in json.load(f)["id2label"].items())]
@@ -177,8 +187,10 @@ load_minutes = (time.time() - t0) / 60
 print(f"model + adapter loaded in {load_minutes:.1f} min | GPU allocated {torch.cuda.memory_allocated() / 1e9:.2f} GB")
 
 model_config_names = [model.config.id2label[i] for i in range(N_CLASSES)]
-check_class_order(label_map_names, model_config_names, probe.class_names, stylo.classes_, train["model"])
-print("class order identical across head config, label_map.json, probe npz and stylo classes_:", CLASS_NAMES)
+check_class_order(label_map_names, model_config_names, probe.class_names, stylo.classes_)
+if RUN_DEV_CHECK:
+    check_class_order(label_map_names, model_config_names, probe.class_names, stylo.classes_, train["model"])
+print("class order identical across CLASS_NAMES, head config, label_map.json, probe npz and stylo classes_:", CLASS_NAMES)
 '''
 
 FORWARD = r'''batch_log = []
@@ -214,42 +226,50 @@ def predict_h5(texts, split):
 torch.cuda.reset_peak_memory_stats()
 '''
 
-DEV = r'''# Dev reproduction (414 rows): same inference path, compared with the reported H5 before any test prediction.
-t0 = time.time()
-dev_comps, dev_blend, dev_logits = predict_h5(dev_df["text"].tolist(), "dev")
-dev_minutes = (time.time() - t0) / 60
+DEV = r'''# Dev reproduction (414 rows, only when run_dev_check=true): same inference path, compared with the reported H5
+# before any test prediction. Saved version 3 passed it end-to-end (bal-acc 0.432367, 414/414 argmax, max |dp| 5e-11).
+if RUN_DEV_CHECK:
+    t0 = time.time()
+    dev_comps, dev_blend, dev_logits = predict_h5(dev_df["text"].tolist(), "dev")
+    dev_minutes = (time.time() - t0) / 60
 
+    def aligned(path):
+        r = pd.read_csv(path).set_index("id").loc[dev_df["id"]].reset_index()
+        assert (r["labels"].to_numpy() == dev_df["labels"].to_numpy()).all()
+        return r
 
-def aligned(path):
-    r = pd.read_csv(path).set_index("id").loc[dev_df["id"]].reset_index()
-    assert (r["labels"].to_numpy() == dev_df["labels"].to_numpy()).all()
-    return r
-
-
-PCOLS = [f"p_{n}" for n in CLASS_NAMES]
-h5_rep = aligned(f"{H5_DIR}/blend_H5_dev.csv")[PCOLS].to_numpy(np.float64)
-h5_rep = h5_rep / h5_rep.sum(1, keepdims=True)
-ref = aligned(f"{H5_DIR}/h5_dev_reference.csv")
-ref_shared = ref[[f"h5:{c}" for c in PCOLS]].to_numpy(np.float64)
-ref_comps = {k: ref[[f"{k}:{c}" for c in PCOLS]].to_numpy(np.float64) for k in H5_COMPONENTS}
-dev_report, dev_failures = dev_reproduction(
-    dev_df["labels"].to_numpy(), dev_blend, dev_comps, h5_rep, ref_shared, ref_comps,
-    DC["expected_balanced_accuracy"], DC["tolerance"], DC["max_abs_proba_diff_vs_shared_pass_reference"])
-dev_report["minutes"] = dev_minutes
-print(json.dumps(dev_report, indent=1))
-out = dev_df[["id", "prompt_id", "labels"]].copy()
-out = pd.concat([out, pd.DataFrame(dev_blend, columns=PCOLS)], axis=1)
-out.to_csv(f"{OUT}/h5_dev_predictions.csv", index=False, float_format="%.10g")
-with open(f"{OUT}/h5_dev_check.json", "w") as f:
-    json.dump(dev_report, f, indent=1)
-if dev_failures:
-    raise RuntimeError("dev reproduction failed; investigate before writing a submission: " + "; ".join(dev_failures))
-print(f"dev reproduction OK: balanced accuracy {dev_report['balanced_accuracy']:.4f} "
-      f"(expected {DC['expected_balanced_accuracy']:.4f} +/- {DC['tolerance']}), argmax identical to blend_H5_dev.csv")
+    PCOLS = [f"p_{n}" for n in CLASS_NAMES]
+    h5_rep = aligned(f"{H5_DIR}/blend_H5_dev.csv")[PCOLS].to_numpy(np.float64)
+    h5_rep = h5_rep / h5_rep.sum(1, keepdims=True)
+    ref = aligned(f"{H5_DIR}/h5_dev_reference.csv")
+    ref_shared = ref[[f"h5:{c}" for c in PCOLS]].to_numpy(np.float64)
+    ref_comps = {k: ref[[f"{k}:{c}" for c in PCOLS]].to_numpy(np.float64) for k in H5_COMPONENTS}
+    dev_report, dev_failures = dev_reproduction(
+        dev_df["labels"].to_numpy(), dev_blend, dev_comps, h5_rep, ref_shared, ref_comps,
+        DC["expected_balanced_accuracy"], DC["tolerance"], DC["max_abs_proba_diff_vs_shared_pass_reference"])
+    dev_report["minutes"] = dev_minutes
+    print(json.dumps(dev_report, indent=1))
+    out = dev_df[["id", "prompt_id", "labels"]].copy()
+    out = pd.concat([out, pd.DataFrame(dev_blend, columns=PCOLS)], axis=1)
+    out.to_csv(f"{OUT}/h5_dev_predictions.csv", index=False, float_format="%.10g")
+    with open(f"{OUT}/h5_dev_check.json", "w") as f:
+        json.dump(dev_report, f, indent=1)
+    if dev_failures:
+        raise RuntimeError("dev reproduction failed; investigate before writing a submission: " + "; ".join(dev_failures))
+    print(f"dev reproduction OK: balanced accuracy {dev_report['balanced_accuracy']:.4f} "
+          f"(expected {DC['expected_balanced_accuracy']:.4f} +/- {DC['tolerance']}), argmax identical to blend_H5_dev.csv")
+else:
+    dev_report = {"skipped": True}
+    dev_minutes = 0
+    print("dev check skipped (run_dev_check=false)")
 '''
 
 TEST = r'''import pyarrow as pa
 import pyarrow.parquet as pq
+
+text_ok = test["text"].map(lambda v: isinstance(v, str)).astype(bool)
+print(f"test.csv: {int((~text_ok).sum())} null/non-string text rows coerced to empty string")
+test["text"] = test["text"].where(text_ok, "").fillna("")
 
 t0 = time.time()
 test_comps, test_blend, _ = predict_h5(test["text"].tolist(), "test")
@@ -263,34 +283,44 @@ pq.write_table(pa.Table.from_pandas(submission, preserve_index=False).cast(sampl
 written = pd.read_parquet(f"{OUT}/submission.parquet")
 validate_submission(written, test, CLASS_NAMES)
 assert pq.read_schema(f"{OUT}/submission.parquet").equals(sample_schema, check_metadata=False)
-print(f"submission.parquet: {len(written)} rows, columns {list(written.columns)}, {test_minutes:.2f} min")
-print(written.head(10))
-print(written["model"].value_counts().to_string())
+print(f"submission.parquet written and validated: {len(written)} rows, columns {list(written.columns)}, {test_minutes:.2f} min")
+
+# Diagnostics only from here on: submission.parquet is final, so nothing below may raise.
+try:
+    print(written.head(10))
+    print(written["model"].value_counts().to_string())
+except Exception as e:
+    print(f"WARNING: post-submission diagnostics failed: {type(e).__name__}: {e}")
 '''
 
-SUMMARY = r'''import urllib.request
+SUMMARY = r'''# Post-submission diagnostics (batch log, runtime extrapolation, run summary): warnings only, never raises.
+import urllib.request
 
 try:
-    urllib.request.urlopen("https://pypi.org", timeout=5)
-    internet = "REACHABLE"
-except Exception as e:
-    internet = f"unreachable ({type(e).__name__})"
-print("internet:", internet)
+    try:
+        urllib.request.urlopen("https://pypi.org", timeout=5)
+        internet = "REACHABLE"
+    except Exception as e:
+        internet = f"unreachable ({type(e).__name__})"
+    print("internet:", internet)
 
-bl = pd.DataFrame(batch_log)
-bl.to_csv(f"{OUT}/h5_batch_log.csv", index=False)
-peak = {"allocated_gb": torch.cuda.max_memory_allocated() / 1e9, "reserved_gb": torch.cuda.max_memory_reserved() / 1e9}
-est = extrapolate(bl["seconds"], bl["rows"], n_rows=4000, batch_size=BATCH)
-total_minutes = (time.time() - RUN_START) / 60
-est["estimated_total_minutes_4000_rows"] = (total_minutes - test_minutes) + est["estimated_forward_minutes"]
-summary = {"status": "completed", "test_rows": len(test), "dev_balanced_accuracy": dev_report["balanced_accuracy"],
-           "dev_check": dev_report, "peak_gpu_memory": peak, "model_load_minutes": load_minutes,
-           "dev_minutes": dev_minutes, "test_minutes": test_minutes, "total_minutes": total_minutes,
-           "per_batch_seconds": {s: g["seconds"].describe().to_dict() for s, g in bl.groupby("split")},
-           "extrapolation": est, "internet": internet, "versions": versions, "config": CONFIG}
-with open(f"{OUT}/h5_run_summary.json", "w") as f:
-    json.dump(summary, f, indent=1, default=float)
-print(json.dumps({k: v for k, v in summary.items() if k not in ("config", "dev_check")}, indent=1, default=float))
+    bl = pd.DataFrame(batch_log)
+    bl.to_csv(f"{OUT}/h5_batch_log.csv", index=False)
+    peak = {"allocated_gb": torch.cuda.max_memory_allocated() / 1e9, "reserved_gb": torch.cuda.max_memory_reserved() / 1e9}
+    est = extrapolate(bl["seconds"], bl["rows"], n_rows=4000, batch_size=BATCH)
+    total_minutes = (time.time() - RUN_START) / 60
+    est["estimated_total_minutes_4000_rows"] = (total_minutes - test_minutes) + est["estimated_forward_minutes"]
+    summary = {"status": "completed", "test_rows": len(test), "run_dev_check": RUN_DEV_CHECK,
+               "dev_balanced_accuracy": dev_report.get("balanced_accuracy"),
+               "dev_check": dev_report, "peak_gpu_memory": peak, "model_load_minutes": load_minutes,
+               "dev_minutes": dev_minutes, "test_minutes": test_minutes, "total_minutes": total_minutes,
+               "per_batch_seconds": {s: g["seconds"].describe().to_dict() for s, g in bl.groupby("split")},
+               "extrapolation": est, "internet": internet, "versions": versions, "config": CONFIG}
+    with open(f"{OUT}/h5_run_summary.json", "w") as f:
+        json.dump(summary, f, indent=1, default=float)
+    print(json.dumps({k: v for k, v in summary.items() if k not in ("config", "dev_check")}, indent=1, default=float))
+except Exception as e:
+    print(f"WARNING: run summary failed (submission.parquet already written): {type(e).__name__}: {e}")
 '''
 
 
@@ -308,8 +338,10 @@ def build():
           "Generated by `submission/h5/build_notebook.py`. No training. Qwen3-8B-Base 4-bit NF4 + the exp03 Arm H "
           "epoch-6 adapter; one shared forward pass per batch gives the head logits and the pooled hidden state. "
           "H5 = equal-weight log-linear blend of the C=0.03 probe (`probe_armh.npz`), the head, and the stylometric "
-          "model (`stylo_exp03_model.joblib`). The 414-row dev split is re-scored and checked against the reported "
-          "H5 (bal-acc 0.4324) before `submission.parquet` (`id`, `model`) is written. Internet off.")
+          "model (`stylo_exp03_model.joblib`). `submission.parquet` (`id`, `model`) is written and validated right after "
+          "test inference; diagnostics come after it and cannot fail the run. The 414-row dev reproduction against the "
+          "reported H5 (bal-acc 0.4324) is optional (`run_dev_check` in the config, off by default; train.csv is then "
+          "never read). Internet off.")
     install = ('import glob, subprocess, sys\n'
                'wheels = sorted(glob.glob("/kaggle/input/**/bitsandbytes-*.whl", recursive=True))\n'
                'assert wheels, "attach the engs108-offline-wheels dataset"\n'

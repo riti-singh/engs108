@@ -25,7 +25,7 @@ sys.path.insert(0, str(EXP03 / "probe"))
 import protocol as P  # noqa: E402  (read-only import)
 from probe import ProbeModel, export_npz, fit_probe  # noqa: E402  (read-only import)
 
-ART = HERE / "artifacts"
+ART = Path(os.environ.get("ARMH_ART_DIR", HERE / "artifacts"))
 OUT_DIR = Path(os.environ.get("ARMH_OUT_DIR", Path.home() / "data" / "armh_out")).expanduser()
 CFG = json.loads((HERE / "config.json").read_text())
 C_GRID = (0.0003, 0.001, 0.003, 0.01, 0.03, 0.1)

@@ -1,0 +1,27 @@
+{
+ "balanced_accuracy": 0.4323671497584541,
+ "expected_balanced_accuracy": 0.4323671497584541,
+ "tolerance": 0.001,
+ "argmax_agreement_vs_blend_H5_dev": 1.0,
+ "rows_differing_argmax_vs_blend_H5_dev": [],
+ "max_abs_proba_diff_vs_blend_H5_dev": 0.006606370401226136,
+ "max_abs_proba_diff_vs_shared_pass_reference": 4.9884207875550146e-11,
+ "components": {
+  "probe_armh": {
+   "balanced_accuracy": 0.41545893719806765,
+   "max_abs_proba_diff_vs_reference": 4.9964477000230545e-11,
+   "argmax_agreement_vs_reference": 1.0
+  },
+  "armh_head": {
+   "balanced_accuracy": 0.4057971014492754,
+   "max_abs_proba_diff_vs_reference": 4.999572977837374e-11,
+   "argmax_agreement_vs_reference": 1.0
+  },
+  "stylo_exp03": {
+   "balanced_accuracy": 0.3405797101449275,
+   "max_abs_proba_diff_vs_reference": 4.988076618417381e-11,
+   "argmax_agreement_vs_reference": 1.0
+  }
+ },
+ "minutes": 1.9862268288930258
+}

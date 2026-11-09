@@ -1,0 +1,177 @@
+{
+ "status": "completed",
+ "test_rows": 3,
+ "dev_balanced_accuracy": 0.4323671497584541,
+ "dev_check": {
+  "balanced_accuracy": 0.4323671497584541,
+  "expected_balanced_accuracy": 0.4323671497584541,
+  "tolerance": 0.001,
+  "argmax_agreement_vs_blend_H5_dev": 1.0,
+  "rows_differing_argmax_vs_blend_H5_dev": [],
+  "max_abs_proba_diff_vs_blend_H5_dev": 0.006606370401226136,
+  "max_abs_proba_diff_vs_shared_pass_reference": 4.9884207875550146e-11,
+  "components": {
+   "probe_armh": {
+    "balanced_accuracy": 0.41545893719806765,
+    "max_abs_proba_diff_vs_reference": 4.9964477000230545e-11,
+    "argmax_agreement_vs_reference": 1.0
+   },
+   "armh_head": {
+    "balanced_accuracy": 0.4057971014492754,
+    "max_abs_proba_diff_vs_reference": 4.999572977837374e-11,
+    "argmax_agreement_vs_reference": 1.0
+   },
+   "stylo_exp03": {
+    "balanced_accuracy": 0.3405797101449275,
+    "max_abs_proba_diff_vs_reference": 4.988076618417381e-11,
+    "argmax_agreement_vs_reference": 1.0
+   }
+  },
+  "minutes": 1.9862268288930258
+ },
+ "peak_gpu_memory": {
+  "allocated_gb": 7.438096896,
+  "reserved_gb": 7.702839296
+ },
+ "model_load_minutes": 1.2138554612795511,
+ "dev_minutes": 1.9862268288930258,
+ "test_minutes": 0.013742498556772868,
+ "total_minutes": 4.325386166572571,
+ "per_batch_seconds": {
+  "dev": {
+   "count": 52.0,
+   "mean": 2.277103798846149,
+   "std": 0.4021588853360482,
+   "min": 1.5441214410000157,
+   "25%": 2.0552359905000515,
+   "50%": 2.234606877499971,
+   "75%": 2.4900064845000145,
+   "max": 3.9208476969999992
+  },
+  "test": {
+   "count": 1.0,
+   "mean": 0.808390959999997,
+   "std": NaN,
+   "min": 0.808390959999997,
+   "25%": 0.808390959999997,
+   "50%": 0.808390959999997,
+   "75%": 0.808390959999997,
+   "max": 0.808390959999997
+  }
+ },
+ "extrapolation": {
+  "measured_batches": 53,
+  "measured_rows": 417,
+  "measured_seconds": 119.21778849999976,
+  "mean_seconds_per_batch": 2.249392235849052,
+  "p95_seconds_per_batch": 2.9063934060000065,
+  "seconds_per_row": 0.28589397721822485,
+  "rows": 4000,
+  "batches": 500,
+  "estimated_forward_minutes": 19.05959848121499,
+  "estimated_total_minutes_4000_rows": 23.37124214923079
+ },
+ "internet": "unreachable (URLError)",
+ "versions": {
+  "torch": "2.11.0+cu130",
+  "transformers": "5.20.2",
+  "peft": "0.21.2",
+  "accelerate": "1.15.0",
+  "bitsandbytes": "0.50.2",
+  "scikit-learn": "1.6.1",
+  "numpy": "2.1.3",
+  "pandas": "2.3.3",
+  "scipy": "1.16.3"
+ },
+ "config": {
+  "submission": "H5: equal-weight log-linear blend of probe_armh + armh_head + stylo_exp03 (exp03 pre-registered report H5)",
+  "inference_only": true,
+  "seed": 42,
+  "class_names": [
+   "claude-fable-5",
+   "claude-opus-4-6",
+   "claude-opus-4-8",
+   "claude-opus-5",
+   "claude-sonnet-5",
+   "gemini-3.1-pro-preview",
+   "gemini-3.6-flash",
+   "gemini-3.7-flash",
+   "gemini-3.8-flash",
+   "glm-5.3",
+   "glm-5.3-flash",
+   "gpt-5.5",
+   "gpt-5.6-luna",
+   "gpt-5.6-sol",
+   "gpt-5.6-terra",
+   "gpt-6-astra",
+   "kimi-k3",
+   "qwen3.8-max"
+  ],
+  "model": {
+   "base_path": "/kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1",
+   "class": "Qwen3ForSequenceClassification via AutoModelForSequenceClassification(num_labels=18, id2label = alphabetical)",
+   "quantization": {
+    "load_in_4bit": true,
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_compute_dtype": "float16",
+    "bnb_4bit_use_double_quant": true
+   },
+   "adapter": "engs108-exp03-armh-artifacts/adapter (Arm H epoch 6 = checkpoint-858, modules_to_save=[score])",
+   "max_length": 512,
+   "batch_size": 8,
+   "autocast": "float16"
+  },
+  "forward": "one shared pass per batch: exp03 armh_core.pooled_forward (hook on the score input, last non-pad token) returns the head logits and the pooled hidden state of the same pass; batches of 8 in file order, which is the order the Arm H kernel used for pooled_hidden_armh.npy (the probe's training/dev features)",
+  "blend": {
+   "id": "H5",
+   "components": [
+    "probe_armh",
+    "armh_head",
+    "stylo_exp03"
+   ],
+   "weights": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "method": "exp03/stylo/protocol.py logprob_blend: softmax(sum_k log clip(p_k, 1e-12, 1))",
+   "not": "H6 dev-LOPO weights are NOT used"
+  },
+  "dev_check": {
+   "rows": 414,
+   "prompts": 23,
+   "expected_balanced_accuracy": 0.4323671497584541,
+   "tolerance": 0.001,
+   "require_argmax_agreement_vs_blend_H5_dev": 1.0,
+   "max_abs_proba_diff_vs_shared_pass_reference": 0.01
+  },
+  "sha256": {
+   "train.csv": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+   "adapter/adapter_model.safetensors": "dae9601c1f5cfba01da3c1c189c893a7e011ed274e26c50a775fe51a42084354",
+   "adapter/adapter_config.json": "b774b665076a1ba2cb0aa34e299815cbf058cf17ac64ab56139932617e0a8a3a",
+   "adapter/label_map.json": "820b6c166aa933d1c92902dbcf4f380b188b0de1a4d6e9e228a7e30ac307aff8",
+   "probe_armh.npz": "12dc23b8218447a9148407583b1c5fe015e23023a04e387ad66257c1b3604093",
+   "stylo_exp03_model.joblib": "4377983503ab5b4afb6675f273ca21f1699c1b9f46bad7c311212e25d1ee87df",
+   "blend_H5_dev.csv": "2dcc47082c9089897fd220ebadc52ec2960ae2d639a9e1c0ea78c2ef224fba73",
+   "h5_dev_reference.csv": "bb1a2640f5ee2df0b5b28e33b26c095abc72395e7fb549d4b5a563cef1bf7f27"
+  },
+  "kaggle": {
+   "kernel": "ritisingh123/rs2027-engs108-submit-h5",
+   "competition": "name-that-llm",
+   "datasets": [
+    "ritisingh123/engs108-offline-wheels",
+    "ritisingh123/engs108-exp03-armh-artifacts",
+    "ritisingh123/engs108-submission-h5-artifacts"
+   ],
+   "artifacts_dataset": "ritisingh123/engs108-submission-h5-artifacts",
+   "model_sources": [
+    "qwen-lm/qwen-3/Transformers/8b-base/1"
+   ],
+   "docker_image": "gcr.io/kaggle-private-byod/python@sha256:de153e6d303881930c51286216393d56f56b26458d0661350305a1e8144eea01",
+   "machine_shape": "NvidiaTeslaT4",
+   "internet": false,
+   "gpu": true,
+   "leaderboard_submission": false
+  }
+ }
+}

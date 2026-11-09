@@ -67,7 +67,8 @@ reported on it. Every dev evaluation run in exp03 is listed in the results JSON
   (2 rows) are noise even before sampling error (exp02 batch-padding result).
 - **Optimizer noise:** lbfgs logistic regression at large C (≥100) on the ~10^5-column TF-IDF designs
   is sensitive to float summation order. Two fits on the identical matrix (equal to 1e-15) agreed on
-  96.4% of dev argmaxes at C=100 (max |Δp| 0.17) and 100% at C=300. Train-CV differences below the
+  95–100% of dev argmaxes (measured: 96.4% at C=100 and 100% at C=300 in one check; 95.2% at C=300
+  and 99.0% at C=100 in `run_stylo.py`'s refit check, dev bal-acc 0.341 vs 0.345). Train-CV differences below the
   0.003 tie margin, and dev differences of about ±0.01 between stylometric configurations, are within
   this noise. `run_stylo.py` records the refit-to-refit difference as `refit_numerical_noise`.
 

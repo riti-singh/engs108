@@ -1,0 +1,50 @@
+{
+ "model": "stylo_exp02ref",
+ "report_id": "R0",
+ "config": "char+word+style | C=100",
+ "groups": [
+  "char",
+  "word",
+  "style"
+ ],
+ "C": 100,
+ "classifier": "LogisticRegression(C=100, max_iter=5000, lbfgs, multinomial)",
+ "oof_honest": true,
+ "oof": {
+  "balanced_accuracy": 0.3478141621186241,
+  "macro_f1": 0.3348215439414981,
+  "log_loss": 2.2623883322022373
+ },
+ "oof_bal_acc_ci95": [
+  0.3280839895013124,
+  0.3683810357038703
+ ],
+ "dev": {
+  "balanced_accuracy": 0.3357487922705314,
+  "macro_f1": 0.3157800352441487,
+  "log_loss": 2.609698885402114
+ },
+ "dev_bal_acc_ci95": [
+  0.28502415458937197,
+  0.38405797101449274
+ ],
+ "dev_macro_f1_ci95": [
+  0.2664181467790426,
+  0.35901515523022476
+ ],
+ "refit_numerical_noise": {
+  "max_abs_proba_diff": 0.04858866838197512,
+  "argmax_agreement": 0.9903381642512077,
+  "bal_acc_cached_path": 0.3333333333333333
+ },
+ "n_features": 101066,
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "2.2.6",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "scikit-learn": "1.6.1"
+ },
+ "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+ "seed": 42
+}

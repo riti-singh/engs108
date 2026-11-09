@@ -1,0 +1,79 @@
+{
+ "protocol": "exp03/eval_protocol.md",
+ "seed": 42,
+ "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+ "versions": {
+  "python": "3.12.16",
+  "numpy": "2.2.6",
+  "pandas": "3.1.1",
+  "scipy": "1.18.1",
+  "scikit-learn": "1.6.1"
+ },
+ "kaggle_kernel": "ritisingh123/rs2027-engs108-exp03-armh",
+ "epoch6_checkpoint": "/kaggle/working/checkpoints/checkpoint-858",
+ "global_step": 858,
+ "model": "probe_armh",
+ "report_id": "H2",
+ "C": 0.03,
+ "C_source": "protocol pooled-OOF selection",
+ "features": "pooled_hidden_armh.npy (2699 x 4096 float16 -> float64), epoch-6 adapted score input",
+ "hidden_sha256": "388160d7d4cdffed749b7d03fae65f3eb7ddec760bb7bcb07534bb9265ad925d",
+ "estimator": "StandardScaler + LogisticRegression(lbfgs, multinomial, max_iter=3000)",
+ "oof_honest": false,
+ "oof_note": "Arm H adapter was trained on all train rows: OOF (and the C choice) is optimistic",
+ "npz_sha256": "12dc23b8218447a9148407583b1c5fe015e23023a04e387ad66257c1b3604093",
+ "oof": {
+  "balanced_accuracy": 0.6979891402463582,
+  "macro_f1": 0.6961901621048976,
+  "log_loss": 0.8855698538624881
+ },
+ "dev": {
+  "balanced_accuracy": 0.41545893719806765,
+  "macro_f1": 0.4027735732320651,
+  "log_loss": 1.9621702059195938
+ },
+ "c_sweep": [
+  {
+   "C": 0.0003,
+   "balanced_accuracy": 0.6340631032232084,
+   "macro_f1": 0.6271513602824039,
+   "log_loss": 1.5250496863495913,
+   "mean_fold_bal_acc": 0.6341367521367521
+  },
+  {
+   "C": 0.001,
+   "balanced_accuracy": 0.6774153230846145,
+   "macro_f1": 0.6745665667996006,
+   "log_loss": 1.214065379491159,
+   "mean_fold_bal_acc": 0.6774188034188035
+  },
+  {
+   "C": 0.003,
+   "balanced_accuracy": 0.6905490980294131,
+   "macro_f1": 0.6881095382386975,
+   "log_loss": 1.0433760764793694,
+   "mean_fold_bal_acc": 0.6905811965811965
+  },
+  {
+   "C": 0.01,
+   "balanced_accuracy": 0.6944895776916775,
+   "macro_f1": 0.6923986122216768,
+   "log_loss": 0.9375344338472992,
+   "mean_fold_bal_acc": 0.6944273504273505
+  },
+  {
+   "C": 0.03,
+   "balanced_accuracy": 0.6979891402463582,
+   "macro_f1": 0.6961901621048976,
+   "log_loss": 0.8855698538624881,
+   "mean_fold_bal_acc": 0.6979145299145298
+  },
+  {
+   "C": 0.1,
+   "balanced_accuracy": 0.697114249607688,
+   "macro_f1": 0.6949671438194763,
+   "log_loss": 0.86498675959652,
+   "mean_fold_bal_acc": 0.6970769230769231
+  }
+ ]
+}

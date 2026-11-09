@@ -1,0 +1,187 @@
+{
+ "experiment": "exp03 Arm H: QLoRA with a higher classification-head learning rate, LoRA capacity unchanged",
+ "frozen_before_training": true,
+ "approval": "User approved Arm H only (GPU), option C: six fixed epochs, epoch 6 is the primary checkpoint; head LR 1e-3, LoRA LR 1e-4",
+ "seed": 42,
+ "data": {
+  "competition": "name-that-llm",
+  "file": "train.csv",
+  "train_csv_sha256": "40a22ce8d88c5f46feb4637a099db815bef5f713ffe53e89dbe1b7b21de77707",
+  "external_data": false,
+  "split": "exp01: GroupShuffleSplit(n_splits=1, test_size=0.15, random_state=42) on prompt_id over train[[id,prompt_id,text,model]] in file order",
+  "train_rows": 2285,
+  "train_prompts": 127,
+  "dev_rows": 414,
+  "dev_prompts": 23,
+  "training_rows": "all 2285 train rows; the 414 dev rows are never trained on"
+ },
+ "model": {
+  "base": "Kaggle model qwen-lm/qwen-3/Transformers/8b-base/1 (Qwen3-8B-Base)",
+  "class": "AutoModelForSequenceClassification(num_labels=18), id2label = sorted model names (exp01 label_map.json)",
+  "quantization": {
+   "load_in_4bit": true,
+   "bnb_4bit_quant_type": "nf4",
+   "bnb_4bit_compute_dtype": "float16",
+   "bnb_4bit_use_double_quant": true
+  },
+  "torch_dtype": "float16",
+  "device_map": {
+   "": 0
+  },
+  "init": "set_seed(42) immediately before from_pretrained (as exp01), so the score head init equals exp01's",
+  "prepare_model_for_kbit_training": {
+   "use_gradient_checkpointing": true
+  }
+ },
+ "lora": {
+  "task_type": "SEQ_CLS",
+  "r": 8,
+  "lora_alpha": 16,
+  "lora_dropout": 0.05,
+  "target_modules": [
+   "q_proj",
+   "v_proj"
+  ],
+  "modules_to_save": [
+   "score"
+  ],
+  "bias": "none",
+  "expected_trainable_params": {
+   "total": 3907584,
+   "head": 73728,
+   "lora": 3833856
+  }
+ },
+ "training": {
+  "max_length": 512,
+  "per_device_train_batch_size": 2,
+  "gradient_accumulation_steps": 8,
+  "effective_batch_size": 16,
+  "per_device_eval_batch_size": 8,
+  "num_train_epochs": 6,
+  "expected_optimizer_steps": 858,
+  "steps_per_epoch": 143,
+  "optimizer": "Trainer default optim (adamw_torch_fused on torch>=2.8) built via Trainer.get_optimizer_cls_and_kwargs, betas (0.9, 0.999), eps 1e-8, weight_decay 0.0 for both groups (= exp01)",
+  "param_groups": {
+   "head": {
+    "match": "trainable params whose name contains 'score' (modules_to_save copy)",
+    "lr": 0.001
+   },
+   "lora": {
+    "match": "trainable params whose name contains 'lora_'",
+    "lr": 0.0001
+   }
+  },
+  "lr_scheduler_type": "linear",
+  "warmup_steps": 0,
+  "schedule_note": "Same scheduler and warmup as exp01 (Trainer defaults: linear decay to 0, no warmup). The decay now spans 6 epochs (858 steps) instead of 3 (429); each group decays from its own peak LR. As in exp01 (same fused AdamW default), the scheduler also advances on GradScaler-skipped steps, because accelerate does not flag skips for fused optimizers.",
+  "max_grad_norm": 1.0,
+  "fp16": true,
+  "gradient_checkpointing": true,
+  "gradient_checkpointing_kwargs": {
+   "use_reentrant": false
+  },
+  "ga_fix": "trainer.model_accepts_loss_kwargs = False after building the Trainer (the Trainer then divides each micro-batch loss by GA): logged train loss = true mean CE, grad_norm = true norm",
+  "eval_strategy": "epoch (diagnostics only; never used to select a checkpoint)",
+  "save_strategy": "epoch, save_only_model=True, all 6 epoch checkpoints kept",
+  "load_best_model_at_end": false,
+  "logging_steps": 10,
+  "data_order": "Trainer default RandomSampler seeded by args.seed=42"
+ },
+ "primary_checkpoint": "end of epoch 6 = optimizer step 858 (the Trainer counts GradScaler-skipped steps in global_step), fixed before training. No early stopping on any metric. Per-epoch dev metrics are diagnostics only.",
+ "stop_criteria": {
+  "note": "Training stops early ONLY for these predefined criteria. A stopped run is reported as failed/partial; its last state is not substituted as 'epoch 6'.",
+  "S1_nonfinite_loss": "mean micro-batch training loss non-finite on 3 consecutive optimizer steps",
+  "S2_nonfinite_grad": "pre-clip total gradient norm non-finite (GradScaler skips the step) on 10 consecutive optimizer steps",
+  "S3_skip_rate": "cumulative GradScaler skip rate above 5% of optimizer steps, checked from optimizer step 100 onward",
+  "S4_operational": "CUDA OOM, Python exception, kernel crash or Kaggle session limit. The same frozen config may be relaunched after fixing an operational bug, documented in the README.",
+  "params": {
+   "S1_k": 3,
+   "S2_k": 10,
+   "S3_max_rate": 0.05,
+   "S3_min_step": 100
+  }
+ },
+ "logging": {
+  "per_optimizer_step": [
+   "mean micro-batch train CE (raw, before GA division)",
+   "pre-clip grad norm total and per group (head, lora)",
+   "post-clip clip coefficient",
+   "update norm ||delta theta|| per group",
+   "lr per group",
+   "GradScaler scale and skipped flag",
+   "cosine(head weight, head init)",
+   "head weight Frobenius norm"
+  ],
+  "per_epoch": [
+   "dev eval_loss, balanced accuracy, macro F1, log loss (Trainer evaluate, val order, batch 8)",
+   "dev logits"
+  ],
+  "trainer_log_history": true,
+  "ga_fix_check": "Trainer-logged loss at each logging step vs the mean of the recorded raw micro-batch losses over the same optimizer steps (should agree to ~1e-4 relative)"
+ },
+ "post_training_epoch6": {
+  "predictions": "length-sorted predict loop of inference/rs2027-engs108-inference.ipynb (batch 8, fp16 autocast, eval mode): dev 414, train 2285, test rows -> logits -> softmax probabilities. These are the primary head predictions.",
+  "hidden_states": "exp02 pooled_forward (hook on score input, last non-pad token, batch 8) over train_df then dev_df order (same order as exp02 pooled_hidden_*.npy) -> pooled_hidden_armh.npy (2699 x 4096 float16) + the logits of the same pass; sha256 recorded. Test rows separately.",
+  "adapter": "model.save_pretrained(adapter/) + label_map.json",
+  "intermediate_layers": "not extracted (proposal only, needs approval)"
+ },
+ "pre_registered_dev_reports": {
+  "note": "Written before training. Dev is reported once for exactly these rows; nothing is selected on dev. Each row gets bal-acc with a 23-prompt bootstrap CI, macro F1, log loss, and paired prompt-bootstrap deltas vs B1 (0.399, exp03/probe/artifacts/blend_B1_dev.csv) and vs R2 probe_exp01 (0.377). stylo_exp03 = exp03/stylo/artifacts/stylo_exp03_dev.csv.",
+  "H1": {
+   "model": "armh_head",
+   "desc": "trained classification head at epoch 6 (length-sorted predict loop), softmax(logits)",
+   "weights": "-"
+  },
+  "H2": {
+   "model": "probe_armh",
+   "desc": "new linear probe (protocol probe: StandardScaler + LR) on epoch-6 adapted pooled hidden states; C chosen from {0.0003,0.001,0.003,0.01,0.03,0.1} by pooled train-CV OOF bal-acc on the frozen folds (ties within 0.003 -> smallest C). The CV level is optimistic: the adapter saw every train label (oof_honest false).",
+   "weights": "-"
+  },
+  "H3": {
+   "model": "probe_armh + stylo_exp03",
+   "weights": "equal"
+  },
+  "H4": {
+   "model": "armh_head + stylo_exp03",
+   "weights": "equal"
+  },
+  "H5": {
+   "model": "probe_armh + armh_head + stylo_exp03",
+   "weights": "equal"
+  },
+  "H6": {
+   "model": "probe_armh + armh_head + stylo_exp03",
+   "weights": "dev LOPO (protocol 5b, leave-one-prompt-out over 23 dev prompts)",
+   "why_fixed_components": "the 3-component LOPO pool is fixed in advance instead of 'LOPO of the best equal blend', because picking the best equal blend would itself be a dev selection; LOPO can drive any component weight to 0"
+  },
+  "diagnostics_not_reports": [
+   "per-epoch dev metrics from the training log",
+   "H1 vs H2 paired delta (does the improved head catch up to the probe?)",
+   "train-set fit of the head (in-sample)",
+   "pooled_forward logits vs length-sorted logits argmax agreement"
+  ]
+ },
+ "kaggle": {
+  "kernel": "ritisingh123/rs2027-engs108-exp03-armh",
+  "smoke_kernel": "ritisingh123/rs2027-engs108-exp03-armh-smoke",
+  "accelerator": "NvidiaTeslaT4 (CUDA_VISIBLE_DEVICES=0, one T4 used)",
+  "docker_image": "gcr.io/kaggle-private-byod/python@sha256:de153e6d303881930c51286216393d56f56b26458d0661350305a1e8144eea01 (same as exp01/exp02 kernels)",
+  "internet": false,
+  "datasets": [
+   "ritisingh123/engs108-offline-wheels (bitsandbytes 0.50.2 wheel)"
+  ],
+  "expected_runtime_h": 4.0,
+  "leaderboard_submission": false
+ },
+ "amendments_before_full_run": [
+  {
+   "after": "smoke kernel v1",
+   "what": "documentation + instrumentation only; no hyper-parameter or stop-criterion change",
+   "details": [
+    "schedule_note corrected: smoke v1 showed the scheduler advancing on the 5 GradScaler calibration skips (fused AdamW; identical behaviour to exp01). The earlier note said it did not.",
+    "skip detection for S3/logging fixed: accelerate.optimizer_step_was_skipped was False on the 5 skipped steps of smoke v1; skipped is now 'GradScaler scale decreased during the step'."
+   ]
+  }
+ ]
+}

@@ -1,6 +1,7 @@
 {
  "submission": "H5: equal-weight log-linear blend of probe_armh + armh_head + stylo_exp03 (exp03 pre-registered report H5)",
  "inference_only": true,
+ "run_dev_check": false,
  "seed": 42,
  "class_names": ["claude-fable-5", "claude-opus-4-6", "claude-opus-4-8", "claude-opus-5", "claude-sonnet-5",
                  "gemini-3.1-pro-preview", "gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash", "glm-5.3",

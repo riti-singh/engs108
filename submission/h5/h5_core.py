@@ -38,15 +38,18 @@ def h5_blend(comps):
     return logprob_blend([log_proba(comps[k]) for k in H5_COMPONENTS])
 
 
-def check_class_order(label_map_names, model_config_names, probe_names, stylo_classes, train_models):
-    """Every component must use the alphabetical 18-class order (class id c = c-th sorted model name)."""
+def check_class_order(label_map_names, model_config_names, probe_names, stylo_classes, train_models=None):
+    """Every component must use the alphabetical 18-class order (class id c = c-th sorted model name).
+
+    train_models (train.csv "model") is only checked when given, i.e. when the optional dev check reads train.csv."""
     names = list(CLASS_NAMES)
     assert len(names) == 18 and names == sorted(names)
     assert list(label_map_names) == names, "adapter label_map.json order differs"
     assert list(model_config_names) == names, "model.config.id2label order differs"
     assert list(probe_names) == names, "probe_armh.npz class_names order differs"
     assert [int(c) for c in stylo_classes] == list(range(18)), "stylo classes_ are not label ids 0..17"
-    assert sorted(set(train_models)) == names, "train.csv model names differ from CLASS_NAMES"
+    if train_models is not None:
+        assert sorted(set(train_models)) == names, "train.csv model names differ from CLASS_NAMES"
     return names
 
 

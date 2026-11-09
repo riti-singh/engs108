@@ -1,5 +1,8 @@
 """Offline tests for the H5 submission notebook (CPU, no network). Tests that need the competition train.csv
-(ENGS108_DATA_DIR) skip when it is absent."""
+(ENGS108_DATA_DIR) skip when it is absent; the notebook execution tests stub torch/transformers/peft and the Qwen
+forward and need no train.csv."""
+import ast
+import hashlib
 import json
 import os
 import subprocess
@@ -77,8 +80,13 @@ def test_artifact_hashes_and_class_order():
     probe = ProbeModel(ARMH / "probe_armh.npz")
     assert probe.meta["C"] == 0.03
     C.check_class_order(P.CLASS_NAMES, P.CLASS_NAMES, probe.class_names, range(18), P.CLASS_NAMES)
+    C.check_class_order(P.CLASS_NAMES, P.CLASS_NAMES, probe.class_names, range(18))  # official path: no train.csv
     with pytest.raises(AssertionError):
         C.check_class_order(P.CLASS_NAMES, P.CLASS_NAMES, probe.class_names[::-1], range(18), P.CLASS_NAMES)
+    with pytest.raises(AssertionError):
+        C.check_class_order(P.CLASS_NAMES, P.CLASS_NAMES, probe.class_names[::-1], range(18))
+    with pytest.raises(AssertionError):
+        C.check_class_order(P.CLASS_NAMES, P.CLASS_NAMES, probe.class_names, range(18), P.CLASS_NAMES[:-1])
 
 
 def _ref():
@@ -159,3 +167,240 @@ def test_component_probas_from_recorded_shared_pass():
     _, ref_comps, ref_blend = _ref()
     assert np.abs(C.h5_blend(comps) - ref_blend).max() < 1e-8
     assert P.metrics(dev_df["labels"].to_numpy(), C.h5_blend(comps))["balanced_accuracy"] == pytest.approx(0.4323671497584541, abs=1e-12)
+
+
+# ---------------------------------------------------------------- optional dev check / submission-first ordering
+CELL = {name: i for i, name in enumerate(["install", "setup", "inline", "artifacts", "model", "forward", "dev", "test",
+                                          "summary"])}
+TRAIN_NAMES = {"train", "dev_df", "df", "TRAIN_CSV", "va_idx"}
+
+
+def _unguarded_train_refs(src):
+    """train.csv / train-frame references that are not inside the body of an `if RUN_DEV_CHECK:` block."""
+    bad = []
+
+    def visit(node, guarded):
+        if isinstance(node, ast.If) and isinstance(node.test, ast.Name) and node.test.id == "RUN_DEV_CHECK":
+            for n in node.body:
+                visit(n, True)
+            for n in node.orelse:
+                visit(n, guarded)
+            return
+        if not guarded:
+            if isinstance(node, ast.Name) and node.id in TRAIN_NAMES:
+                bad.append((node.lineno, node.id))
+            if isinstance(node, ast.Constant) and isinstance(node.value, str) and "train.csv" in node.value:
+                bad.append((node.lineno, node.value))
+        for child in ast.iter_child_nodes(node):
+            visit(child, guarded)
+
+    visit(ast.parse(src), False)
+    return bad
+
+
+def test_dev_check_off_by_default_and_train_csv_only_inside_gate():
+    assert CFG["run_dev_check"] is False
+    code = nb_code()
+    assert 'RUN_DEV_CHECK = CONFIG.get("run_dev_check", False)' in code[CELL["setup"]]
+    # the embedded config JSON names the train.csv hash (used only by the dev check); it is data, not a read
+    code[CELL["setup"]] = code[CELL["setup"]].replace((HERE / "config.json").read_text(), "{}")
+    for name in ("setup", "artifacts", "model", "forward", "dev", "test", "summary"):
+        assert not _unguarded_train_refs(code[CELL[name]]), (name, _unguarded_train_refs(code[CELL[name]]))
+    # the guard itself is detected: an unconditional train.csv read would be flagged
+    assert _unguarded_train_refs('train = pd.read_csv(f"{DATA_DIR}/train.csv")\nif RUN_DEV_CHECK:\n    x = train')
+    art = code[CELL["artifacts"]]
+    checks_src = art[art.index("checks = {"):art.index("for k, path in checks.items()")]
+    assert "train.csv" not in checks_src and "adapter_model.safetensors" in checks_src and "probe_armh.npz" in checks_src
+    assert "os.path.exists(TRAIN_CSV)" in art
+    # dev gate code and tolerances are unchanged, only behind the flag
+    dev = code[CELL["dev"]]
+    assert dev.index("if RUN_DEV_CHECK:") < dev.index("dev_reproduction(") < dev.index("raise RuntimeError")
+    assert 'dev_report = {"skipped": True}' in dev and "dev_minutes = 0" in dev
+    assert CFG["dev_check"] == {"rows": 414, "prompts": 23, "expected_balanced_accuracy": 0.4323671497584541,
+                                "tolerance": 0.001, "require_argmax_agreement_vs_blend_H5_dev": 1.0,
+                                "max_abs_proba_diff_vs_shared_pass_reference": 0.01}
+
+
+def test_submission_written_before_diagnostics():
+    test, summary = nb_code()[CELL["test"]], nb_code()[CELL["summary"]]
+    i_coerce, i_pred = test.index("coerced to empty string"), test.index("predict_h5(")
+    i_write, i_check = test.index("pq.write_table("), test.index("validate_submission(written")
+    i_try = test.index("try:")
+    assert i_coerce < i_pred < i_write < i_check < i_try
+    assert 'assert sample_schema.names == ["id", "model"]' in test and ".cast(sample_schema)" in test
+    assert "rename" not in test
+    for diag in ("batch_log", "extrapolate", "to_csv", "head(", "value_counts"):
+        assert diag not in test[:i_try], diag
+    # every statement of the summary cell is inside one try/except that only prints
+    tree = ast.parse(summary).body
+    assert [type(n) for n in tree] == [ast.Import, ast.Try]
+    assert all(isinstance(h.type, ast.Name) and h.type.id == "Exception" and
+               not any(isinstance(n, ast.Raise) for n in ast.walk(h)) for h in tree[1].handlers)
+
+
+HARNESS = r"""
+import hashlib, importlib.metadata, json, os, sys, types, urllib.request
+import numpy as np
+import pandas as pd
+
+args = json.loads(sys.argv[1])
+cells = json.load(open(args["nb"]))["cells"]
+cells = ["".join(c["source"]) for c in cells if c["cell_type"] == "code"]
+
+# ---- stubs: no GPU, no Qwen weights, no network
+_version = importlib.metadata.version
+def version(p):
+    try:
+        return _version(p)
+    except importlib.metadata.PackageNotFoundError:
+        return "absent"
+importlib.metadata.version = version
+def no_net(*a, **k):
+    raise OSError("network disabled in tests")
+urllib.request.urlopen = no_net
+read_paths = []
+_read_csv = pd.read_csv
+def read_csv(path, *a, **k):
+    read_paths.append(str(path))
+    return _read_csv(path, *a, **k)
+pd.read_csv = read_csv
+
+class _D:
+    def __init__(self, **kw): self.__dict__.update(kw)
+torch = types.ModuleType("torch")
+torch.float16, torch.float32 = "float16", "float32"
+torch.Tensor = type("Tensor", (), {})  # scipy array-api checks probe sys.modules["torch"]
+torch.cuda = _D(is_available=lambda: True, device_count=lambda: 1, get_device_name=lambda i: "stub",
+                memory_allocated=lambda: 0, max_memory_allocated=lambda: 0, max_memory_reserved=lambda: 0,
+                reset_peak_memory_stats=lambda: None, synchronize=lambda: None)
+class Qwen3ForSequenceClassification:
+    def __init__(self, id2label):
+        self.config = _D(id2label=id2label, pad_token_id=None)
+        self.model = _D(norm=_D(weight=_D(dtype="float16")))
+        self.score = _D(weight=_D(dtype="float16"))
+class Peft:
+    def __init__(self, base):
+        self.config = base.config
+        self.base_model = _D(model=_D(score=_D(modules_to_save={"default": None})))
+    def parameters(self): return iter(())
+    def eval(self): return self
+def kbit(base, use_gradient_checkpointing):
+    base.model.norm.weight.dtype = base.score.weight.dtype = "float32"
+    return base
+transformers = types.ModuleType("transformers")
+transformers.AutoTokenizer = _D(from_pretrained=lambda *a, **k: _D(pad_token_id=0))
+transformers.AutoModelForSequenceClassification = _D(
+    from_pretrained=lambda *a, id2label, **k: Qwen3ForSequenceClassification(id2label))
+transformers.BitsAndBytesConfig = lambda **k: k
+transformers.set_seed = lambda s: None
+peft = types.ModuleType("peft")
+peft.PeftModel = _D(from_pretrained=lambda base, *a, **k: Peft(base))
+peft.prepare_model_for_kbit_training = kbit
+sys.modules.update(torch=torch, transformers=transformers, peft=peft)
+
+seen_texts = []
+def stub_pooled_forward(model, score_wrapper, tokenizer, texts, batch_size, max_length, n_classes):
+    assert all(isinstance(t, str) for t in texts), texts  # the real tokenizer raises on non-str input
+    seen_texts.extend(texts)
+    rng = np.random.default_rng(len(seen_texts))
+    return (rng.normal(size=(len(texts), ns["probe"].mean.shape[0])).astype(np.float32),
+            rng.normal(size=(len(texts), n_classes)).astype(np.float32))
+
+cfg = json.loads(open(args["config"]).read())
+cfg["run_dev_check"] = args["run_dev_check"]
+cfg["sha256"].update(args["sha_overrides"])
+setup = cells[1]
+for old, new in [(open(args["config"]).read(), json.dumps(cfg)),
+                 ('DATA_DIR = "/kaggle/input/competitions/name-that-llm"', f"DATA_DIR = {args['data']!r}"),
+                 ('OUT = "/kaggle/working"', f"OUT = {args['out']!r}"),
+                 ('"/kaggle/input/**/', json.dumps(args["input"] + "/**/")[:-1])]:
+    assert old in setup, old
+    setup = setup.replace(old, new)
+cells[1] = setup
+
+ns = {"__name__": "__main__"}
+for i, src in enumerate(cells[1:], start=1):
+    exec(compile(src, f"cell-{i}", "exec"), ns)
+    if i == 2:  # inlined sources: replace the GPU forward with a stub
+        ns["pooled_forward"] = stub_pooled_forward
+        if args.get("break_extrapolate"):
+            ns["extrapolate"] = lambda *a, **k: 1 / 0
+json.dump({"read_paths": read_paths, "seen_texts": seen_texts, "run_dev_check": ns["RUN_DEV_CHECK"],
+           "dev_report": ns["dev_report"]}, open(os.path.join(args["out"], "harness.json"), "w"))
+"""
+
+
+def _run_notebook(tmp_path, run_dev_check=False, break_extrapolate=False):
+    """Executes every code cell after the bitsandbytes install, with torch/transformers/peft and the Qwen forward
+    stubbed, against a DATA_DIR that holds only test.csv + sample_submission.parquet (no train.csv)."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+    data, out, inp = tmp_path / "data", tmp_path / "working", tmp_path / "input"
+    adapter = inp / "datasets" / "ritisingh123" / "engs108-exp03-armh-artifacts" / "adapter"
+    h5 = inp / "datasets" / "ritisingh123" / "engs108-submission-h5-artifacts"
+    for d in (data, out, adapter, h5):
+        d.mkdir(parents=True)
+    texts = ["Plain answer.", "  leading/trailing whitespace \n", "unicode — “quotes” … 漢字", None, "NA", "12345",
+             "Another\r\nline", "x" * 3000, "short", "tenth row"]
+    ids = [f"a{i:011x}" for i in range(len(texts))]  # hex ids as in test.csv (all-digit ids would parse as int)
+    pd.DataFrame({"id": ids, "text": texts}).to_csv(data / "test.csv", index=False)
+    pq.write_table(pa.table({"id": pa.array(ids[:3], pa.large_string()),
+                             "model": pa.array(["gpt-5.5"] * 3, pa.large_string())}), data / "sample_submission.parquet")
+    (adapter / "adapter_model.safetensors").write_bytes(b"stub adapter weights")
+    (adapter / "adapter_config.json").write_text(json.dumps({"modules_to_save": ["score", "classifier", "score"],
+                                                             "task_type": "SEQ_CLS"}))
+    (adapter / "label_map.json").write_text(json.dumps({"id2label": {str(i): n for i, n in enumerate(P.CLASS_NAMES)}}))
+    for fn, src in [("probe_armh.npz", ARMH / "probe_armh.npz"), ("blend_H5_dev.csv", ARMH / "blend_H5_dev.csv"),
+                    ("stylo_exp03_model.joblib", REPO / "exp03" / "stylo" / "artifacts" / "stylo_exp03_model.joblib"),
+                    ("h5_dev_reference.csv", REF)]:
+        (h5 / fn).write_bytes(src.read_bytes())
+    sha = {f"adapter/{fn}": hashlib.sha256((adapter / fn).read_bytes()).hexdigest()
+           for fn in ("adapter_model.safetensors", "adapter_config.json", "label_map.json")}
+    (tmp_path / "harness.py").write_text(HARNESS)
+    args = {"nb": str(HERE / B.NB_NAME), "config": str(HERE / "config.json"), "data": str(data), "out": str(out),
+            "input": str(inp), "run_dev_check": run_dev_check, "sha_overrides": sha, "break_extrapolate": break_extrapolate}
+    env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
+    res = subprocess.run([sys.executable, str(tmp_path / "harness.py"), json.dumps(args)], cwd=tmp_path, env=env,
+                         capture_output=True, text=True, timeout=600)
+    assert res.returncode == 0, res.stdout[-3000:] + res.stderr[-3000:]
+    return res.stdout, out, texts, ids
+
+
+def _check_submission(out, ids):
+    import pyarrow.parquet as pq
+    sub = pd.read_parquet(out / "submission.parquet")
+    assert list(sub.columns) == ["id", "model"] and sub["id"].tolist() == ids
+    assert set(sub["model"]) <= set(P.CLASS_NAMES)
+    assert pq.read_schema(out / "submission.parquet").names == ["id", "model"]
+    assert str(pq.read_schema(out / "submission.parquet").field("id").type) == "large_string"
+
+
+def test_notebook_submission_path_runs_without_train_csv(tmp_path):
+    stdout, out, texts, ids = _run_notebook(tmp_path)
+    _check_submission(out, ids)
+    h = json.loads((out / "harness.json").read_text())
+    assert not any("train" in p for p in h["read_paths"]), h["read_paths"]
+    assert h["run_dev_check"] is False and h["dev_report"] == {"skipped": True}
+    assert "dev check skipped (run_dev_check=false)" in stdout
+    # None and the literal "NA" (parsed as NaN by read_csv) become ""; every other string reaches the model unchanged
+    assert "test.csv: 2 null/non-string text rows coerced to empty string" in stdout
+    assert h["seen_texts"] == [t if t not in (None, "NA") else "" for t in texts]
+    assert stdout.index("submission.parquet written and validated") < stdout.index("internet:")
+    summary = json.loads((out / "h5_run_summary.json").read_text())
+    assert summary["status"] == "completed" and summary["dev_check"] == {"skipped": True}
+    assert summary["dev_minutes"] == 0 and summary["test_rows"] == len(ids)
+    assert (out / "h5_batch_log.csv").exists() and not (out / "h5_dev_check.json").exists()
+
+
+def test_post_submission_diagnostics_cannot_fail_the_run(tmp_path):
+    stdout, out, _, ids = _run_notebook(tmp_path, break_extrapolate=True)
+    _check_submission(out, ids)
+    assert "WARNING: run summary failed (submission.parquet already written): ZeroDivisionError" in stdout
+    assert not (out / "h5_run_summary.json").exists()
+
+
+def test_dev_check_requested_but_train_csv_missing_is_skipped(tmp_path):
+    stdout, out, _, ids = _run_notebook(tmp_path, run_dev_check=True)
+    _check_submission(out, ids)
+    assert "WARNING: run_dev_check=true but" in stdout and "dev check skipped" in stdout
+    assert json.loads((out / "harness.json").read_text())["run_dev_check"] is False

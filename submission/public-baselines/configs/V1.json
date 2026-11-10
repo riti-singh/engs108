@@ -1,19 +1,19 @@
 {
  "experiment_id": "V1",
- "config_version": 1,
- "frozen": false,
- "base": "B0",
- "slug": "engs108-v1-b0-compw018",
- "description": "B0 with exactly one change: --comp_w 0.15 -> 0.18",
+ "config_version": 2,
+ "frozen": true,
+ "base": "A0",
+ "slug": "engs108-v1-a0-nativeshare040",
+ "description": "A0 with exactly one change: CONFIG['native_embedding']['share'] 0.5 -> 0.4",
  "change": {
-  "id": "comp_w",
-  "cell": 54,
-  "old": "'--comp_w', '0.15'",
-  "new": "'--comp_w', '0.18'",
-  "parameter": "--comp_w",
-  "original_value": "0.15",
-  "modified_value": "0.18",
-  "what": "ensemble component weight +20%: the complementary public stack (comp_logit.npy) log-prob weight in infer.py's final blend",
-  "why": "Smallest suggested weight change on a single, isolated component; comp_w multiplies one logit block, so +20% tests whether the complementary stack is under-weighted without touching any other member."
+  "id": "nativeshare040",
+  "cell": 49,
+  "old": "'share': 0.5}",
+  "new": "'share': 0.4}",
+  "parameter": "CONFIG['native_embedding']['share']",
+  "original_value": "0.5",
+  "modified_value": "0.4",
+  "what": "ensemble component weight -20%: share of the native Qwen3-Embedding-8B five-fold expert in native_fusion.native_mixture's log-linear pool ((1-share)*log(parent) + share*native_logp)",
+  "why": "Largest single learned-ensemble weight in Ref A and a scalar with one definition site (cell 49) and no pinning assert; -20% (within the suggested 10-20%) tests whether the native expert is over-weighted relative to the 0.85/0.15 core+complementary parent, without touching any member."
  }
 }

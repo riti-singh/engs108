@@ -1,7 +1,7 @@
 {
- "id": "ritisingh123/engs108-v2-b0-sinkhorn025",
- "title": "engs108-v2-b0-sinkhorn025",
- "code_file": "engs108-v2-b0-sinkhorn025.ipynb",
+ "id": "ritisingh123/engs108-v2-a0-balance025",
+ "title": "engs108-v2-a0-balance025",
+ "code_file": "engs108-v2-a0-balance025.ipynb",
  "language": "python",
  "kernel_type": "notebook",
  "is_private": true,
@@ -14,25 +14,24 @@
  "dataset_sources": [
   "dhruvtibarewal/nlm-l24-adapters",
   "lightningv08/ntl-olmo2-native24-final-inference-assets",
-  "crtproduction/name-that-llm-open-pool",
   "seyitkaangunes/ntl-extra-api-passages",
   "abdullah1afify/ntl-generations",
   "dophuchung/ntl-proxy-generations",
   "zbigniewkirchner/ntl-qwen3-8b-lora-claude-head",
-  "dhruvtibarewal/nlm-matched-clean",
-  "dhruvtibarewal/nlm-offline-wheels",
   "josephadamski91/ntl-atlas-qwen3-8b-v1",
   "lucasboesen/ntl-free-proxy-generations",
   "nuridudak/ntl-q14-lora",
   "nuridudak/ntl-q14-lora-v4",
-  "mathleteutd/ntl-public-pool-v2",
+  "kirilltym/ntl-spectral-style-heads-paired-4404",
   "nuridudak/ntl-svc-prefit-pool-v4n",
+  "dhruvtibarewal/nlm-enc-v5",
+  "nuridudak/ntl-two-stage-encoders",
   "nishantdahal/ntl-two-stage-lora",
   "nishantdahal/ntl-handwriting-blend",
   "dhruvtibarewal/nlm-l24-adapters-v5",
-  "mathleteutd/ntl-two-stage-lora24-members-q8-glm9",
   "mercurydust/ntllm-chatgpt-a-b",
   "prvsiyan/prvsiyans-extended-name-that-llm-dataset",
+  "bbucxi/qwen35-9b-safetensors",
   "pjmathematician/ultrabert-380m-ntl"
  ],
  "kernel_sources": [
@@ -46,9 +45,6 @@
   "vnton37nguyn/ntl-train-lora-qwen25-instyle"
  ],
  "model_sources": [
-  "alexchilton/llama-3-1-8b-base/Transformers/default/1",
-  "qwen-lm/qwen-3/Transformers/14b/1",
-  "qwen-lm/qwen-3/Transformers/8b/1",
   "qwen-lm/qwen-3/Transformers/4b-base/1",
   "qwen-lm/qwen-3/Transformers/14b-base/1",
   "qwen-lm/qwen-3/Transformers/8b-base/1",
@@ -58,6 +54,6 @@
  ],
  "machine_shape": "NvidiaTeslaT4",
  "docker_image_pinning_type": "original",
- "docker_image": "gcr.io/kaggle-private-byod/python@sha256:de153e6d303881930c51286216393d56f56b26458d0661350305a1e8144eea01",
+ "docker_image": "gcr.io/kaggle-private-byod/python@sha256:2757e0c7d1e0a9cb43da657b97e223c321a98f5014bdf64f44f2f6b083ad2b2f",
  "keywords": []
 }

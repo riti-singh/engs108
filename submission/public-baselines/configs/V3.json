@@ -1,19 +1,19 @@
 {
  "experiment_id": "V3",
- "config_version": 1,
- "frozen": false,
- "base": "B0",
- "slug": "engs108-v3-b0-atlasmargin030",
- "description": "B0 with exactly one change: --atlas_margin 0.36 -> 0.30",
+ "config_version": 2,
+ "frozen": true,
+ "base": "A0",
+ "slug": "engs108-v3-a0-atlasmargin025",
+ "description": "A0 with exactly one change: ensemble.py ATLAS top-2 margin threshold .3 -> .25",
  "change": {
-  "id": "atlas_margin",
-  "cell": 54,
-  "old": "'--atlas_margin', '0.36'",
-  "new": "'--atlas_margin', '0.30'",
-  "parameter": "--atlas_margin",
-  "original_value": "0.36",
-  "modified_value": "0.30",
-  "what": "ATLAS re-scoring threshold: rows with top-2 margin below this are re-scored by the ATLAS likelihood model",
-  "why": "Existing threshold; lowering it re-scores only the least certain rows, which also cuts ATLAS GPU time on the hidden test (source budgets up to ~8.3 h)."
+  "id": "atlasmargin025",
+  "cell": 41,
+  "old": "< .3)",
+  "new": "< .25)",
+  "parameter": "ensemble.py ATLAS top-2 margin threshold",
+  "original_value": ".3",
+  "modified_value": ".25",
+  "what": "existing inference threshold: ATLAS (Qwen3-8B adapter) rescoring is applied to rows whose top-2 prior margin is < threshold (only when the test has >= 50 rows; smaller tests rescore every row, unchanged)",
+  "why": "Lowering the threshold restricts the 0.9/0.1 ATLAS mix to the most ambiguous rows, testing whether ATLAS helps only near the decision boundary; it also reduces ATLAS runtime, the largest per-row cost on the hidden test."
  }
 }

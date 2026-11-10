@@ -75,6 +75,12 @@ new prefit artifacts (= retraining). **Decision (user, 2026-11-10): keep the sou
 
 ## Blockers and risks
 
+* **Ref B v2 execution blocker (verified on Kaggle, B0 validate v1):** `infer.py` references `pathlib` (line 753,
+  `_pairwise_path = pathlib.Path('/kaggle/working/v34_pairwise_probs.npy')`) but only imports
+  `os, sys, time, gc, argparse, json, re`, so the full path raises `NameError` and the notebook fails; its `ours_svc`/`top34`
+  members are skipped by the same error, and `comp_stack.py`'s `lora24_public` parity assert fails (max abs 6.06, mean rel 0.54;
+  likely asset/library drift), dropping the complementary stack. On the public 3-row sample the source never reaches this code
+  (`FAST_COMMIT` placeholder). Not patched (would be a code change). Logs: `docs/raw/runs/B0_validate_v1/`.
 * **No private/disallowed assets**: all 26 datasets, 8 kernel outputs and 9 model instances resolve and are public.
 * **Version drift (not a hard blocker):** `kaggle kernels push` attaches the *latest* dataset/kernel versions. Several datasets were
   updated after the sources' last run (2026-11-07 01:43 UTC): `lightningv08/ntl-olmo2-native24-final-inference-assets` (v22,

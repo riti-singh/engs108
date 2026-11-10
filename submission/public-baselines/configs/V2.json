@@ -1,19 +1,19 @@
 {
  "experiment_id": "V2",
- "config_version": 1,
- "frozen": false,
- "base": "B0",
- "slug": "engs108-v2-b0-sinkhorn025",
- "description": "B0 with exactly one change: --sinkhorn 0.30 -> 0.25",
+ "config_version": 2,
+ "frozen": true,
+ "base": "A0",
+ "slug": "engs108-v2-a0-balance025",
+ "description": "A0 with exactly one change: core_math.balance_logits(strength=...) .30 -> .25",
  "change": {
-  "id": "sinkhorn",
-  "cell": 54,
-  "old": "'--sinkhorn', '0.30'",
-  "new": "'--sinkhorn', '0.25'",
-  "parameter": "--sinkhorn",
-  "original_value": "0.30",
-  "modified_value": "0.25",
-  "what": "Sinkhorn balancing weight: infer.py line ~1418 sets final log-score = (1 - s)*log P + s*log Q, where Q is P Sinkhorn-balanced toward a class marginal (35% official-train prior); s is the weight on the balanced posterior",
-  "why": "infer.py exposes no logit-temperature argument, so the closest existing probability-calibration knob is used: s geometrically interpolates the raw and class-balanced posteriors. 0.30 -> 0.25 (-1/6) relaxes the assumption that hidden-test classes are balanced; it touches nothing else."
+  "id": "balance025",
+  "cell": 6,
+  "old": "strength=.30",
+  "new": "strength=.25",
+  "parameter": "core_math.balance_logits(strength=...)",
+  "original_value": ".30",
+  "modified_value": ".25",
+  "what": "probability-level calibration: interpolation strength between the raw posterior P and its Sinkhorn class-balanced version Q, total=(1-strength)*log P + strength*log Q, applied in core_math.finalize before typography/native fusion",
+  "why": "Ref A exposes no free logit temperature (gauss-head temperatures are cross-fit; ATLAS prod temperatures come from the bundle). balance_logits strength is the existing scalar that reshapes final class posteriors; lowering it 0.30->0.25 relaxes the train-prior/marginal balancing. Note the provenance line 'sinkhorn_strength': .30 in ensemble.py's execution-contract.json is a hardcoded record and is left unchanged."
  }
 }

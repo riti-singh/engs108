@@ -1,0 +1,1420 @@
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+engs108 experiment B0 mode validate
+engs108 mounts: ['/kaggle/input/models', '/kaggle/input/name-that-llm', '/kaggle/input/name-that-llm-desklib-weights', '/kaggle/input/name-that-llm-electra-large-weights', '/kaggle/input/name-that-llm-extract-encoders2', '/kaggle/input/name-that-llm-glm4-9b-trunc25', '/kaggle/input/name-that-llm-open-pool', '/kaggle/input/name-that-llm-train-lora24-s7', '/kaggle/input/name-that-llm-train-tokattn', '/kaggle/input/name-that-llm-train-tokattn2', '/kaggle/input/nlm-l24-adapters', '/kaggle/input/nlm-l24-adapters-v5', '/kaggle/input/nlm-matched-clean', '/kaggle/input/nlm-offline-wheels', '/kaggle/input/ntl-atlas-qwen3-8b-v1', '/kaggle/input/ntl-extra-api-passages', '/kaggle/input/ntl-free-proxy-generations', '/kaggle/input/ntl-generations', '/kaggle/input/ntl-handwriting-blend', '/kaggle/input/ntl-olmo2-native24-final-inference-assets', '/kaggle/input/ntl-proxy-generations', '/kaggle/input/ntl-public-pool-v2', '/kaggle/input/ntl-q14-lora', '/kaggle/input/ntl-q14-lora-v4', '/kaggle/input/ntl-qwen3-8b-lora-claude-head', '/kaggle/input/ntl-svc-prefit-pool-v4n', '/kaggle/input/ntl-train-lora-qwen25-instyle', '/kaggle/input/ntl-two-stage-lora', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9', '/kaggle/input/ntllm-chatgpt-a-b', '/kaggle/input/prvsiyans-extended-name-that-llm-dataset', '/kaggle/input/ultrabert-380m-ntl'] [] ['/kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts']
+engs108 validation test.csv: 540 rows from 30 train prompts
+1
+FAST_COMMIT False
+svc pool = open pool 190304
+ours: svc pool = master pool /kaggle/input/ntl-public-pool-v2/ntl_public_pool_v2.parquet 233934 {'gemini-3.8-flash': 22336, 'gpt-5.6-luna': 20407, 'gpt-5.6-terra': 17586, 'gemini-3.6-flash': 17504, 'gpt-5.6-sol': 17109, 'glm-5.3': 16397, 'glm-5.3-flash': 15189, 'claude-sonnet-5': 14579, 'gpt-6-astra': 13036, 'claude-fable-5': 12882, 'gpt-5.5': 12753, 'claude-opus-4-8': 10911, 'gemini-3.1-pro-preview': 9951, 'claude-opus-4-6': 9853, 'claude-opus-5': 8487, 'gemini-3.7-flash': 5655, 'qwen3.8-max': 4824, 'kimi-k3': 4475}
+external rows 24443 drawn by match_weight; nlm_matched_clean had 24443
+/kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+/kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+/kaggle/input/models/qwen-lm/qwen2.5/transformers/7b/1
+/kaggle/input/models/qwen-lm/qwen-3/transformers/8b/1
+/kaggle/input/models/qwen-lm/qwen-3/transformers/14b/1
+['/kaggle/input/nlm-l24-adapters/ts_q3b8_f0', '/kaggle/input/nlm-l24-adapters/ts_q3b8_f1', '/kaggle/input/nlm-l24-adapters/ts_q3b8_f2', '/kaggle/input/nlm-l24-adapters/ts_q3b8_f3', '/kaggle/input/nlm-l24-adapters/ts_q3b8_f4', '/kaggle/input/nlm-l24-adapters/ts_q3b8']
+['/kaggle/input/nlm-l24-adapters/ts_q3b14_f0', '/kaggle/input/nlm-l24-adapters/ts_q3b14_f2', '/kaggle/input/nlm-l24-adapters/ts_q3b14_f4', '/kaggle/input/nlm-l24-adapters/ts_q3b14']
+['/kaggle/input/nlm-l24-adapters/ts_q25_7b']
+/kaggle/input/nlm-l24-adapters/heads
+/kaggle/working/extra_matched.parquet
+/kaggle/working/pool_master.parquet
+nishant /kaggle/input/ntl-two-stage-lora/lora8b_v1 24 447 /kaggle/input/ntl-two-stage-lora/lora14b_v1 27 447
+atlas /kaggle/input/ntl-atlas-qwen3-8b-v1/atlas_adapter/atlas_adapter
+llama copied to local disk in 197 s
+llama /tmp/llama-3.1/8b ['/kaggle/input/nlm-l24-adapters/ts_llama8_f0', '/kaggle/input/nlm-l24-adapters/ts_llama8_f2', '/kaggle/input/nlm-l24-adapters/ts_llama8_f4', '/kaggle/input/nlm-l24-adapters/ts_llama8']
+seed7 ['/kaggle/input/nlm-l24-adapters/ts8_s7_f0', '/kaggle/input/nlm-l24-adapters/ts8_s7_f2', '/kaggle/input/nlm-l24-adapters/ts8_s7_f4', '/kaggle/input/nlm-l24-adapters/ts8_s7']
+part two /kaggle/input/ntl-handwriting-blend/lora_qwen3_14b 27 [2, 4, 6, 9, 13, 17, 22, 27] 151643 /kaggle/input/ntl-handwriting-blend/lora_qwen25_14b 32 [3, 5, 8, 11, 16, 21, 27, 32] /kaggle/working/deberta_v3_large
+q8v5 ['/kaggle/input/nlm-l24-adapters-v5/q8v5_f0', '/kaggle/input/nlm-l24-adapters-v5/q8v5_f1', '/kaggle/input/nlm-l24-adapters-v5/q8v5_f2', '/kaggle/input/nlm-l24-adapters-v5/q8v5_f3', '/kaggle/input/nlm-l24-adapters-v5/q8v5_f4', '/kaggle/input/nlm-l24-adapters-v5/q8v5']
+v5 ['/kaggle/input/nlm-l24-adapters-v5/q14v5_f0', '/kaggle/input/nlm-l24-adapters-v5/q14v5_f1', '/kaggle/input/nlm-l24-adapters-v5/q14v5_f2', '/kaggle/input/nlm-l24-adapters-v5/q14v5_f3', '/kaggle/input/nlm-l24-adapters-v5/q14v5_f4', '/kaggle/input/nlm-l24-adapters-v5/q14v5'] ['/kaggle/input/nlm-l24-adapters-v5/ll8v5_f0', '/kaggle/input/nlm-l24-adapters-v5/ll8v5_f1', '/kaggle/input/nlm-l24-adapters-v5/ll8v5_f2', '/kaggle/input/nlm-l24-adapters-v5/ll8v5_f3', '/kaggle/input/nlm-l24-adapters-v5/ll8v5_f4', '/kaggle/input/nlm-l24-adapters-v5/ll8v5']
+q8v7 /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1 ['/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f0', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f1', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f2', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f3', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f4', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7']
+glm9v3 /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25 ['/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f0', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f1', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f2', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f3', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f4', '/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3']
+Super-SVC V5 fallback to OSVC4N: /kaggle/input/ntl-svc-prefit-pool-v4n
+Ours 0.654/0.665 proven: /kaggle/input/ntl-q14-lora /kaggle/input/ntl-q14-lora-v4 /kaggle/input/ntl-svc-prefit-pool-v4n
+Writing gauss.py
+Writing sibling_style.py
+Writing v34_pairwise.py
+[V34.1] RUNNING EVIDENCE-AWARE PAIRWISE VERIFIER
+[V34.1 PAIRWISE COMPLETE] {"version": "V34.1", "method": "V31 baseline + evidence-quote A prototypes + prompt-weak-label B conditioning + lightweight pairwise same-model verifier", "ab_revision": "03", "official_rows": 2699, "test_rows": 540, "official_prompts": 150, "A_surface_rows": 21273, "A_semantic_candidate_rows": 5180, "A_evidence_span_rows_used": 21421, "A_feature_keys": 98, "A_oof_fold_audit": [{"fold": 0, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 98, "heldout_prompt_groups": 30}, {"fold": 1, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 98, "heldout_prompt_groups": 30}, {"fold": 2, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 97, "heldout_prompt_groups": 30}, {"fold": 3, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 95, "heldout_prompt_groups": 30}, {"fold": 4, "train_rows": 2160, "valid_rows": 539, "prototype_keys": 98, "heldout_prompt_groups": 30}], "A_oof_prompt_grouped": true, "B_targets": ["primary_task", "coarse_domain", "structure_family", "structure_explicitness"], "B_prompt_rows": 150, "B_oof_group_folds": 5, "pair_positive_count": 18000, "pair_negative_count": 52026, "pair_negative_types": {"same_prompt_different_model": 18000, "same_family_different_model": 16026, "cross_family": 18000}, "pair_features": ["char_cosine", "word_cosine", "A_evidence_profile_cosine", "A_profile_mean_abs_diff", "same_task", "same_domain", "same_structure", "same_explicitness", "length_ratio", "punctuation_similarity"], "refs_per_class": 6, "pairwise_probability_shape": [540, 18], "finite": true, "row_sum_max_error": 1.1920928955078125e-07, "note": "A uses exact evidence quote prototypes built Prompt-Grouped OOF for official rows; absent cues are not negative labels. B labels are weak prompt attributes and are used only as pairwise nuisance/context agreement features. Pairwise verifier is trained on official labels; no Backbone is fine-tuned.", "seconds": 40.07}
+[V34.1 PAIRWISE COMPLETE] {"version": "V34.1", "method": "V31 baseline + evidence-quote A prototypes + prompt-weak-label B conditioning + lightweight pairwise same-model verifier", "ab_revision": "03", "official_rows": 2699, "test_rows": 540, "official_prompts": 150, "A_surface_rows": 21273, "A_semantic_candidate_rows": 5180, "A_evidence_span_rows_used": 21421, "A_feature_keys": 98, "A_oof_fold_audit": [{"fold": 0, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 98, "heldout_prompt_groups": 30}, {"fold": 1, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 98, "heldout_prompt_groups": 30}, {"fold": 2, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 97, "heldout_prompt_groups": 30}, {"fold": 3, "train_rows": 2159, "valid_rows": 540, "prototype_keys": 95, "heldout_prompt_groups": 30}, {"fold": 4, "train_rows": 2160, "valid_rows": 539, "prototype_keys": 98, "heldout_prompt_groups": 30}], "A_oof_prompt_grouped": true, "B_targets": ["primary_task", "coarse_domain", "structure_family", "structure_explicitness"], "B_prompt_rows": 150, "B_oof_group_folds": 5, "pair_positive_count": 18000, "pair_negative_count": 52026, "pair_negative_types": {"same_prompt_different_model": 18000, "same_family_different_model": 16026, "cross_family": 18000}, "pair_features": ["char_cosine", "word_cosine", "A_evidence_profile_cosine", "A_profile_mean_abs_diff", "same_task", "same_domain", "same_structure", "same_explicitness", "length_ratio", "punctuation_similarity"], "refs_per_class": 6, "pairwise_probability_shape": [540, 18], "finite": true, "row_sum_max_error": 1.1920928955078125e-07, "note": "A uses exact evidence quote prototypes built Prompt-Grouped OOF for official rows; absent cues are not negative labels. B labels are weak prompt attributes and are used only as pairwise nuisance/context agreement features. Pairwise verifier is trained on official labels; no Backbone is fine-tuned.", "seconds": 40.07}
+[V34.1 PAIRWISE COMPLETE] V31 baseline + evidence-quote A prototypes + prompt-weak-label B conditioning + lightweight pairwise same-model verifier in 40.07s
+Writing infer.py
+Appending to infer.py
+Appending to infer.py
+Appending to infer.py
+Appending to infer.py
+Appending to infer.py
+Appending to infer.py
+Appending to infer.py
+Appending to infer.py
+Writing comp_stack.py
+Appending to comp_stack.py
+Appending to comp_stack.py
+Appending to comp_stack.py
+Appending to comp_stack.py
+Appending to comp_stack.py
+Appending to comp_stack.py
+Appending to comp_stack.py
+train (2699, 4)  test (540, 2)  gpus 2  smoke False
+extra passages: 43058 rows, 2955 prompts
+stylegram groups: 540 rows | singletons 6  2-3: 3  4-18: 531  >18: 0
+  + stylegram            weight 1.516 on 540 rows  (917s)
+claude gate: 749 official + 4998 API rows
+gpt gate: 750 official + 14589 extra rows
+gemini gate: 600 official + 6292 extra rows
+glm gate: 300 official + 4321 extra rows
+  + stylometry_lgb       weight 0.063 on 540 rows  (1168s)
+[glm9b] glm4 hidden 4096 parts [(8, 'mean'), (3, 'mean'), (24, 'mean')]
+Loading weights:   0%|          | 0/327 [00:00<?, ?it/s]Loading weights:   0%|          | 1/327 [00:09<52:24,  9.64s/it]Loading weights:   1%|          | 4/327 [00:11<12:01,  2.23s/it]Loading weights:   3%|▎         | 10/327 [00:11<03:41,  1.43it/s]Loading weights:   4%|▎         | 12/327 [00:11<02:53,  1.81it/s]Loading weights:   5%|▍         | 16/327 [00:12<02:01,  2.56it/s]Loading weights:   5%|▌         | 17/327 [00:13<02:42,  1.91it/s]Loading weights:   6%|▋         | 21/327 [00:13<01:38,  3.09it/s]Loading weights:   8%|▊         | 25/327 [00:14<01:06,  4.54it/s]Loading weights:   9%|▉         | 29/327 [00:14<01:04,  4.60it/s]Loading weights:   9%|▉         | 31/327 [00:16<01:29,  3.32it/s]Loading weights:  11%|█         | 35/327 [00:16<01:00,  4.81it/s]Loading weights:  11%|█▏        | 37/327 [00:16<00:53,  5.40it/s]Loading weights:  13%|█▎        | 42/327 [00:18<01:14,  3.81it/s]Loading weights:  14%|█▍        | 47/327 [00:18<00:49,  5.64it/s]Loading weights:  16%|█▌        | 51/327 [00:18<00:38,  7.19it/s]Loading weights:  17%|█▋        | 55/327 [00:19<00:38,  7.08it/s]Loading weights:  17%|█▋        | 57/327 [00:20<01:00,  4.43it/s]Loading weights:  19%|█▉        | 62/327 [00:20<00:41,  6.46it/s]Loading weights:  20%|█▉        | 64/327 [00:21<00:38,  6.89it/s]Loading weights:  21%|██        | 68/327 [00:21<00:37,  6.82it/s]Loading weights:  21%|██▏       | 70/327 [00:22<01:00,  4.25it/s]Loading weights:  22%|██▏       | 73/327 [00:23<00:46,  5.45it/s]Loading weights:  24%|██▎       | 77/327 [00:23<00:34,  7.28it/s]Loading weights:  25%|██▍       | 81/327 [00:23<00:35,  6.97it/s]Loading weights:  25%|██▌       | 83/327 [00:25<00:57,  4.23it/s]Loading weights:  26%|██▋       | 86/327 [00:25<00:44,  5.43it/s]Loading weights:  28%|██▊       | 90/327 [00:25<00:31,  7.58it/s]Loading weights:  29%|██▊       | 94/327 [00:27<00:56,  4.12it/s]Loading weights:  31%|███       | 101/327 [00:27<00:32,  6.99it/s]Loading weights:  31%|███▏      | 103/327 [00:27<00:30,  7.40it/s]Loading weights:  33%|███▎      | 107/327 [00:28<00:30,  7.26it/s]Loading weights:  33%|███▎      | 109/327 [00:29<00:48,  4.48it/s]Loading weights:  35%|███▍      | 114/327 [00:29<00:31,  6.67it/s]Loading weights:  35%|███▌      | 116/327 [00:29<00:29,  7.17it/s]Loading weights:  37%|███▋      | 120/327 [00:30<00:30,  6.74it/s]Loading weights:  37%|███▋      | 122/327 [00:31<00:46,  4.42it/s]Loading weights:  39%|███▉      | 127/327 [00:31<00:29,  6.82it/s]Loading weights:  39%|███▉      | 129/327 [00:31<00:26,  7.44it/s]Loading weights:  41%|████      | 133/327 [00:32<00:29,  6.64it/s]Loading weights:  41%|████▏     | 135/327 [00:33<00:46,  4.17it/s]Loading weights:  43%|████▎     | 140/327 [00:34<00:32,  5.80it/s]Loading weights:  45%|████▍     | 146/327 [00:34<00:25,  7.23it/s]Loading weights:  45%|████▌     | 148/327 [00:35<00:37,  4.76it/s]Loading weights:  47%|████▋     | 153/327 [00:36<00:25,  6.90it/s]Loading weights:  47%|████▋     | 155/327 [00:36<00:23,  7.48it/s]Loading weights:  49%|████▊     | 159/327 [00:37<00:39,  4.26it/s]Loading weights:  50%|█████     | 164/327 [00:38<00:25,  6.35it/s]Loading weights:  51%|█████▏    | 168/327 [00:38<00:21,  7.25it/s]Loading weights:  53%|█████▎    | 172/327 [00:38<00:18,  8.41it/s]Loading weights:  53%|█████▎    | 174/327 [00:39<00:30,  5.02it/s]Loading weights:  54%|█████▍    | 178/327 [00:40<00:24,  6.17it/s]Loading weights:  57%|█████▋    | 185/327 [00:40<00:17,  8.06it/s]Loading weights:  57%|█████▋    | 187/327 [00:42<00:29,  4.81it/s]Loading weights:  58%|█████▊    | 191/327 [00:42<00:21,  6.31it/s]Loading weights:  59%|█████▉    | 194/327 [00:42<00:17,  7.53it/s]Loading weights:  61%|██████    | 198/327 [00:43<00:17,  7.29it/s]Loading weights:  61%|██████    | 200/327 [00:44<00:27,  4.56it/s]Loading weights:  63%|██████▎   | 205/327 [00:44<00:18,  6.72it/s]Loading weights:  63%|██████▎   | 207/327 [00:44<00:16,  7.25it/s]Loading weights:  65%|██████▍   | 211/327 [00:45<00:16,  7.10it/s]Loading weights:  65%|██████▌   | 213/327 [00:46<00:25,  4.48it/s]Loading weights:  66%|██████▌   | 216/327 [00:46<00:19,  5.76it/s]Loading weights:  67%|██████▋   | 220/327 [00:46<00:13,  8.02it/s]Loading weights:  69%|██████▊   | 224/327 [00:47<00:12,  7.97it/s]Loading weights:  69%|██████▉   | 226/327 [00:48<00:22,  4.44it/s]Loading weights:  71%|███████   | 231/327 [00:48<00:14,  6.70it/s]Loading weights:  71%|███████▏  | 233/327 [00:48<00:13,  6.89it/s]Loading weights:  72%|███████▏  | 237/327 [00:49<00:12,  7.18it/s]Loading weights:  73%|███████▎  | 239/327 [00:50<00:19,  4.49it/s]Loading weights:  75%|███████▍  | 244/327 [00:50<00:11,  6.98it/s]Loading weights:  75%|███████▌  | 246/327 [00:50<00:10,  7.52it/s]Loading weights:  76%|███████▋  | 250/327 [00:52<00:20,  3.85it/s]Loading weights:  78%|███████▊  | 256/327 [00:53<00:12,  5.79it/s]Loading weights:  80%|████████  | 263/327 [00:53<00:08,  7.44it/s]Loading weights:  81%|████████  | 265/327 [00:54<00:12,  4.98it/s]Loading weights:  83%|████████▎ | 270/327 [00:55<00:08,  6.88it/s]Loading weights:  83%|████████▎ | 272/327 [00:55<00:07,  7.49it/s]Loading weights:  84%|████████▍ | 276/327 [00:55<00:07,  7.24it/s]Loading weights:  85%|████████▌ | 278/327 [00:57<00:11,  4.35it/s]Loading weights:  86%|████████▌ | 282/327 [00:57<00:07,  5.98it/s]Loading weights:  87%|████████▋ | 285/327 [00:57<00:05,  7.38it/s]Loading weights:  88%|████████▊ | 289/327 [00:59<00:08,  4.27it/s]Loading weights:  90%|████████▉ | 294/327 [00:59<00:05,  6.17it/s]Loading weights:  91%|█████████ | 298/327 [00:59<00:03,  7.83it/s]Loading weights:  92%|█████████▏| 302/327 [01:00<00:03,  7.08it/s]Loading weights:  93%|█████████▎| 304/327 [01:01<00:04,  4.64it/s]Loading weights:  94%|█████████▍| 307/327 [01:01<00:03,  5.67it/s]Loading weights:  95%|█████████▌| 311/327 [01:01<00:02,  7.78it/s]Loading weights:  96%|█████████▋| 315/327 [01:02<00:01,  7.52it/s]Loading weights:  97%|█████████▋| 317/327 [01:03<00:02,  4.48it/s]Loading weights:  98%|█████████▊| 321/327 [01:03<00:01,  5.78it/s]Loading weights: 100%|██████████| 327/327 [01:03<00:00,  5.12it/s]
+test groups (content + GLM L24): 540 rows | singletons 22  2-3: 31  4-18: 487  >18: 0
+  glm9b: plain head has weight 0 in the 0.563 blend, not fitted
+  + glm9b_twin           weight 0.165 on 518 rows  (1671s)
+  gauss_glm9b_L8: d 384, shrinkage e/p 0.065/0.1133, lam pct [0.058, 0.295, 4.321, 32.777]
+  + gauss_glm9b_L8       weight 0.165 on 518 rows  (1675s)
+[q3_8b] qwen3 hidden 4096 parts [(7, 'mean'), (22, 'mean')]
+Loading weights:   0%|          | 0/255 [00:00<?, ?it/s]Loading weights:   0%|          | 1/255 [00:08<35:04,  8.29s/it]Loading weights:  38%|███▊      | 97/255 [00:08<00:09, 16.09it/s]Loading weights:  49%|████▉     | 125/255 [00:10<00:08, 16.09it/s]Loading weights:  55%|█████▌    | 141/255 [00:10<00:06, 17.50it/s]Loading weights:  60%|█████▉    | 152/255 [00:11<00:05, 17.70it/s]Loading weights:  63%|██████▎   | 160/255 [00:11<00:05, 17.00it/s]Loading weights:  66%|██████▌   | 168/255 [00:12<00:05, 16.77it/s]Loading weights:  70%|███████   | 179/255 [00:13<00:04, 16.85it/s]Loading weights:  75%|███████▍  | 190/255 [00:13<00:03, 18.10it/s]Loading weights:  79%|███████▉  | 201/255 [00:14<00:02, 18.24it/s]Loading weights:  83%|████████▎ | 212/255 [00:14<00:02, 18.03it/s]Loading weights:  87%|████████▋ | 223/255 [00:15<00:01, 17.37it/s]Loading weights:  92%|█████████▏| 234/255 [00:16<00:01, 18.52it/s]Loading weights:  96%|█████████▌| 245/255 [00:16<00:00, 18.46it/s]Loading weights: 100%|██████████| 255/255 [00:16<00:00, 15.30it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3-embedding/transformers/8b/1
+Key                                              | Status     |  | 
+-------------------------------------------------+------------+--+-
+layers.{23...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+layers.{23...35}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{23...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+layers.{23...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{23...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{23...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{23...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{23...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{23...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+layers.{23...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{23...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  q3_8b: plain head has weight 0 in the 0.563 blend, not fitted
+  + q3_8b_twin           weight 0.329 on 518 rows  (2048s)
+  gauss_q3_8b_L22: d 384, shrinkage e/p 0.029/0.2298, lam pct [0.279, 1.013, 8.458, 37.147]
+  + gauss_q3_8b_L22      weight 0.329 on 518 rows  (2052s)
+[q25_7b] qwen2 hidden 3584 parts [(6, 'mean'), (20, 'mean')]
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:07<31:05,  7.37s/it]Loading weights:  30%|██▉       | 75/254 [00:07<00:12, 13.97it/s]Loading weights:  39%|███▉      | 99/254 [00:08<00:10, 15.28it/s]Loading weights:  44%|████▍     | 113/254 [00:10<00:09, 14.18it/s]Loading weights:  48%|████▊     | 123/254 [00:10<00:08, 15.39it/s]Loading weights:  53%|█████▎    | 135/254 [00:11<00:07, 15.34it/s]Loading weights:  58%|█████▊    | 147/254 [00:11<00:06, 17.24it/s]Loading weights:  60%|█████▉    | 152/254 [00:12<00:06, 16.11it/s]Loading weights:  63%|██████▎   | 159/254 [00:12<00:05, 16.47it/s]Loading weights:  64%|██████▍   | 162/254 [00:12<00:06, 14.54it/s]Loading weights:  67%|██████▋   | 171/254 [00:13<00:04, 16.91it/s]Loading weights:  72%|███████▏  | 183/254 [00:14<00:04, 15.85it/s]Loading weights:  77%|███████▋  | 195/254 [00:14<00:03, 19.14it/s]Loading weights:  78%|███████▊  | 198/254 [00:14<00:03, 15.74it/s]Loading weights:  81%|████████▏ | 207/254 [00:15<00:02, 18.15it/s]Loading weights:  83%|████████▎ | 210/254 [00:15<00:02, 15.20it/s]Loading weights:  86%|████████▌ | 219/254 [00:16<00:02, 16.10it/s]Loading weights:  91%|█████████ | 231/254 [00:16<00:01, 17.23it/s]Loading weights:  92%|█████████▏| 233/254 [00:16<00:01, 16.59it/s]Loading weights:  96%|█████████▌| 243/254 [00:17<00:00, 19.45it/s]Loading weights:  96%|█████████▋| 245/254 [00:17<00:00, 16.73it/s]Loading weights: 100%|██████████| 254/254 [00:17<00:00, 14.41it/s]
+[transformers] [1mQwen2Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen2.5/transformers/7b/1
+Key                                                                       | Status     |  | 
+--------------------------------------------------------------------------+------------+--+-
+model.layers.{21, 22, 23, 24, 25, 26, 27}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{21, 22, 23, 24, 25, 26, 27}.input_layernorm.weight          | UNEXPECTED |  | 
+lm_head.weight                                                            | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  q25_7b: plain head has weight 0 in the 0.563 blend, not fitted
+  + q25_7b_twin          weight 0.211 on 518 rows  (2434s)
+[q3_4b] qwen3 hidden 2560 parts [(4, 'style'), (7, 'style'), (4, 'mean')]
+Loading weights:   0%|          | 0/90 [00:00<?, ?it/s]Loading weights:   1%|          | 1/90 [00:05<08:10,  5.51s/it]Loading weights: 100%|██████████| 90/90 [00:05<00:00, 16.30it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/4b-base/1
+Key                                                   | Status     |  | 
+------------------------------------------------------+------------+--+-
+model.layers.{8...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{8...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{8...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{8...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{8...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{8...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{8...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{8...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{8...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{8...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{8...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  q3_4b: plain head has weight 0 in the 0.563 blend, not fitted
+  + q3_4b_twin           weight 0.124 on 518 rows  (2535s)
+  gauss_q3_4b_L4: d 384, shrinkage e/p 0.0596/0.1219, lam pct [0.05, 0.237, 3.36, 26.794]
+  + gauss_q3_4b_L4       weight 0.124 on 518 rows  (2542s)
+[debv3l] deberta-v3-large parts [(24, 'mean'), (6, 'mean')]
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 48/390 [00:00<00:00, 466.34it/s]Loading weights:  24%|██▍       | 95/390 [00:00<00:01, 261.42it/s]Loading weights:  38%|███▊      | 149/390 [00:00<00:00, 290.91it/s]Loading weights:  46%|████▋     | 181/390 [00:00<00:00, 264.21it/s]Loading weights:  54%|█████▎    | 209/390 [00:00<00:00, 261.30it/s]Loading weights:  65%|██████▍   | 253/390 [00:00<00:00, 293.72it/s]Loading weights:  75%|███████▌  | 293/390 [00:00<00:00, 321.42it/s]Loading weights:  86%|████████▌ | 334/390 [00:01<00:00, 320.64it/s]Loading weights:  96%|█████████▋| 376/390 [00:01<00:00, 323.79it/s]Loading weights: 100%|██████████| 390/390 [00:01<00:00, 305.93it/s]
+  + debv3l               weight 0.050 on 540 rows  (2758s)
+  + debv3l_twin          weight 0.250 on 518 rows  (2782s)
+  gauss_debv3l_L24: d 384, shrinkage e/p 0.0086/0.0875, lam pct [0.004, 0.302, 2.633, 24.25]
+  + gauss_debv3l_L24     weight 0.250 on 518 rows  (2783s)
+[electl] electra-large-discriminator parts [(21, 'mean'), (24, 'style')]
+Loading weights:   0%|          | 0/389 [00:00<?, ?it/s]Loading weights:   8%|▊         | 33/389 [00:00<00:01, 324.55it/s]Loading weights:  17%|█▋        | 66/389 [00:00<00:01, 275.35it/s]Loading weights:  24%|██▍       | 95/389 [00:00<00:01, 241.87it/s]Loading weights:  31%|███▏      | 122/389 [00:00<00:01, 248.93it/s]Loading weights:  48%|████▊     | 186/389 [00:00<00:00, 366.41it/s]Loading weights:  64%|██████▍   | 249/389 [00:00<00:00, 444.50it/s]Loading weights:  76%|███████▌  | 295/389 [00:00<00:00, 418.59it/s]Loading weights:  87%|████████▋ | 338/389 [00:00<00:00, 388.19it/s]Loading weights: 100%|██████████| 389/389 [00:01<00:00, 385.41it/s]
+  + electl               weight 0.032 on 540 rows  (2958s)
+[desk] desklib-detector parts [(23, 'mean'), (23, 'style')]
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 45/390 [00:00<00:00, 429.65it/s]Loading weights:  23%|██▎       | 88/390 [00:00<00:01, 284.23it/s]Loading weights:  39%|███▉      | 152/390 [00:00<00:00, 366.37it/s]Loading weights:  52%|█████▏    | 201/390 [00:00<00:00, 367.42it/s]Loading weights:  62%|██████▏   | 240/390 [00:00<00:00, 352.11it/s]Loading weights:  71%|███████   | 276/390 [00:00<00:00, 317.97it/s]Loading weights:  84%|████████▎ | 326/390 [00:00<00:00, 349.29it/s]Loading weights:  94%|█████████▍| 368/390 [00:01<00:00, 341.42it/s]Loading weights: 100%|██████████| 390/390 [00:01<00:00, 348.61it/s]
+  + desk                 weight 0.132 on 540 rows  (3184s)
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 1/266 [00:08<36:42,  8.31s/it]Loading weights:  36%|███▋      | 97/266 [00:08<00:10, 16.00it/s]Loading weights:  46%|████▌     | 122/266 [00:09<00:08, 17.19it/s]Loading weights:  52%|█████▏    | 137/266 [00:10<00:08, 15.81it/s]Loading weights:  55%|█████▌    | 147/266 [00:11<00:07, 15.91it/s]Loading weights:  59%|█████▉    | 157/266 [00:12<00:06, 16.36it/s]Loading weights:  61%|██████    | 162/266 [00:12<00:05, 17.67it/s]Loading weights:  63%|██████▎   | 168/266 [00:12<00:05, 16.43it/s]Loading weights:  67%|██████▋   | 179/266 [00:13<00:05, 16.30it/s]Loading weights:  71%|███████▏  | 190/266 [00:14<00:04, 16.56it/s]Loading weights:  76%|███████▌  | 201/266 [00:14<00:03, 17.49it/s]Loading weights:  77%|███████▋  | 204/266 [00:14<00:03, 18.05it/s]Loading weights:  80%|███████▉  | 212/266 [00:15<00:03, 17.24it/s]Loading weights:  81%|████████  | 215/266 [00:15<00:02, 18.05it/s]Loading weights:  84%|████████▍ | 223/266 [00:15<00:02, 16.77it/s]Loading weights:  88%|████████▊ | 234/266 [00:16<00:01, 16.77it/s]Loading weights:  92%|█████████▏| 245/266 [00:17<00:01, 16.90it/s]Loading weights:  96%|█████████▌| 256/266 [00:17<00:00, 18.18it/s]Loading weights:  97%|█████████▋| 258/266 [00:17<00:00, 18.09it/s]Loading weights: 100%|██████████| 266/266 [00:17<00:00, 14.93it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3-embedding/transformers/8b/1
+Key                                              | Status     |  | 
+-------------------------------------------------+------------+--+-
+layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[lora24_public] /kaggle/input/ntl-olmo2-native24-final-inference-assets/notebook-inputs/notebook-inputs/ntl-lora24-fivefold-training/lora24/final
+  parity with the checkpoint anchors: max abs 6.0615, mean rel 0.54065
+Traceback (most recent call last):
+  File "/kaggle/working/comp_stack.py", line 809, in <module>
+    score_lora_checkpoints(trunk_spec, pool_layers, checkpoints)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/kaggle/working/comp_stack.py", line 789, in score_lora_checkpoints
+    assert rel < 0.02, f'{key}: our features do not match the checkpoint'
+           ^^^^^^^^^^
+AssertionError: lora24_public: our features do not match the checkpoint
+comp stack wall time 3233
+Writing native_embedding_worker.py
+Writing native_mix.py
+native expert: assets /kaggle/input/ntl-olmo2-native24-final-inference-assets/ntl-native-q8-multidepth-fivefold-0679 | base /kaggle/input/models/qwen-lm/qwen-3-embedding/transformers/8b/1 ['README.md', 'config.json', 'generation_config.json', 'merges.txt', 'model-00001-of-00004.safetensors', 'model-00002-of-00004.safetensors']
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights:   0%|          | 1/398 [00:23<2:36:16, 23.62s/it]Loading weights:  23%|██▎       | 91/398 [00:23<00:56,  5.44it/s] Loading weights:   0%|          | 1/398 [00:23<2:36:16, 23.62s/it]Loading weights:  23%|██▎       | 91/398 [00:23<00:56,  5.44it/s] 
+Loading weights:   0%|          | 1/398 [00:23<2:36:16, 23.62s/it]Loading weights:  23%|██▎       | 91/398 [00:23<00:56,  5.44it/s] Loading weights:  40%|████      | 160/398 [00:33<00:38,  6.19it/s]Loading weights:  40%|████      | 160/398 [00:33<00:38,  6.19it/s]
+Loading weights:  40%|████      | 160/398 [00:33<00:38,  6.19it/s]Loading weights:  47%|████▋     | 189/398 [00:36<00:30,  6.76it/s]Loading weights:  47%|████▋     | 189/398 [00:36<00:30,  6.76it/s]
+Loading weights:  47%|████▋     | 189/398 [00:36<00:30,  6.76it/s]Loading weights:  52%|█████▏    | 206/398 [00:39<00:29,  6.49it/s]Loading weights:  52%|█████▏    | 206/398 [00:39<00:29,  6.49it/s]
+Loading weights:  52%|█████▏    | 206/398 [00:39<00:29,  6.49it/s]Loading weights:  54%|█████▍    | 216/398 [00:41<00:27,  6.51it/s]Loading weights:  54%|█████▍    | 216/398 [00:41<00:27,  6.51it/s]
+Loading weights:  54%|█████▍    | 216/398 [00:41<00:27,  6.51it/s]Loading weights:  56%|█████▌    | 223/398 [00:42<00:27,  6.34it/s]Loading weights:  57%|█████▋    | 228/398 [00:42<00:24,  6.85it/s]Loading weights:  56%|█████▌    | 223/398 [00:42<00:27,  6.34it/s]Loading weights:  57%|█████▋    | 228/398 [00:42<00:24,  6.85it/s]
+Loading weights:  56%|█████▌    | 223/398 [00:42<00:27,  6.34it/s]Loading weights:  57%|█████▋    | 228/398 [00:42<00:24,  6.85it/s]Loading weights:  59%|█████▉    | 234/398 [00:44<00:26,  6.29it/s]Loading weights:  60%|█████▉    | 237/398 [00:44<00:23,  6.79it/s]Loading weights:  59%|█████▉    | 234/398 [00:44<00:26,  6.29it/s]Loading weights:  60%|█████▉    | 237/398 [00:44<00:23,  6.79it/s]
+Loading weights:  59%|█████▉    | 234/398 [00:44<00:26,  6.29it/s]Loading weights:  60%|█████▉    | 237/398 [00:44<00:23,  6.79it/s]Loading weights:  62%|██████▏   | 245/398 [00:45<00:24,  6.34it/s]Loading weights:  62%|██████▏   | 245/398 [00:45<00:24,  6.34it/s]
+Loading weights:  62%|██████▏   | 245/398 [00:45<00:24,  6.34it/s]Loading weights:  64%|██████▍   | 256/398 [00:47<00:21,  6.51it/s]Loading weights:  64%|██████▍   | 256/398 [00:47<00:21,  6.51it/s]
+Loading weights:  64%|██████▍   | 256/398 [00:47<00:21,  6.51it/s]Loading weights:  67%|██████▋   | 267/398 [00:48<00:17,  7.34it/s]Loading weights:  67%|██████▋   | 267/398 [00:48<00:17,  7.34it/s]
+Loading weights:  67%|██████▋   | 267/398 [00:48<00:17,  7.34it/s]Loading weights:  68%|██████▊   | 269/398 [00:48<00:19,  6.77it/s]Loading weights:  68%|██████▊   | 269/398 [00:48<00:19,  6.77it/s]
+Loading weights:  68%|██████▊   | 269/398 [00:48<00:19,  6.77it/s]Loading weights:  70%|██████▉   | 278/398 [00:50<00:16,  7.16it/s]Loading weights:  70%|██████▉   | 278/398 [00:50<00:16,  7.16it/s]
+Loading weights:  70%|██████▉   | 278/398 [00:50<00:16,  7.16it/s]Loading weights:  70%|███████   | 280/398 [00:50<00:16,  7.20it/s]Loading weights:  70%|███████   | 280/398 [00:50<00:16,  7.20it/s]
+Loading weights:  70%|███████   | 280/398 [00:50<00:16,  7.20it/s]Loading weights:  73%|███████▎  | 289/398 [00:51<00:16,  6.78it/s]Loading weights:  73%|███████▎  | 289/398 [00:51<00:16,  6.78it/s]
+Loading weights:  73%|███████▎  | 289/398 [00:51<00:16,  6.78it/s]Loading weights:  75%|███████▌  | 300/398 [00:53<00:13,  7.17it/s]Loading weights:  75%|███████▌  | 300/398 [00:53<00:13,  7.17it/s]
+Loading weights:  75%|███████▌  | 300/398 [00:53<00:13,  7.17it/s]Loading weights:  76%|███████▌  | 301/398 [00:53<00:13,  6.97it/s]Loading weights:  76%|███████▌  | 301/398 [00:53<00:13,  6.97it/s]
+Loading weights:  76%|███████▌  | 301/398 [00:53<00:13,  6.97it/s]Loading weights:  78%|███████▊  | 311/398 [00:54<00:12,  7.19it/s]Loading weights:  78%|███████▊  | 312/398 [00:54<00:12,  7.13it/s]Loading weights:  78%|███████▊  | 311/398 [00:54<00:12,  7.19it/s]Loading weights:  78%|███████▊  | 312/398 [00:54<00:12,  7.13it/s]
+Loading weights:  78%|███████▊  | 311/398 [00:54<00:12,  7.19it/s]Loading weights:  78%|███████▊  | 312/398 [00:54<00:12,  7.13it/s]Loading weights:  79%|███████▊  | 313/398 [00:55<00:11,  7.20it/s]Loading weights:  79%|███████▊  | 313/398 [00:55<00:11,  7.20it/s]
+Loading weights:  79%|███████▊  | 313/398 [00:55<00:11,  7.20it/s]Loading weights:  81%|████████  | 322/398 [00:56<00:09,  7.79it/s]Loading weights:  81%|████████  | 322/398 [00:56<00:09,  7.79it/s]
+Loading weights:  81%|████████  | 322/398 [00:56<00:09,  7.79it/s]Loading weights:  81%|████████  | 323/398 [00:56<00:11,  6.55it/s]Loading weights:  81%|████████  | 323/398 [00:56<00:11,  6.55it/s]
+Loading weights:  81%|████████  | 323/398 [00:56<00:11,  6.55it/s]Loading weights:  84%|████████▎ | 333/398 [00:57<00:09,  6.96it/s]Loading weights:  84%|████████▍ | 335/398 [00:58<00:08,  7.51it/s]Loading weights:  84%|████████▎ | 333/398 [00:57<00:09,  6.96it/s]Loading weights:  84%|████████▍ | 335/398 [00:58<00:08,  7.51it/s]
+Loading weights:  84%|████████▎ | 333/398 [00:57<00:09,  6.96it/s]Loading weights:  84%|████████▍ | 335/398 [00:58<00:08,  7.51it/s]Loading weights:  86%|████████▋ | 344/398 [00:59<00:07,  6.82it/s]Loading weights:  86%|████████▋ | 344/398 [00:59<00:07,  6.82it/s]
+Loading weights:  86%|████████▋ | 344/398 [00:59<00:07,  6.82it/s]Loading weights:  89%|████████▉ | 355/398 [01:00<00:05,  7.28it/s]Loading weights:  89%|████████▉ | 356/398 [01:01<00:05,  7.19it/s]Loading weights:  89%|████████▉ | 355/398 [01:00<00:05,  7.28it/s]Loading weights:  89%|████████▉ | 356/398 [01:01<00:05,  7.19it/s]
+Loading weights:  89%|████████▉ | 355/398 [01:00<00:05,  7.28it/s]Loading weights:  89%|████████▉ | 356/398 [01:01<00:05,  7.19it/s]Loading weights:  91%|█████████ | 361/398 [01:01<00:03,  9.44it/s]Loading weights:  91%|█████████ | 361/398 [01:01<00:03,  9.44it/s]
+Loading weights:  91%|█████████ | 361/398 [01:01<00:03,  9.44it/s]Loading weights:  92%|█████████▏| 366/398 [01:02<00:04,  7.04it/s]Loading weights:  92%|█████████▏| 366/398 [01:02<00:04,  7.04it/s]
+Loading weights:  92%|█████████▏| 366/398 [01:02<00:04,  7.04it/s]Loading weights:  92%|█████████▏| 368/398 [01:02<00:04,  6.70it/s]Loading weights:  92%|█████████▏| 368/398 [01:02<00:04,  6.70it/s]
+Loading weights:  92%|█████████▏| 368/398 [01:02<00:04,  6.70it/s]Loading weights:  95%|█████████▍| 377/398 [01:03<00:03,  6.83it/s]Loading weights:  95%|█████████▌| 379/398 [01:04<00:02,  7.14it/s]Loading weights:  95%|█████████▍| 377/398 [01:03<00:03,  6.83it/s]Loading weights:  95%|█████████▌| 379/398 [01:04<00:02,  7.14it/s]
+Loading weights:  95%|█████████▍| 377/398 [01:03<00:03,  6.83it/s]Loading weights:  95%|█████████▌| 379/398 [01:04<00:02,  7.14it/s]Loading weights:  97%|█████████▋| 388/398 [01:05<00:01,  6.81it/s]Loading weights: 100%|██████████| 398/398 [01:05<00:00,  6.06it/s]
+Loading weights:  97%|█████████▋| 388/398 [01:05<00:01,  6.81it/s]Loading weights: 100%|██████████| 398/398 [01:05<00:00,  6.06it/s]
+
+Loading weights:  97%|█████████▋| 388/398 [01:05<00:01,  6.81it/s]Loading weights: 100%|██████████| 398/398 [01:05<00:00,  6.06it/s]
+{"completed_fold": 0, "documents": 540, "windows": 540, "seconds": 114.10802713800058}
+{"completed_fold": 0, "documents": 540, "windows": 540, "seconds": 114.10802713800058}
+{"completed_fold": 1, "documents": 540, "windows": 540, "seconds": 117.18850929099972}
+{"completed_fold": 1, "documents": 540, "windows": 540, "seconds": 117.18850929099972}
+{"completed_fold": 2, "documents": 540, "windows": 540, "seconds": 117.34706524000012}
+{"completed_fold": 2, "documents": 540, "windows": 540, "seconds": 117.34706524000012}
+{"completed_fold": 3, "documents": 540, "windows": 540, "seconds": 115.78463645099964}
+{"completed_fold": 3, "documents": 540, "windows": 540, "seconds": 115.78463645099964}
+{"completed_fold": 4, "documents": 540, "windows": 540, "seconds": 115.1224606120004}
+{"documents": 540, "windows": 540, "discarded_tokens": 0, "formatted_token_lengths": [259, 106, 117, 129, 143, 159, 78, 85, 92, 111, 142, 301, 263, 257, 104, 76, 160, 235, 120, 230, 256, 272, 106, 115, 148, 207, 282, 81, 282, 237, 88, 149, 124, 139, 215, 150, 119, 170, 334, 120, 132, 179, 241, 139, 341, 75, 276, 173, 107, 335, 111, 85, 85, 133, 222, 194, 121, 99, 264, 90, 183, 76, 185, 124, 195, 101, 100, 133, 223, 246, 295, 139, 159, 171, 147, 162, 197, 110, 101, 106, 128, 80, 250, 112, 88, 279, 114, 147, 264, 224, 162, 118, 145, 153, 134, 236, 207, 93, 143, 102, 106, 224, 256, 203, 83, 190, 122, 165, 153, 219, 201, 139, 303, 124, 115, 227, 323, 287, 91, 226, 287, 89, 101, 96, 227, 83, 203, 283, 210, 74, 119, 143, 79, 102, 75, 139, 98, 85, 85, 219, 199, 216, 80, 101, 74, 240, 145, 300, 96, 105, 160, 208, 161, 97, 91, 126, 127, 160, 296, 105, 90, 129, 178, 151, 99, 181, 218, 93, 82, 184, 248, 334, 227, 177, 79, 319, 315, 86, 210, 273, 81, 75, 300, 116, 91, 108, 106, 97, 127, 91, 182, 76, 255, 148, 161, 184, 85, 277, 109, 182, 83, 171, 279, 219, 117, 119, 195, 223, 221, 105, 298, 223, 150, 130, 297, 147, 109, 216, 304, 112, 350, 312, 356, 190, 90, 271, 169, 122, 186, 150, 104, 146, 121, 275, 139, 128, 139, 304, 281, 85, 171, 81, 115, 300, 266, 199, 101, 289, 202, 186, 129, 91, 171, 325, 204, 152, 198, 219, 258, 147, 95, 123, 193, 80, 127, 82, 242, 96, 140, 215, 270, 283, 127, 155, 286, 310, 127, 77, 191, 153, 129, 224, 129, 202, 294, 110, 188, 309, 229, 243, 280, 145, 313, 178, 90, 316, 122, 100, 80, 277, 169, 101, 262, 161, 315, 118, 136, 107, 349, 95, 116, 276, 73, 166, 76, 136, 151, 122, 83, 153, 110, 102, 98, 184, 231, 222, 302, 200, 133, 81, 190, 154, 100, 108, 241, 228, 185, 90, 174, 285, 131, 106, 182, 97, 81, 186, 156, 128, 299, 211, 242, 264, 109, 83, 101, 130, 242, 227, 106, 159, 222, 122, 78, 93, 214, 83, 72, 235, 264, 187, 327, 88, 307, 181, 151, 120, 253, 90, 199, 120, 115, 249, 232, 90, 80, 244, 103, 103, 140, 81, 97, 306, 239, 102, 108, 113, 77, 143, 173, 90, 94, 81, 245, 84, 273, 117, 130, 298, 90, 127, 98, 246, 87, 90, 73, 77, 153, 176, 74, 342, 221, 162, 84, 215, 213, 297, 322, 146, 234, 123, 127, 328, 84, 89, 149, 132, 187, 332, 110, 98, 78, 84, 169, 192, 180, 112, 93, 114, 128, 80, 119, 89, 274, 125, 71, 98, 168, 88, 291, 112, 186, 163, 245, 226, 89, 249, 142, 315, 203, 106, 169, 206, 213, 101, 182, 129, 174, 189, 217, 79, 300, 93, 258, 283, 97, 133, 194, 261, 73, 194, 139, 87, 72, 283, 237, 198, 214, 176, 312, 118, 90, 87, 121, 83, 154, 189, 81, 158, 122, 176, 102, 162, 85, 89, 143, 102, 97, 218, 209, 162, 105, 221, 95, 81, 128, 213, 86, 78, 205, 272, 138, 167, 279, 233, 90, 246, 108, 82, 104, 277], "fold_timings": [{"fold": 0, "seconds": 114.10802713800058}, {"fold": 1, "seconds": 117.18850929099972}, {"fold": 2, "seconds": 117.34706524000012}, {"fold": 3, "seconds": 115.78463645099964}, {"fold": 4, "seconds": 115.1224606120004}], "peak_reserved": [9839837184, 10166992896], "seconds_including_load_and_staging": 795.1176104510005}
+{"completed_fold": 4, "documents": 540, "windows": 540, "seconds": 115.1224606120004}
+{"documents": 540, "windows": 540, "discarded_tokens": 0, "formatted_token_lengths": [259, 106, 117, 129, 143, 159, 78, 85, 92, 111, 142, 301, 263, 257, 104, 76, 160, 235, 120, 230, 256, 272, 106, 115, 148, 207, 282, 81, 282, 237, 88, 149, 124, 139, 215, 150, 119, 170, 334, 120, 132, 179, 241, 139, 341, 75, 276, 173, 107, 335, 111, 85, 85, 133, 222, 194, 121, 99, 264, 90, 183, 76, 185, 124, 195, 101, 100, 133, 223, 246, 295, 139, 159, 171, 147, 162, 197, 110, 101, 106, 128, 80, 250, 112, 88, 279, 114, 147, 264, 224, 162, 118, 145, 153, 134, 236, 207, 93, 143, 102, 106, 224, 256, 203, 83, 190, 122, 165, 153, 219, 201, 139, 303, 124, 115, 227, 323, 287, 91, 226, 287, 89, 101, 96, 227, 83, 203, 283, 210, 74, 119, 143, 79, 102, 75, 139, 98, 85, 85, 219, 199, 216, 80, 101, 74, 240, 145, 300, 96, 105, 160, 208, 161, 97, 91, 126, 127, 160, 296, 105, 90, 129, 178, 151, 99, 181, 218, 93, 82, 184, 248, 334, 227, 177, 79, 319, 315, 86, 210, 273, 81, 75, 300, 116, 91, 108, 106, 97, 127, 91, 182, 76, 255, 148, 161, 184, 85, 277, 109, 182, 83, 171, 279, 219, 117, 119, 195, 223, 221, 105, 298, 223, 150, 130, 297, 147, 109, 216, 304, 112, 350, 312, 356, 190, 90, 271, 169, 122, 186, 150, 104, 146, 121, 275, 139, 128, 139, 304, 281, 85, 171, 81, 115, 300, 266, 199, 101, 289, 202, 186, 129, 91, 171, 325, 204, 152, 198, 219, 258, 147, 95, 123, 193, 80, 127, 82, 242, 96, 140, 215, 270, 283, 127, 155, 286, 310, 127, 77, 191, 153, 129, 224, 129, 202, 294, 110, 188, 309, 229, 243, 280, 145, 313, 178, 90, 316, 122, 100, 80, 277, 169, 101, 262, 161, 315, 118, 136, 107, 349, 95, 116, 276, 73, 166, 76, 136, 151, 122, 83, 153, 110, 102, 98, 184, 231, 222, 302, 200, 133, 81, 190, 154, 100, 108, 241, 228, 185, 90, 174, 285, 131, 106, 182, 97, 81, 186, 156, 128, 299, 211, 242, 264, 109, 83, 101, 130, 242, 227, 106, 159, 222, 122, 78, 93, 214, 83, 72, 235, 264, 187, 327, 88, 307, 181, 151, 120, 253, 90, 199, 120, 115, 249, 232, 90, 80, 244, 103, 103, 140, 81, 97, 306, 239, 102, 108, 113, 77, 143, 173, 90, 94, 81, 245, 84, 273, 117, 130, 298, 90, 127, 98, 246, 87, 90, 73, 77, 153, 176, 74, 342, 221, 162, 84, 215, 213, 297, 322, 146, 234, 123, 127, 328, 84, 89, 149, 132, 187, 332, 110, 98, 78, 84, 169, 192, 180, 112, 93, 114, 128, 80, 119, 89, 274, 125, 71, 98, 168, 88, 291, 112, 186, 163, 245, 226, 89, 249, 142, 315, 203, 106, 169, 206, 213, 101, 182, 129, 174, 189, 217, 79, 300, 93, 258, 283, 97, 133, 194, 261, 73, 194, 139, 87, 72, 283, 237, 198, 214, 176, 312, 118, 90, 87, 121, 83, 154, 189, 81, 158, 122, 176, 102, 162, 85, 89, 143, 102, 97, 218, 209, 162, 105, 221, 95, 81, 128, 213, 86, 78, 205, 272, 138, 167, 279, 233, 90, 246, 108, 82, 104, 277], "fold_timings": [{"fold": 0, "seconds": 114.10802713800058}, {"fold": 1, "seconds": 117.18850929099972}, {"fold": 2, "seconds": 117.34706524000012}, {"fold": 3, "seconds": 115.78463645099964}, {"fold": 4, "seconds": 115.1224606120004}], "peak_reserved": [9839837184, 10166992896], "seconds_including_load_and_staging": 795.1176104510005}
+native expert exit code 0
+native expert wall time 824 s; output True
+RUNNING MAIN INFERENCE
+[      0s] train 2699 test 540
+[      0s] train 2699 test 540
+[      1s] test clusters 76 sizes [0, 15, 12, 8, 6, 5, 3, 1, 2, 2, 0, 1, 2, 0, 1, 1, 0, 1, 16]
+[      1s] test clusters 76 sizes [0, 15, 12, 8, 6, 5, 3, 1, 2, 2, 0, 1, 2, 0, 1, 1, 0, 1, 16]
+[      3s] matched-clean extra rows after exact de-dup 24443
+[      3s] matched-clean extra rows after exact de-dup 24443
+[    342s] tfidf done
+[    342s] tfidf done
+[    355s] svc4 fit rows=237123 source_weighted; external clean=24443
+[    355s] svc4 fit rows=237123 source_weighted; external clean=24443
+[   1563s] svc4 done
+[   1563s] svc4 done
+[   1899s] distort done
+[   1899s] WARNING: ours_svc / top34 skipped with error: NameError("name 'pathlib' is not defined")
+[   1899s] distort done
+[   1899s] WARNING: ours_svc / top34 skipped with error: NameError("name 'pathlib' is not defined")
+[   1926s] l24 q14v5
+[   1926s] l24 q14v5
+Loading weights:   0%|          | 0/299 [00:00<?, ?it/s]Loading weights:   0%|          | 0/299 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/299 [00:00<?, ?it/s]Loading weights:   0%|          | 1/299 [00:09<46:34,  9.38s/it]Loading weights:   0%|          | 1/299 [00:09<46:34,  9.38s/it]
+Loading weights:   0%|          | 1/299 [00:09<46:34,  9.38s/it]Loading weights:  23%|██▎       | 69/299 [00:09<00:23,  9.98it/s]Loading weights:  23%|██▎       | 69/299 [00:09<00:23,  9.98it/s]
+Loading weights:  23%|██▎       | 69/299 [00:09<00:23,  9.98it/s]Loading weights:  27%|██▋       | 82/299 [00:11<00:23,  9.29it/s]Loading weights:  27%|██▋       | 82/299 [00:11<00:23,  9.29it/s]
+Loading weights:  27%|██▋       | 82/299 [00:11<00:23,  9.29it/s]Loading weights:  30%|███       | 91/299 [00:12<00:20, 10.03it/s]Loading weights:  30%|███       | 91/299 [00:12<00:20, 10.03it/s]
+Loading weights:  30%|███       | 91/299 [00:12<00:20, 10.03it/s]Loading weights:  32%|███▏      | 96/299 [00:12<00:18, 10.68it/s]Loading weights:  32%|███▏      | 96/299 [00:12<00:18, 10.68it/s]
+Loading weights:  32%|███▏      | 96/299 [00:12<00:18, 10.68it/s]Loading weights:  34%|███▍      | 102/299 [00:13<00:19, 10.08it/s]Loading weights:  35%|███▌      | 105/299 [00:13<00:17, 10.87it/s]Loading weights:  34%|███▍      | 102/299 [00:13<00:19, 10.08it/s]Loading weights:  35%|███▌      | 105/299 [00:13<00:17, 10.87it/s]
+Loading weights:  34%|███▍      | 102/299 [00:13<00:19, 10.08it/s]Loading weights:  35%|███▌      | 105/299 [00:13<00:17, 10.87it/s]Loading weights:  38%|███▊      | 113/299 [00:14<00:18, 10.12it/s]Loading weights:  39%|███▉      | 116/299 [00:14<00:16, 10.98it/s]Loading weights:  38%|███▊      | 113/299 [00:14<00:18, 10.12it/s]Loading weights:  39%|███▉      | 116/299 [00:14<00:16, 10.98it/s]
+Loading weights:  38%|███▊      | 113/299 [00:14<00:18, 10.12it/s]Loading weights:  39%|███▉      | 116/299 [00:14<00:16, 10.98it/s]Loading weights:  41%|████▏     | 124/299 [00:14<00:16, 10.80it/s]Loading weights:  41%|████▏     | 124/299 [00:14<00:16, 10.80it/s]
+Loading weights:  41%|████▏     | 124/299 [00:14<00:16, 10.80it/s]Loading weights:  42%|████▏     | 126/299 [00:15<00:16, 10.38it/s]Loading weights:  42%|████▏     | 126/299 [00:15<00:16, 10.38it/s]
+Loading weights:  42%|████▏     | 126/299 [00:15<00:16, 10.38it/s]Loading weights:  45%|████▌     | 135/299 [00:15<00:15, 10.79it/s]Loading weights:  46%|████▌     | 137/299 [00:16<00:14, 11.18it/s]Loading weights:  45%|████▌     | 135/299 [00:15<00:15, 10.79it/s]Loading weights:  46%|████▌     | 137/299 [00:16<00:14, 11.18it/s]
+Loading weights:  45%|████▌     | 135/299 [00:15<00:15, 10.79it/s]Loading weights:  46%|████▌     | 137/299 [00:16<00:14, 11.18it/s]Loading weights:  49%|████▉     | 146/299 [00:17<00:14, 10.33it/s]Loading weights:  49%|████▉     | 146/299 [00:17<00:14, 10.33it/s]
+Loading weights:  49%|████▉     | 146/299 [00:17<00:14, 10.33it/s]Loading weights:  53%|█████▎    | 157/299 [00:17<00:12, 11.38it/s]Loading weights:  53%|█████▎    | 157/299 [00:17<00:12, 11.38it/s]
+Loading weights:  53%|█████▎    | 157/299 [00:17<00:12, 11.38it/s]Loading weights:  53%|█████▎    | 159/299 [00:18<00:12, 11.11it/s]Loading weights:  53%|█████▎    | 159/299 [00:18<00:12, 11.11it/s]
+Loading weights:  53%|█████▎    | 159/299 [00:18<00:12, 11.11it/s]Loading weights:  56%|█████▌    | 168/299 [00:18<00:11, 11.55it/s]Loading weights:  57%|█████▋    | 170/299 [00:18<00:10, 11.73it/s]Loading weights:  56%|█████▌    | 168/299 [00:18<00:11, 11.55it/s]Loading weights:  57%|█████▋    | 170/299 [00:18<00:10, 11.73it/s]
+Loading weights:  56%|█████▌    | 168/299 [00:18<00:11, 11.55it/s]Loading weights:  57%|█████▋    | 170/299 [00:18<00:10, 11.73it/s]Loading weights:  60%|█████▉    | 179/299 [00:19<00:10, 10.98it/s]Loading weights:  61%|██████    | 181/299 [00:19<00:10, 11.47it/s]Loading weights:  60%|█████▉    | 179/299 [00:19<00:10, 10.98it/s]Loading weights:  61%|██████    | 181/299 [00:19<00:10, 11.47it/s]
+Loading weights:  60%|█████▉    | 179/299 [00:19<00:10, 10.98it/s]Loading weights:  61%|██████    | 181/299 [00:19<00:10, 11.47it/s]Loading weights:  64%|██████▎   | 190/299 [00:20<00:09, 11.12it/s]Loading weights:  64%|██████▍   | 192/299 [00:21<00:09, 11.11it/s]Loading weights:  64%|██████▎   | 190/299 [00:20<00:09, 11.12it/s]Loading weights:  64%|██████▍   | 192/299 [00:21<00:09, 11.11it/s]
+Loading weights:  64%|██████▎   | 190/299 [00:20<00:09, 11.12it/s]Loading weights:  64%|██████▍   | 192/299 [00:21<00:09, 11.11it/s]Loading weights:  67%|██████▋   | 201/299 [00:21<00:09, 10.46it/s]Loading weights:  67%|██████▋   | 201/299 [00:21<00:09, 10.46it/s]
+Loading weights:  67%|██████▋   | 201/299 [00:21<00:09, 10.46it/s]Loading weights:  71%|███████   | 212/299 [00:22<00:07, 11.24it/s]Loading weights:  72%|███████▏  | 214/299 [00:22<00:07, 11.34it/s]Loading weights:  71%|███████   | 212/299 [00:22<00:07, 11.24it/s]Loading weights:  72%|███████▏  | 214/299 [00:22<00:07, 11.34it/s]
+Loading weights:  71%|███████   | 212/299 [00:22<00:07, 11.24it/s]Loading weights:  72%|███████▏  | 214/299 [00:22<00:07, 11.34it/s]Loading weights:  75%|███████▍  | 223/299 [00:23<00:06, 11.41it/s]Loading weights:  75%|███████▍  | 223/299 [00:23<00:06, 11.41it/s]
+Loading weights:  75%|███████▍  | 223/299 [00:23<00:06, 11.41it/s]Loading weights:  75%|███████▌  | 225/299 [00:23<00:06, 11.16it/s]Loading weights:  75%|███████▌  | 225/299 [00:23<00:06, 11.16it/s]
+Loading weights:  75%|███████▌  | 225/299 [00:23<00:06, 11.16it/s]Loading weights:  78%|███████▊  | 234/299 [00:24<00:05, 11.78it/s]Loading weights:  79%|███████▉  | 236/299 [00:24<00:05, 11.92it/s]Loading weights:  78%|███████▊  | 234/299 [00:24<00:05, 11.78it/s]Loading weights:  79%|███████▉  | 236/299 [00:24<00:05, 11.92it/s]
+Loading weights:  78%|███████▊  | 234/299 [00:24<00:05, 11.78it/s]Loading weights:  79%|███████▉  | 236/299 [00:24<00:05, 11.92it/s]Loading weights:  82%|████████▏ | 245/299 [00:25<00:04, 11.03it/s]Loading weights:  83%|████████▎ | 247/299 [00:25<00:04, 11.27it/s]Loading weights:  82%|████████▏ | 245/299 [00:25<00:04, 11.03it/s]Loading weights:  83%|████████▎ | 247/299 [00:25<00:04, 11.27it/s]
+Loading weights:  82%|████████▏ | 245/299 [00:25<00:04, 11.03it/s]Loading weights:  83%|████████▎ | 247/299 [00:25<00:04, 11.27it/s]Loading weights:  86%|████████▌ | 256/299 [00:26<00:03, 11.76it/s]Loading weights:  86%|████████▌ | 256/299 [00:26<00:03, 11.76it/s]
+Loading weights:  86%|████████▌ | 256/299 [00:26<00:03, 11.76it/s]Loading weights:  86%|████████▋ | 258/299 [00:26<00:03, 10.98it/s]Loading weights:  86%|████████▋ | 258/299 [00:26<00:03, 10.98it/s]
+Loading weights:  86%|████████▋ | 258/299 [00:26<00:03, 10.98it/s]Loading weights:  89%|████████▉ | 267/299 [00:27<00:02, 11.12it/s]Loading weights:  90%|████████▉ | 269/299 [00:27<00:02, 11.49it/s]Loading weights:  89%|████████▉ | 267/299 [00:27<00:02, 11.12it/s]Loading weights:  90%|████████▉ | 269/299 [00:27<00:02, 11.49it/s]
+Loading weights:  89%|████████▉ | 267/299 [00:27<00:02, 11.12it/s]Loading weights:  90%|████████▉ | 269/299 [00:27<00:02, 11.49it/s]Loading weights:  93%|█████████▎| 278/299 [00:28<00:01, 10.68it/s]Loading weights:  93%|█████████▎| 278/299 [00:28<00:01, 10.68it/s]
+Loading weights:  93%|█████████▎| 278/299 [00:28<00:01, 10.68it/s]Loading weights:  97%|█████████▋| 289/299 [00:29<00:00, 11.45it/s]Loading weights:  97%|█████████▋| 291/299 [00:29<00:00, 11.38it/s]Loading weights: 100%|██████████| 299/299 [00:29<00:00, 10.04it/s]
+Loading weights:  97%|█████████▋| 289/299 [00:29<00:00, 11.45it/s]Loading weights:  97%|█████████▋| 291/299 [00:29<00:00, 11.38it/s]Loading weights: 100%|██████████| 299/299 [00:29<00:00, 10.04it/s]
+
+Loading weights:  97%|█████████▋| 289/299 [00:29<00:00, 11.45it/s]Loading weights:  97%|█████████▋| 291/299 [00:29<00:00, 11.38it/s]Loading weights: 100%|██████████| 299/299 [00:29<00:00, 10.04it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{27...39}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{27...39}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{27...39}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   2048s]   l24 q14v5: adapter q14v5_f0 done (bf16 redo batches 0)
+[   2048s]   l24 q14v5: adapter q14v5_f0 done (bf16 redo batches 0)
+[   2150s]   l24 q14v5: adapter q14v5_f1 done (bf16 redo batches 0)
+[   2150s]   l24 q14v5: adapter q14v5_f1 done (bf16 redo batches 0)
+[   2254s]   l24 q14v5: adapter q14v5_f2 done (bf16 redo batches 0)
+[   2254s]   l24 q14v5: adapter q14v5_f2 done (bf16 redo batches 0)
+[   2358s]   l24 q14v5: adapter q14v5_f3 done (bf16 redo batches 0)
+[   2358s]   l24 q14v5: adapter q14v5_f3 done (bf16 redo batches 0)
+[   2461s]   l24 q14v5: adapter q14v5_f4 done (bf16 redo batches 0)
+[   2461s]   l24 q14v5: adapter q14v5_f4 done (bf16 redo batches 0)
+[   3059s]   l24 q14v5: adapter q14v5 done (bf16 redo batches 0)
+[   3059s]   l24 q14v5: adapter q14v5 done (bf16 redo batches 0)
+[   3072s]   gaussian head q14v5: 525 grouped test rows, weight 0.7
+[   3072s]   gaussian head q14v5: 525 grouped test rows, weight 0.7
+[   3072s] q14v5 done gpu0:0.0GB gpu1:0.0GB
+[   3072s] l24 q8v5
+[   3072s] q14v5 done gpu0:0.0GB gpu1:0.0GB
+[   3072s] l24 q8v5
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 1/266 [00:07<34:14,  7.75s/it]Loading weights:  35%|███▍      | 92/266 [00:07<00:10, 16.51it/s]Loading weights:   0%|          | 1/266 [00:07<34:14,  7.75s/it]Loading weights:  35%|███▍      | 92/266 [00:07<00:10, 16.51it/s]
+Loading weights:   0%|          | 1/266 [00:07<34:14,  7.75s/it]Loading weights:  35%|███▍      | 92/266 [00:07<00:10, 16.51it/s]Loading weights:  51%|█████     | 135/266 [00:10<00:07, 16.98it/s]Loading weights:  51%|█████     | 135/266 [00:10<00:07, 16.98it/s]
+Loading weights:  51%|█████     | 135/266 [00:10<00:07, 16.98it/s]Loading weights:  60%|█████▉    | 159/266 [00:11<00:06, 17.58it/s]Loading weights:  60%|█████▉    | 159/266 [00:11<00:06, 17.58it/s]
+Loading weights:  60%|█████▉    | 159/266 [00:11<00:06, 17.58it/s]Loading weights:  66%|██████▌   | 175/266 [00:12<00:04, 18.72it/s]Loading weights:  66%|██████▌   | 175/266 [00:12<00:04, 18.72it/s]
+Loading weights:  66%|██████▌   | 175/266 [00:12<00:04, 18.72it/s]Loading weights:  70%|██████▉   | 186/266 [00:12<00:04, 18.82it/s]Loading weights:  70%|██████▉   | 186/266 [00:12<00:04, 18.82it/s]
+Loading weights:  70%|██████▉   | 186/266 [00:12<00:04, 18.82it/s]Loading weights:  73%|███████▎  | 194/266 [00:13<00:03, 18.30it/s]Loading weights:  73%|███████▎  | 194/266 [00:13<00:03, 18.30it/s]
+Loading weights:  73%|███████▎  | 194/266 [00:13<00:03, 18.30it/s]Loading weights:  76%|███████▌  | 201/266 [00:13<00:03, 17.59it/s]Loading weights:  76%|███████▌  | 201/266 [00:13<00:03, 17.59it/s]
+Loading weights:  76%|███████▌  | 201/266 [00:13<00:03, 17.59it/s]Loading weights:  80%|███████▉  | 212/266 [00:14<00:03, 17.82it/s]Loading weights:  80%|███████▉  | 212/266 [00:14<00:03, 17.82it/s]
+Loading weights:  80%|███████▉  | 212/266 [00:14<00:03, 17.82it/s]Loading weights:  84%|████████▍ | 223/266 [00:14<00:02, 17.58it/s]Loading weights:  84%|████████▍ | 223/266 [00:14<00:02, 17.58it/s]
+Loading weights:  84%|████████▍ | 223/266 [00:14<00:02, 17.58it/s]Loading weights:  88%|████████▊ | 234/266 [00:15<00:01, 17.45it/s]Loading weights:  88%|████████▊ | 234/266 [00:15<00:01, 17.45it/s]
+Loading weights:  88%|████████▊ | 234/266 [00:15<00:01, 17.45it/s]Loading weights:  92%|█████████▏| 245/266 [00:16<00:01, 18.57it/s]Loading weights:  93%|█████████▎| 248/266 [00:16<00:00, 19.07it/s]Loading weights:  92%|█████████▏| 245/266 [00:16<00:01, 18.57it/s]Loading weights:  93%|█████████▎| 248/266 [00:16<00:00, 19.07it/s]
+Loading weights:  92%|█████████▏| 245/266 [00:16<00:01, 18.57it/s]Loading weights:  93%|█████████▎| 248/266 [00:16<00:00, 19.07it/s]Loading weights:  96%|█████████▌| 256/266 [00:16<00:00, 17.83it/s]Loading weights: 100%|██████████| 266/266 [00:16<00:00, 15.86it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:  96%|█████████▌| 256/266 [00:16<00:00, 17.83it/s]Loading weights: 100%|██████████| 266/266 [00:16<00:00, 15.86it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:  96%|█████████▌| 256/266 [00:16<00:00, 17.83it/s]Loading weights: 100%|██████████| 266/266 [00:16<00:00, 15.86it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 1/266 [00:01<08:08,  1.84s/it]Loading weights:  21%|██        | 55/266 [00:01<00:05, 38.61it/s]Loading weights:   0%|          | 1/266 [00:01<08:08,  1.84s/it]Loading weights:  21%|██        | 55/266 [00:01<00:05, 38.61it/s]
+Loading weights:   0%|          | 1/266 [00:01<08:08,  1.84s/it]Loading weights:  21%|██        | 55/266 [00:01<00:05, 38.61it/s]Loading weights:  30%|███       | 81/266 [00:02<00:04, 38.65it/s]Loading weights:  30%|███       | 81/266 [00:02<00:04, 38.65it/s]
+Loading weights:  30%|███       | 81/266 [00:02<00:04, 38.65it/s]Loading weights:  36%|███▋      | 97/266 [00:02<00:03, 43.09it/s]Loading weights:  36%|███▋      | 97/266 [00:02<00:03, 43.09it/s]
+Loading weights:  36%|███▋      | 97/266 [00:02<00:03, 43.09it/s]Loading weights:  41%|████      | 109/266 [00:03<00:03, 45.35it/s]Loading weights:  41%|████      | 109/266 [00:03<00:03, 45.35it/s]
+Loading weights:  41%|████      | 109/266 [00:03<00:03, 45.35it/s]Loading weights:  45%|████▍     | 119/266 [00:03<00:03, 44.26it/s]Loading weights:  45%|████▍     | 119/266 [00:03<00:03, 44.26it/s]
+Loading weights:  45%|████▍     | 119/266 [00:03<00:03, 44.26it/s]Loading weights:  48%|████▊     | 127/266 [00:03<00:03, 43.11it/s]Loading weights:  48%|████▊     | 127/266 [00:03<00:03, 43.11it/s]
+Loading weights:  48%|████▊     | 127/266 [00:03<00:03, 43.11it/s]Loading weights:  51%|█████     | 135/266 [00:03<00:03, 41.67it/s]Loading weights:  51%|█████     | 135/266 [00:03<00:03, 41.67it/s]
+Loading weights:  51%|█████     | 135/266 [00:03<00:03, 41.67it/s]Loading weights:  55%|█████▍    | 146/266 [00:03<00:02, 44.28it/s]Loading weights:  55%|█████▍    | 146/266 [00:03<00:02, 44.28it/s]
+Loading weights:  55%|█████▍    | 146/266 [00:03<00:02, 44.28it/s]Loading weights:  59%|█████▉    | 157/266 [00:04<00:02, 46.60it/s]Loading weights:  59%|█████▉    | 157/266 [00:04<00:02, 46.60it/s]
+Loading weights:  59%|█████▉    | 157/266 [00:04<00:02, 46.60it/s]Loading weights:  63%|██████▎   | 168/266 [00:04<00:02, 45.77it/s]Loading weights:  63%|██████▎   | 168/266 [00:04<00:02, 45.77it/s]
+Loading weights:  63%|██████▎   | 168/266 [00:04<00:02, 45.77it/s]Loading weights:  67%|██████▋   | 179/266 [00:04<00:02, 42.38it/s]Loading weights:  71%|███████▏  | 190/266 [00:04<00:01, 47.20it/s]Loading weights:  67%|██████▋   | 179/266 [00:04<00:02, 42.38it/s]Loading weights:  71%|███████▏  | 190/266 [00:04<00:01, 47.20it/s]
+Loading weights:  67%|██████▋   | 179/266 [00:04<00:02, 42.38it/s]Loading weights:  71%|███████▏  | 190/266 [00:04<00:01, 47.20it/s]Loading weights:  76%|███████▌  | 201/266 [00:05<00:01, 45.54it/s]Loading weights:  76%|███████▌  | 201/266 [00:05<00:01, 45.54it/s]
+Loading weights:  76%|███████▌  | 201/266 [00:05<00:01, 45.54it/s]Loading weights:  80%|███████▉  | 212/266 [00:05<00:01, 41.06it/s]Loading weights:  84%|████████▍ | 224/266 [00:05<00:00, 47.75it/s]Loading weights:  80%|███████▉  | 212/266 [00:05<00:01, 41.06it/s]Loading weights:  84%|████████▍ | 224/266 [00:05<00:00, 47.75it/s]
+Loading weights:  80%|███████▉  | 212/266 [00:05<00:01, 41.06it/s]Loading weights:  84%|████████▍ | 224/266 [00:05<00:00, 47.75it/s]Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 53.39it/s]Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 53.39it/s]
+Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 53.39it/s]Loading weights:  92%|█████████▏| 245/266 [00:06<00:00, 46.15it/s]Loading weights:  92%|█████████▏| 245/266 [00:06<00:00, 46.15it/s]
+Loading weights:  92%|█████████▏| 245/266 [00:06<00:00, 46.15it/s]Loading weights:  96%|█████████▌| 256/266 [00:06<00:00, 44.74it/s]Loading weights: 100%|██████████| 266/266 [00:06<00:00, 41.68it/s]
+Loading weights:  96%|█████████▌| 256/266 [00:06<00:00, 44.74it/s]Loading weights: 100%|██████████| 266/266 [00:06<00:00, 41.68it/s]
+
+Loading weights:  96%|█████████▌| 256/266 [00:06<00:00, 44.74it/s]Loading weights: 100%|██████████| 266/266 [00:06<00:00, 41.68it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   3139s]   l24 q8v5: adapter q8v5_f0 done (bf16 redo batches 0)
+[   3139s]   l24 q8v5: adapter q8v5_f0 done (bf16 redo batches 0)
+[   3169s]   l24 q8v5: adapter q8v5_f1 done (bf16 redo batches 0)
+[   3169s]   l24 q8v5: adapter q8v5_f1 done (bf16 redo batches 0)
+[   3201s]   l24 q8v5: adapter q8v5_f2 done (bf16 redo batches 0)
+[   3201s]   l24 q8v5: adapter q8v5_f2 done (bf16 redo batches 0)
+[   3233s]   l24 q8v5: adapter q8v5_f3 done (bf16 redo batches 0)
+[   3233s]   l24 q8v5: adapter q8v5_f3 done (bf16 redo batches 0)
+[   3264s]   l24 q8v5: adapter q8v5_f4 done (bf16 redo batches 0)
+[   3264s]   l24 q8v5: adapter q8v5_f4 done (bf16 redo batches 0)
+[   3437s]   l24 q8v5: adapter q8v5 done (bf16 redo batches 0)
+[   3437s]   l24 q8v5: adapter q8v5 done (bf16 redo batches 0)
+[   3447s]   gaussian head q8v5: 525 grouped test rows, weight 0.44
+[   3447s]   gaussian head q8v5: 525 grouped test rows, weight 0.44
+[   3447s] q8v5 done gpu0:0.0GB gpu1:0.0GB
+[   3447s] l24 ll8v5
+[   3447s] q8v5 done gpu0:0.0GB gpu1:0.0GB
+[   3447s] l24 ll8v5
+Loading weights:   0%|          | 0/218 [00:00<?, ?it/s]Loading weights:   0%|          | 0/218 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/218 [00:00<?, ?it/s]Loading weights:   0%|          | 1/218 [00:16<59:29, 16.45s/it]Loading weights:  27%|██▋       | 58/218 [00:16<00:32,  4.93it/s]Loading weights:   0%|          | 1/218 [00:16<59:29, 16.45s/it]Loading weights:  27%|██▋       | 58/218 [00:16<00:32,  4.93it/s]
+Loading weights:   0%|          | 1/218 [00:16<59:29, 16.45s/it]Loading weights:  27%|██▋       | 58/218 [00:16<00:32,  4.93it/s]Loading weights:  41%|████      | 89/218 [00:22<00:24,  5.16it/s]Loading weights:  41%|████      | 89/218 [00:22<00:24,  5.16it/s]
+Loading weights:  41%|████      | 89/218 [00:22<00:24,  5.16it/s]Loading weights:  47%|████▋     | 103/218 [00:25<00:23,  4.90it/s]Loading weights:  47%|████▋     | 103/218 [00:25<00:23,  4.90it/s]
+Loading weights:  47%|████▋     | 103/218 [00:25<00:23,  4.90it/s]Loading weights:  51%|█████     | 111/218 [00:27<00:22,  4.78it/s]Loading weights:  51%|█████     | 111/218 [00:27<00:22,  4.78it/s]
+Loading weights:  51%|█████     | 111/218 [00:27<00:22,  4.78it/s]Loading weights:  55%|█████▌    | 120/218 [00:28<00:19,  5.02it/s]Loading weights:  55%|█████▌    | 120/218 [00:28<00:19,  5.02it/s]
+Loading weights:  55%|█████▌    | 120/218 [00:28<00:19,  5.02it/s]Loading weights:  57%|█████▋    | 124/218 [00:29<00:17,  5.25it/s]Loading weights:  57%|█████▋    | 124/218 [00:29<00:17,  5.25it/s]
+Loading weights:  57%|█████▋    | 124/218 [00:29<00:17,  5.25it/s]Loading weights:  59%|█████▉    | 129/218 [00:30<00:18,  4.89it/s]Loading weights:  59%|█████▉    | 129/218 [00:30<00:18,  4.89it/s]
+Loading weights:  59%|█████▉    | 129/218 [00:30<00:18,  4.89it/s]Loading weights:  60%|██████    | 131/218 [00:31<00:17,  5.08it/s]Loading weights:  60%|██████    | 131/218 [00:31<00:17,  5.08it/s]
+Loading weights:  60%|██████    | 131/218 [00:31<00:17,  5.08it/s]Loading weights:  63%|██████▎   | 138/218 [00:32<00:16,  4.77it/s]Loading weights:  63%|██████▎   | 138/218 [00:32<00:16,  4.77it/s]
+Loading weights:  63%|██████▎   | 138/218 [00:32<00:16,  4.77it/s]Loading weights:  67%|██████▋   | 147/218 [00:34<00:13,  5.19it/s]Loading weights:  67%|██████▋   | 147/218 [00:34<00:13,  5.19it/s]
+Loading weights:  67%|██████▋   | 147/218 [00:34<00:13,  5.19it/s]Loading weights:  68%|██████▊   | 148/218 [00:34<00:14,  4.87it/s]Loading weights:  68%|██████▊   | 148/218 [00:34<00:14,  4.87it/s]
+Loading weights:  68%|██████▊   | 148/218 [00:34<00:14,  4.87it/s]Loading weights:  72%|███████▏  | 156/218 [00:35<00:11,  5.25it/s]Loading weights:  72%|███████▏  | 156/218 [00:35<00:11,  5.25it/s]
+Loading weights:  72%|███████▏  | 156/218 [00:35<00:11,  5.25it/s]Loading weights:  72%|███████▏  | 158/218 [00:36<00:12,  4.98it/s]Loading weights:  72%|███████▏  | 158/218 [00:36<00:12,  4.98it/s]
+Loading weights:  72%|███████▏  | 158/218 [00:36<00:12,  4.98it/s]Loading weights:  76%|███████▌  | 165/218 [00:37<00:10,  5.03it/s]Loading weights:  76%|███████▌  | 165/218 [00:37<00:10,  5.03it/s]
+Loading weights:  76%|███████▌  | 165/218 [00:37<00:10,  5.03it/s]Loading weights:  80%|███████▉  | 174/218 [00:39<00:09,  4.84it/s]Loading weights:  80%|███████▉  | 174/218 [00:39<00:09,  4.84it/s]
+Loading weights:  80%|███████▉  | 174/218 [00:39<00:09,  4.84it/s]Loading weights:  84%|████████▍ | 183/218 [00:41<00:06,  5.54it/s]Loading weights:  84%|████████▍ | 183/218 [00:41<00:06,  5.54it/s]
+Loading weights:  84%|████████▍ | 183/218 [00:41<00:06,  5.54it/s]Loading weights:  84%|████████▍ | 184/218 [00:41<00:07,  4.78it/s]Loading weights:  84%|████████▍ | 184/218 [00:41<00:07,  4.78it/s]
+Loading weights:  84%|████████▍ | 184/218 [00:41<00:07,  4.78it/s]Loading weights:  88%|████████▊ | 192/218 [00:43<00:05,  5.11it/s]Loading weights:  88%|████████▊ | 192/218 [00:43<00:05,  5.11it/s]
+Loading weights:  88%|████████▊ | 192/218 [00:43<00:05,  5.11it/s]Loading weights:  89%|████████▉ | 194/218 [00:43<00:04,  5.22it/s]Loading weights:  89%|████████▉ | 194/218 [00:43<00:04,  5.22it/s]
+Loading weights:  89%|████████▉ | 194/218 [00:43<00:04,  5.22it/s]Loading weights:  92%|█████████▏| 201/218 [00:45<00:03,  4.84it/s]Loading weights:  92%|█████████▏| 201/218 [00:45<00:03,  4.84it/s]
+Loading weights:  92%|█████████▏| 201/218 [00:45<00:03,  4.84it/s]Loading weights:  96%|█████████▋| 210/218 [00:46<00:01,  5.05it/s]Loading weights: 100%|██████████| 218/218 [00:46<00:00,  4.65it/s]
+Loading weights:  96%|█████████▋| 210/218 [00:46<00:01,  5.05it/s]Loading weights: 100%|██████████| 218/218 [00:46<00:00,  4.65it/s]
+
+Loading weights:  96%|█████████▋| 210/218 [00:46<00:01,  5.05it/s]Loading weights: 100%|██████████| 218/218 [00:46<00:00,  4.65it/s]
+[transformers] [1mLlamaModel LOAD REPORT[0m from: /tmp/llama-3.1/8b
+Key                                                                           | Status     |  | 
+------------------------------------------------------------------------------+------------+--+-
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[transformers] [1mLlamaModel LOAD REPORT[0m from: /tmp/llama-3.1/8b
+Key                                                                           | Status     |  | 
+------------------------------------------------------------------------------+------------+--+-
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+[transformers] [1mLlamaModel LOAD REPORT[0m from: /tmp/llama-3.1/8b
+Key                                                                           | Status     |  | 
+------------------------------------------------------------------------------+------------+--+-
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:   0%|          | 0/218 [00:00<?, ?it/s]Loading weights:   0%|          | 0/218 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/218 [00:00<?, ?it/s]Loading weights:   0%|          | 1/218 [00:16<59:55, 16.57s/it]Loading weights:   0%|          | 1/218 [00:16<59:55, 16.57s/it]
+Loading weights:   0%|          | 1/218 [00:16<59:55, 16.57s/it]Loading weights:  28%|██▊       | 62/218 [00:17<00:30,  5.08it/s]Loading weights:  28%|██▊       | 62/218 [00:17<00:30,  5.08it/s]
+Loading weights:  28%|██▊       | 62/218 [00:17<00:30,  5.08it/s]Loading weights:  34%|███▍      | 74/218 [00:18<00:26,  5.39it/s]Loading weights:  34%|███▍      | 74/218 [00:18<00:26,  5.39it/s]
+Loading weights:  34%|███▍      | 74/218 [00:18<00:26,  5.39it/s]Loading weights:  37%|███▋      | 80/218 [00:20<00:26,  5.17it/s]Loading weights:  37%|███▋      | 80/218 [00:20<00:26,  5.17it/s]
+Loading weights:  37%|███▋      | 80/218 [00:20<00:26,  5.17it/s]Loading weights:  39%|███▊      | 84/218 [00:21<00:28,  4.63it/s]Loading weights:  39%|███▉      | 86/218 [00:21<00:26,  4.91it/s]Loading weights:  39%|███▊      | 84/218 [00:21<00:28,  4.63it/s]Loading weights:  39%|███▉      | 86/218 [00:21<00:26,  4.91it/s]
+Loading weights:  39%|███▊      | 84/218 [00:21<00:28,  4.63it/s]Loading weights:  39%|███▉      | 86/218 [00:21<00:26,  4.91it/s]Loading weights:  43%|████▎     | 93/218 [00:23<00:25,  4.89it/s]Loading weights:  43%|████▎     | 93/218 [00:23<00:25,  4.89it/s]
+Loading weights:  43%|████▎     | 93/218 [00:23<00:25,  4.89it/s]Loading weights:  44%|████▎     | 95/218 [00:23<00:24,  5.00it/s]Loading weights:  44%|████▎     | 95/218 [00:23<00:24,  5.00it/s]
+Loading weights:  44%|████▎     | 95/218 [00:23<00:24,  5.00it/s]Loading weights:  47%|████▋     | 102/218 [00:25<00:23,  4.94it/s]Loading weights:  48%|████▊     | 104/218 [00:25<00:21,  5.28it/s]Loading weights:  47%|████▋     | 102/218 [00:25<00:23,  4.94it/s]Loading weights:  48%|████▊     | 104/218 [00:25<00:21,  5.28it/s]
+Loading weights:  47%|████▋     | 102/218 [00:25<00:23,  4.94it/s]Loading weights:  48%|████▊     | 104/218 [00:25<00:21,  5.28it/s]Loading weights:  51%|█████     | 111/218 [00:27<00:22,  4.79it/s]Loading weights:  51%|█████     | 111/218 [00:27<00:22,  4.79it/s]
+Loading weights:  51%|█████     | 111/218 [00:27<00:22,  4.79it/s]Loading weights:  55%|█████▌    | 120/218 [00:28<00:18,  5.20it/s]Loading weights:  55%|█████▌    | 120/218 [00:28<00:18,  5.20it/s]
+Loading weights:  55%|█████▌    | 120/218 [00:28<00:18,  5.20it/s]Loading weights:  56%|█████▌    | 121/218 [00:28<00:19,  4.97it/s]Loading weights:  56%|█████▌    | 121/218 [00:28<00:19,  4.97it/s]
+Loading weights:  56%|█████▌    | 121/218 [00:28<00:19,  4.97it/s]Loading weights:  59%|█████▉    | 129/218 [00:30<00:16,  5.32it/s]Loading weights:  59%|█████▉    | 129/218 [00:30<00:16,  5.32it/s]
+Loading weights:  59%|█████▉    | 129/218 [00:30<00:16,  5.32it/s]Loading weights:  60%|██████    | 131/218 [00:30<00:15,  5.46it/s]Loading weights:  60%|██████    | 131/218 [00:30<00:15,  5.46it/s]
+Loading weights:  60%|██████    | 131/218 [00:30<00:15,  5.46it/s]Loading weights:  63%|██████▎   | 138/218 [00:32<00:15,  5.16it/s]Loading weights:  64%|██████▍   | 140/218 [00:32<00:13,  5.73it/s]Loading weights:  63%|██████▎   | 138/218 [00:32<00:15,  5.16it/s]Loading weights:  64%|██████▍   | 140/218 [00:32<00:13,  5.73it/s]
+Loading weights:  63%|██████▎   | 138/218 [00:32<00:15,  5.16it/s]Loading weights:  64%|██████▍   | 140/218 [00:32<00:13,  5.73it/s]Loading weights:  67%|██████▋   | 147/218 [00:33<00:13,  5.13it/s]Loading weights:  68%|██████▊   | 148/218 [00:33<00:13,  5.25it/s]Loading weights:  67%|██████▋   | 147/218 [00:33<00:13,  5.13it/s]Loading weights:  68%|██████▊   | 148/218 [00:33<00:13,  5.25it/s]
+Loading weights:  67%|██████▋   | 147/218 [00:33<00:13,  5.13it/s]Loading weights:  68%|██████▊   | 148/218 [00:33<00:13,  5.25it/s]Loading weights:  72%|███████▏  | 156/218 [00:35<00:11,  5.48it/s]Loading weights:  72%|███████▏  | 156/218 [00:35<00:11,  5.48it/s]
+Loading weights:  72%|███████▏  | 156/218 [00:35<00:11,  5.48it/s]Loading weights:  72%|███████▏  | 157/218 [00:35<00:11,  5.42it/s]Loading weights:  72%|███████▏  | 157/218 [00:35<00:11,  5.42it/s]
+Loading weights:  72%|███████▏  | 157/218 [00:35<00:11,  5.42it/s]Loading weights:  72%|███████▏  | 158/218 [00:35<00:11,  5.34it/s]Loading weights:  72%|███████▏  | 158/218 [00:35<00:11,  5.34it/s]
+Loading weights:  72%|███████▏  | 158/218 [00:35<00:11,  5.34it/s]Loading weights:  76%|███████▌  | 165/218 [00:36<00:09,  5.59it/s]Loading weights:  76%|███████▌  | 166/218 [00:36<00:08,  5.82it/s]Loading weights:  76%|███████▌  | 165/218 [00:36<00:09,  5.59it/s]Loading weights:  76%|███████▌  | 166/218 [00:36<00:08,  5.82it/s]
+Loading weights:  76%|███████▌  | 165/218 [00:36<00:09,  5.59it/s]Loading weights:  76%|███████▌  | 166/218 [00:36<00:08,  5.82it/s]Loading weights:  77%|███████▋  | 167/218 [00:37<00:09,  5.62it/s]Loading weights:  77%|███████▋  | 167/218 [00:37<00:09,  5.62it/s]
+Loading weights:  77%|███████▋  | 167/218 [00:37<00:09,  5.62it/s]Loading weights:  80%|███████▉  | 174/218 [00:38<00:08,  5.29it/s]Loading weights:  80%|████████  | 175/218 [00:38<00:07,  5.55it/s]Loading weights:  80%|███████▉  | 174/218 [00:38<00:08,  5.29it/s]Loading weights:  80%|████████  | 175/218 [00:38<00:07,  5.55it/s]
+Loading weights:  80%|███████▉  | 174/218 [00:38<00:08,  5.29it/s]Loading weights:  80%|████████  | 175/218 [00:38<00:07,  5.55it/s]Loading weights:  84%|████████▍ | 183/218 [00:40<00:06,  5.69it/s]Loading weights:  84%|████████▍ | 184/218 [00:40<00:06,  5.64it/s]Loading weights:  84%|████████▍ | 183/218 [00:40<00:06,  5.69it/s]Loading weights:  84%|████████▍ | 184/218 [00:40<00:06,  5.64it/s]
+Loading weights:  84%|████████▍ | 183/218 [00:40<00:06,  5.69it/s]Loading weights:  84%|████████▍ | 184/218 [00:40<00:06,  5.64it/s]Loading weights:  85%|████████▍ | 185/218 [00:40<00:05,  5.79it/s]Loading weights:  85%|████████▍ | 185/218 [00:40<00:05,  5.79it/s]
+Loading weights:  85%|████████▍ | 185/218 [00:40<00:05,  5.79it/s]Loading weights:  88%|████████▊ | 192/218 [00:41<00:05,  5.06it/s]Loading weights:  88%|████████▊ | 192/218 [00:41<00:05,  5.06it/s]
+Loading weights:  88%|████████▊ | 192/218 [00:41<00:05,  5.06it/s]Loading weights:  92%|█████████▏| 201/218 [00:43<00:03,  5.25it/s]Loading weights:  93%|█████████▎| 202/218 [00:43<00:03,  5.30it/s]Loading weights:  92%|█████████▏| 201/218 [00:43<00:03,  5.25it/s]Loading weights:  93%|█████████▎| 202/218 [00:43<00:03,  5.30it/s]
+Loading weights:  92%|█████████▏| 201/218 [00:43<00:03,  5.25it/s]Loading weights:  93%|█████████▎| 202/218 [00:43<00:03,  5.30it/s]Loading weights:  96%|█████████▋| 210/218 [00:45<00:01,  5.51it/s]Loading weights:  97%|█████████▋| 212/218 [00:45<00:00,  6.10it/s]Loading weights: 100%|██████████| 218/218 [00:45<00:00,  4.82it/s]
+Loading weights:  96%|█████████▋| 210/218 [00:45<00:01,  5.51it/s]Loading weights:  97%|█████████▋| 212/218 [00:45<00:00,  6.10it/s]Loading weights: 100%|██████████| 218/218 [00:45<00:00,  4.82it/s]
+
+Loading weights:  96%|█████████▋| 210/218 [00:45<00:01,  5.51it/s]Loading weights:  97%|█████████▋| 212/218 [00:45<00:00,  6.10it/s]Loading weights: 100%|██████████| 218/218 [00:45<00:00,  4.82it/s]
+[transformers] [1mLlamaModel LOAD REPORT[0m from: /tmp/llama-3.1/8b
+Key                                                                           | Status     |  | 
+------------------------------------------------------------------------------+------------+--+-
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[transformers] [1mLlamaModel LOAD REPORT[0m from: /tmp/llama-3.1/8b
+Key                                                                           | Status     |  | 
+------------------------------------------------------------------------------+------------+--+-
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+[transformers] [1mLlamaModel LOAD REPORT[0m from: /tmp/llama-3.1/8b
+Key                                                                           | Status     |  | 
+------------------------------------------------------------------------------+------------+--+-
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24, 25, 26, 27, 28, 29, 30, 31}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                                                | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   3583s]   l24 ll8v5: adapter ll8v5_f0 done (bf16 redo batches 0)
+[   3583s]   l24 ll8v5: adapter ll8v5_f0 done (bf16 redo batches 0)
+[   3616s]   l24 ll8v5: adapter ll8v5_f1 done (bf16 redo batches 0)
+[   3616s]   l24 ll8v5: adapter ll8v5_f1 done (bf16 redo batches 0)
+[   3650s]   l24 ll8v5: adapter ll8v5_f2 done (bf16 redo batches 0)
+[   3650s]   l24 ll8v5: adapter ll8v5_f2 done (bf16 redo batches 0)
+[   3684s]   l24 ll8v5: adapter ll8v5_f3 done (bf16 redo batches 0)
+[   3684s]   l24 ll8v5: adapter ll8v5_f3 done (bf16 redo batches 0)
+[   3718s]   l24 ll8v5: adapter ll8v5_f4 done (bf16 redo batches 0)
+[   3718s]   l24 ll8v5: adapter ll8v5_f4 done (bf16 redo batches 0)
+[   3752s]   l24 ll8v5: adapter ll8v5 done (bf16 redo batches 0)
+[   3752s]   l24 ll8v5: adapter ll8v5 done (bf16 redo batches 0)
+[   3753s] ll8v5 done gpu0:0.0GB gpu1:0.0GB
+[   3753s] l24 q8v7
+[   3753s] ll8v5 done gpu0:0.0GB gpu1:0.0GB
+[   3753s] l24 q8v7
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 1/266 [00:07<32:42,  7.41s/it]Loading weights:   0%|          | 1/266 [00:07<32:42,  7.41s/it]
+Loading weights:   0%|          | 1/266 [00:07<32:42,  7.41s/it]Loading weights:  68%|██████▊   | 180/266 [00:07<00:02, 32.66it/s]Loading weights:  68%|██████▊   | 180/266 [00:07<00:02, 32.66it/s]
+Loading weights:  68%|██████▊   | 180/266 [00:07<00:02, 32.66it/s]Loading weights:  80%|████████  | 214/266 [00:08<00:01, 35.13it/s]Loading weights:  80%|████████  | 214/266 [00:08<00:01, 35.13it/s]
+Loading weights:  80%|████████  | 214/266 [00:08<00:01, 35.13it/s]Loading weights:  88%|████████▊ | 235/266 [00:08<00:00, 36.23it/s]Loading weights:  88%|████████▊ | 235/266 [00:08<00:00, 36.23it/s]
+Loading weights:  88%|████████▊ | 235/266 [00:08<00:00, 36.23it/s]Loading weights:  94%|█████████▎| 249/266 [00:09<00:00, 37.38it/s]Loading weights:  94%|█████████▎| 249/266 [00:09<00:00, 37.38it/s]
+Loading weights:  94%|█████████▎| 249/266 [00:09<00:00, 37.38it/s]Loading weights:  98%|█████████▊| 260/266 [00:09<00:00, 37.98it/s]Loading weights: 100%|██████████| 266/266 [00:09<00:00, 28.13it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:  98%|█████████▊| 260/266 [00:09<00:00, 37.98it/s]Loading weights: 100%|██████████| 266/266 [00:09<00:00, 28.13it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:  98%|█████████▊| 260/266 [00:09<00:00, 37.98it/s]Loading weights: 100%|██████████| 266/266 [00:09<00:00, 28.13it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 1/266 [00:01<08:24,  1.90s/it]Loading weights:  20%|█▉        | 53/266 [00:02<00:05, 35.94it/s]Loading weights:   0%|          | 1/266 [00:01<08:24,  1.90s/it]Loading weights:  20%|█▉        | 53/266 [00:02<00:05, 35.94it/s]
+Loading weights:   0%|          | 1/266 [00:01<08:24,  1.90s/it]Loading weights:  20%|█▉        | 53/266 [00:02<00:05, 35.94it/s]Loading weights:  29%|██▊       | 76/266 [00:02<00:04, 39.85it/s]Loading weights:  29%|██▊       | 76/266 [00:02<00:04, 39.85it/s]
+Loading weights:  29%|██▊       | 76/266 [00:02<00:04, 39.85it/s]Loading weights:  34%|███▍      | 91/266 [00:02<00:04, 41.32it/s]Loading weights:  34%|███▍      | 91/266 [00:02<00:04, 41.32it/s]
+Loading weights:  34%|███▍      | 91/266 [00:02<00:04, 41.32it/s]Loading weights:  38%|███▊      | 102/266 [00:03<00:04, 40.27it/s]Loading weights:  38%|███▊      | 102/266 [00:03<00:04, 40.27it/s]
+Loading weights:  38%|███▊      | 102/266 [00:03<00:04, 40.27it/s]Loading weights:  42%|████▏     | 113/266 [00:03<00:03, 42.07it/s]Loading weights:  42%|████▏     | 113/266 [00:03<00:03, 42.07it/s]
+Loading weights:  42%|████▏     | 113/266 [00:03<00:03, 42.07it/s]Loading weights:  47%|████▋     | 124/266 [00:03<00:03, 44.12it/s]Loading weights:  47%|████▋     | 124/266 [00:03<00:03, 44.12it/s]
+Loading weights:  47%|████▋     | 124/266 [00:03<00:03, 44.12it/s]Loading weights:  51%|█████     | 135/266 [00:03<00:02, 45.10it/s]Loading weights:  53%|█████▎    | 141/266 [00:03<00:02, 46.11it/s]Loading weights:  51%|█████     | 135/266 [00:03<00:02, 45.10it/s]Loading weights:  53%|█████▎    | 141/266 [00:03<00:02, 46.11it/s]
+Loading weights:  51%|█████     | 135/266 [00:03<00:02, 45.10it/s]Loading weights:  53%|█████▎    | 141/266 [00:03<00:02, 46.11it/s]Loading weights:  55%|█████▌    | 147/266 [00:04<00:02, 46.59it/s]Loading weights:  55%|█████▌    | 147/266 [00:04<00:02, 46.59it/s]
+Loading weights:  55%|█████▌    | 147/266 [00:04<00:02, 46.59it/s]Loading weights:  59%|█████▉    | 157/266 [00:04<00:02, 45.37it/s]Loading weights:  59%|█████▉    | 157/266 [00:04<00:02, 45.37it/s]
+Loading weights:  59%|█████▉    | 157/266 [00:04<00:02, 45.37it/s]Loading weights:  63%|██████▎   | 168/266 [00:04<00:02, 47.28it/s]Loading weights:  63%|██████▎   | 168/266 [00:04<00:02, 47.28it/s]
+Loading weights:  63%|██████▎   | 168/266 [00:04<00:02, 47.28it/s]Loading weights:  67%|██████▋   | 179/266 [00:04<00:01, 46.21it/s]Loading weights:  67%|██████▋   | 179/266 [00:04<00:01, 46.21it/s]
+Loading weights:  67%|██████▋   | 179/266 [00:04<00:01, 46.21it/s]Loading weights:  71%|███████▏  | 190/266 [00:05<00:01, 43.69it/s]Loading weights:  76%|███████▌  | 202/266 [00:05<00:01, 51.03it/s]Loading weights:  71%|███████▏  | 190/266 [00:05<00:01, 43.69it/s]Loading weights:  76%|███████▌  | 202/266 [00:05<00:01, 51.03it/s]
+Loading weights:  71%|███████▏  | 190/266 [00:05<00:01, 43.69it/s]Loading weights:  76%|███████▌  | 202/266 [00:05<00:01, 51.03it/s]Loading weights:  80%|███████▉  | 212/266 [00:05<00:01, 48.68it/s]Loading weights:  80%|███████▉  | 212/266 [00:05<00:01, 48.68it/s]
+Loading weights:  80%|███████▉  | 212/266 [00:05<00:01, 48.68it/s]Loading weights:  84%|████████▍ | 223/266 [00:05<00:00, 47.79it/s]Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 51.18it/s]Loading weights:  84%|████████▍ | 223/266 [00:05<00:00, 47.79it/s]Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 51.18it/s]
+Loading weights:  84%|████████▍ | 223/266 [00:05<00:00, 47.79it/s]Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 51.18it/s]Loading weights:  92%|█████████▏| 245/266 [00:06<00:00, 47.97it/s]Loading weights:  96%|█████████▌| 256/266 [00:06<00:00, 51.14it/s]Loading weights:  92%|█████████▏| 245/266 [00:06<00:00, 47.97it/s]Loading weights:  96%|█████████▌| 256/266 [00:06<00:00, 51.14it/s]
+Loading weights:  92%|█████████▏| 245/266 [00:06<00:00, 47.97it/s]Loading weights:  96%|█████████▌| 256/266 [00:06<00:00, 51.14it/s]Loading weights: 100%|██████████| 266/266 [00:06<00:00, 42.01it/s]
+Loading weights: 100%|██████████| 266/266 [00:06<00:00, 42.01it/s]
+
+Loading weights: 100%|██████████| 266/266 [00:06<00:00, 42.01it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{24...35}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{24...35}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   3809s]   l24 q8v7: adapter q8v7_f0 done (bf16 redo batches 0)
+[   3809s]   l24 q8v7: adapter q8v7_f0 done (bf16 redo batches 0)
+[   3846s]   l24 q8v7: adapter q8v7_f1 done (bf16 redo batches 0)
+[   3846s]   l24 q8v7: adapter q8v7_f1 done (bf16 redo batches 0)
+[   3878s]   l24 q8v7: adapter q8v7_f2 done (bf16 redo batches 0)
+[   3878s]   l24 q8v7: adapter q8v7_f2 done (bf16 redo batches 0)
+[   3916s]   l24 q8v7: adapter q8v7_f3 done (bf16 redo batches 0)
+[   3916s]   l24 q8v7: adapter q8v7_f3 done (bf16 redo batches 0)
+[   3947s]   l24 q8v7: adapter q8v7_f4 done (bf16 redo batches 0)
+[   3947s]   l24 q8v7: adapter q8v7_f4 done (bf16 redo batches 0)
+[   3988s]   l24 q8v7: adapter q8v7 done (bf16 redo batches 0)
+[   3988s]   l24 q8v7: adapter q8v7 done (bf16 redo batches 0)
+[   3989s] q8v7 done gpu0:0.0GB gpu1:0.0GB
+[   3989s] l24 glm9v3
+[   3989s] q8v7 done gpu0:0.0GB gpu1:0.0GB
+[   3989s] l24 glm9v3
+Loading weights:   0%|          | 0/262 [00:00<?, ?it/s]Loading weights:   0%|          | 0/262 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/262 [00:00<?, ?it/s]Loading weights:   0%|          | 1/262 [00:14<1:03:28, 14.59s/it]Loading weights:   0%|          | 1/262 [00:14<1:03:28, 14.59s/it]
+Loading weights:   0%|          | 1/262 [00:14<1:03:28, 14.59s/it]Loading weights:   1%|          | 2/262 [00:15<28:21,  6.54s/it]  Loading weights:   1%|          | 2/262 [00:15<28:21,  6.54s/it]  
+Loading weights:   1%|          | 2/262 [00:15<28:21,  6.54s/it]  Loading weights:   2%|▏         | 4/262 [00:17<12:49,  2.98s/it]Loading weights:   2%|▏         | 4/262 [00:17<12:49,  2.98s/it]
+Loading weights:   2%|▏         | 4/262 [00:17<12:49,  2.98s/it]Loading weights:   4%|▍         | 10/262 [00:17<03:39,  1.15it/s]Loading weights:   4%|▍         | 10/262 [00:17<03:39,  1.15it/s]
+Loading weights:   4%|▍         | 10/262 [00:17<03:39,  1.15it/s]Loading weights:   6%|▌         | 16/262 [00:18<02:04,  1.98it/s]Loading weights:   6%|▌         | 16/262 [00:18<02:04,  1.98it/s]
+Loading weights:   6%|▌         | 16/262 [00:18<02:04,  1.98it/s]Loading weights:   6%|▋         | 17/262 [00:20<02:41,  1.51it/s]Loading weights:   6%|▋         | 17/262 [00:20<02:41,  1.51it/s]
+Loading weights:   6%|▋         | 17/262 [00:20<02:41,  1.51it/s]Loading weights:   8%|▊         | 22/262 [00:20<01:36,  2.50it/s]Loading weights:   8%|▊         | 22/262 [00:20<01:36,  2.50it/s]
+Loading weights:   8%|▊         | 22/262 [00:20<01:36,  2.50it/s]Loading weights:  10%|▉         | 25/262 [00:21<01:17,  3.06it/s]Loading weights:  10%|▉         | 25/262 [00:21<01:17,  3.06it/s]
+Loading weights:  10%|▉         | 25/262 [00:21<01:17,  3.06it/s]Loading weights:  11%|█         | 29/262 [00:24<01:43,  2.24it/s]Loading weights:  11%|█         | 29/262 [00:24<01:43,  2.24it/s]
+Loading weights:  11%|█         | 29/262 [00:24<01:43,  2.24it/s]Loading weights:  13%|█▎        | 35/262 [00:24<01:03,  3.59it/s]Loading weights:  13%|█▎        | 35/262 [00:24<01:03,  3.59it/s]
+Loading weights:  13%|█▎        | 35/262 [00:24<01:03,  3.59it/s]Loading weights:  14%|█▍        | 37/262 [00:24<00:57,  3.89it/s]Loading weights:  14%|█▍        | 37/262 [00:24<00:57,  3.89it/s]
+Loading weights:  14%|█▍        | 37/262 [00:24<00:57,  3.89it/s]Loading weights:  16%|█▌        | 42/262 [00:27<01:17,  2.82it/s]Loading weights:  16%|█▌        | 42/262 [00:27<01:17,  2.82it/s]
+Loading weights:  16%|█▌        | 42/262 [00:27<01:17,  2.82it/s]Loading weights:  19%|█▊        | 49/262 [00:27<00:47,  4.52it/s]Loading weights:  19%|█▊        | 49/262 [00:27<00:47,  4.52it/s]
+Loading weights:  19%|█▊        | 49/262 [00:27<00:47,  4.52it/s]Loading weights:  19%|█▉        | 51/262 [00:27<00:43,  4.88it/s]Loading weights:  19%|█▉        | 51/262 [00:27<00:43,  4.88it/s]
+Loading weights:  19%|█▉        | 51/262 [00:27<00:43,  4.88it/s]Loading weights:  21%|██        | 55/262 [00:28<00:42,  4.85it/s]Loading weights:  21%|██        | 55/262 [00:28<00:42,  4.85it/s]
+Loading weights:  21%|██        | 55/262 [00:28<00:42,  4.85it/s]Loading weights:  21%|██▏       | 56/262 [00:30<01:12,  2.83it/s]Loading weights:  21%|██▏       | 56/262 [00:30<01:12,  2.83it/s]
+Loading weights:  21%|██▏       | 56/262 [00:30<01:12,  2.83it/s]Loading weights:  24%|██▎       | 62/262 [00:30<00:43,  4.58it/s]Loading weights:  24%|██▎       | 62/262 [00:30<00:43,  4.58it/s]
+Loading weights:  24%|██▎       | 62/262 [00:30<00:43,  4.58it/s]Loading weights:  24%|██▍       | 64/262 [00:30<00:40,  4.88it/s]Loading weights:  24%|██▍       | 64/262 [00:30<00:40,  4.88it/s]
+Loading weights:  24%|██▍       | 64/262 [00:30<00:40,  4.88it/s]Loading weights:  26%|██▌       | 68/262 [00:31<00:41,  4.69it/s]Loading weights:  26%|██▌       | 68/262 [00:31<00:41,  4.69it/s]
+Loading weights:  26%|██▌       | 68/262 [00:31<00:41,  4.69it/s]Loading weights:  26%|██▋       | 69/262 [00:33<01:13,  2.62it/s]Loading weights:  26%|██▋       | 69/262 [00:33<01:13,  2.62it/s]
+Loading weights:  26%|██▋       | 69/262 [00:33<01:13,  2.62it/s]Loading weights:  29%|██▊       | 75/262 [00:33<00:41,  4.52it/s]Loading weights:  29%|██▊       | 75/262 [00:33<00:41,  4.52it/s]
+Loading weights:  29%|██▊       | 75/262 [00:33<00:41,  4.52it/s]Loading weights:  29%|██▉       | 77/262 [00:34<00:37,  4.93it/s]Loading weights:  29%|██▉       | 77/262 [00:34<00:37,  4.93it/s]
+Loading weights:  29%|██▉       | 77/262 [00:34<00:37,  4.93it/s]Loading weights:  31%|███       | 80/262 [00:35<00:43,  4.20it/s]Loading weights:  31%|███       | 80/262 [00:35<00:43,  4.20it/s]
+Loading weights:  31%|███       | 80/262 [00:35<00:43,  4.20it/s]Loading weights:  31%|███▏      | 82/262 [00:36<01:08,  2.62it/s]Loading weights:  31%|███▏      | 82/262 [00:36<01:08,  2.62it/s]
+Loading weights:  31%|███▏      | 82/262 [00:36<01:08,  2.62it/s]Loading weights:  34%|███▎      | 88/262 [00:37<00:38,  4.53it/s]Loading weights:  34%|███▎      | 88/262 [00:37<00:38,  4.53it/s]
+Loading weights:  34%|███▎      | 88/262 [00:37<00:38,  4.53it/s]Loading weights:  34%|███▍      | 90/262 [00:37<00:34,  4.95it/s]Loading weights:  34%|███▍      | 90/262 [00:37<00:34,  4.95it/s]
+Loading weights:  34%|███▍      | 90/262 [00:37<00:34,  4.95it/s]Loading weights:  36%|███▌      | 94/262 [00:38<00:35,  4.73it/s]Loading weights:  36%|███▌      | 94/262 [00:38<00:35,  4.73it/s]
+Loading weights:  36%|███▌      | 94/262 [00:38<00:35,  4.73it/s]Loading weights:  36%|███▋      | 95/262 [00:40<01:03,  2.62it/s]Loading weights:  36%|███▋      | 95/262 [00:40<01:03,  2.62it/s]
+Loading weights:  36%|███▋      | 95/262 [00:40<01:03,  2.62it/s]Loading weights:  38%|███▊      | 99/262 [00:40<00:43,  3.75it/s]Loading weights:  38%|███▊      | 99/262 [00:40<00:43,  3.75it/s]
+Loading weights:  38%|███▊      | 99/262 [00:40<00:43,  3.75it/s]Loading weights:  39%|███▉      | 103/262 [00:40<00:31,  4.97it/s]Loading weights:  39%|███▉      | 103/262 [00:40<00:31,  4.97it/s]
+Loading weights:  39%|███▉      | 103/262 [00:40<00:31,  4.97it/s]Loading weights:  41%|████      | 107/262 [00:41<00:31,  4.88it/s]Loading weights:  41%|████      | 107/262 [00:41<00:31,  4.88it/s]
+Loading weights:  41%|████      | 107/262 [00:41<00:31,  4.88it/s]Loading weights:  41%|████      | 108/262 [00:43<00:57,  2.68it/s]Loading weights:  41%|████      | 108/262 [00:43<00:57,  2.68it/s]
+Loading weights:  41%|████      | 108/262 [00:43<00:57,  2.68it/s]Loading weights:  44%|████▎     | 114/262 [00:44<00:35,  4.12it/s]Loading weights:  44%|████▎     | 114/262 [00:44<00:35,  4.12it/s]
+Loading weights:  44%|████▎     | 114/262 [00:44<00:35,  4.12it/s]Loading weights:  46%|████▌     | 120/262 [00:46<00:45,  3.09it/s]Loading weights:  46%|████▌     | 120/262 [00:46<00:45,  3.09it/s]
+Loading weights:  46%|████▌     | 120/262 [00:46<00:45,  3.09it/s]Loading weights:  48%|████▊     | 125/262 [00:46<00:32,  4.23it/s]Loading weights:  48%|████▊     | 125/262 [00:46<00:32,  4.23it/s]
+Loading weights:  48%|████▊     | 125/262 [00:46<00:32,  4.23it/s]Loading weights:  49%|████▉     | 129/262 [00:47<00:25,  5.22it/s]Loading weights:  49%|████▉     | 129/262 [00:47<00:25,  5.22it/s]
+Loading weights:  49%|████▉     | 129/262 [00:47<00:25,  5.22it/s]Loading weights:  51%|█████     | 133/262 [00:48<00:25,  4.99it/s]Loading weights:  51%|█████     | 133/262 [00:48<00:25,  4.99it/s]
+Loading weights:  51%|█████     | 133/262 [00:48<00:25,  4.99it/s]Loading weights:  51%|█████     | 134/262 [00:49<00:42,  3.03it/s]Loading weights:  51%|█████     | 134/262 [00:49<00:42,  3.03it/s]
+Loading weights:  51%|█████     | 134/262 [00:49<00:42,  3.03it/s]Loading weights:  53%|█████▎    | 139/262 [00:50<00:27,  4.54it/s]Loading weights:  53%|█████▎    | 139/262 [00:50<00:27,  4.54it/s]
+Loading weights:  53%|█████▎    | 139/262 [00:50<00:27,  4.54it/s]Loading weights:  54%|█████▍    | 141/262 [00:50<00:24,  4.93it/s]Loading weights:  54%|█████▍    | 141/262 [00:50<00:24,  4.93it/s]
+Loading weights:  54%|█████▍    | 141/262 [00:50<00:24,  4.93it/s]Loading weights:  56%|█████▌    | 146/262 [00:52<00:38,  3.02it/s]Loading weights:  56%|█████▌    | 146/262 [00:52<00:38,  3.02it/s]
+Loading weights:  56%|█████▌    | 146/262 [00:52<00:38,  3.02it/s]Loading weights:  58%|█████▊    | 153/262 [00:53<00:24,  4.51it/s]Loading weights:  58%|█████▊    | 153/262 [00:53<00:24,  4.51it/s]
+Loading weights:  58%|█████▊    | 153/262 [00:53<00:24,  4.51it/s]Loading weights:  60%|██████    | 158/262 [00:54<00:21,  4.81it/s]Loading weights:  60%|██████    | 158/262 [00:54<00:21,  4.81it/s]
+Loading weights:  60%|██████    | 158/262 [00:54<00:21,  4.81it/s]Loading weights:  61%|██████    | 160/262 [00:55<00:30,  3.36it/s]Loading weights:  61%|██████    | 160/262 [00:55<00:30,  3.36it/s]
+Loading weights:  61%|██████    | 160/262 [00:55<00:30,  3.36it/s]Loading weights:  63%|██████▎   | 166/262 [00:56<00:19,  5.05it/s]Loading weights:  63%|██████▎   | 166/262 [00:56<00:19,  5.05it/s]
+Loading weights:  63%|██████▎   | 166/262 [00:56<00:19,  5.05it/s]Loading weights:  64%|██████▍   | 168/262 [00:56<00:17,  5.41it/s]Loading weights:  64%|██████▍   | 168/262 [00:56<00:17,  5.41it/s]
+Loading weights:  64%|██████▍   | 168/262 [00:56<00:17,  5.41it/s]Loading weights:  66%|██████▌   | 172/262 [00:59<00:31,  2.86it/s]Loading weights:  66%|██████▌   | 172/262 [00:59<00:31,  2.86it/s]
+Loading weights:  66%|██████▌   | 172/262 [00:59<00:31,  2.86it/s]Loading weights:  68%|██████▊   | 178/262 [00:59<00:19,  4.32it/s]Loading weights:  68%|██████▊   | 178/262 [00:59<00:19,  4.32it/s]
+Loading weights:  68%|██████▊   | 178/262 [00:59<00:19,  4.32it/s]Loading weights:  69%|██████▉   | 181/262 [00:59<00:16,  5.05it/s]Loading weights:  69%|██████▉   | 181/262 [00:59<00:16,  5.05it/s]
+Loading weights:  69%|██████▉   | 181/262 [00:59<00:16,  5.05it/s]Loading weights:  71%|███████   | 185/262 [01:00<00:16,  4.55it/s]Loading weights:  71%|███████   | 185/262 [01:00<00:16,  4.55it/s]
+Loading weights:  71%|███████   | 185/262 [01:00<00:16,  4.55it/s]Loading weights:  71%|███████   | 186/262 [01:02<00:29,  2.61it/s]Loading weights:  71%|███████   | 186/262 [01:02<00:29,  2.61it/s]
+Loading weights:  71%|███████   | 186/262 [01:02<00:29,  2.61it/s]Loading weights:  73%|███████▎  | 191/262 [01:03<00:17,  4.09it/s]Loading weights:  73%|███████▎  | 191/262 [01:03<00:17,  4.09it/s]
+Loading weights:  73%|███████▎  | 191/262 [01:03<00:17,  4.09it/s]Loading weights:  74%|███████▎  | 193/262 [01:03<00:15,  4.39it/s]Loading weights:  74%|███████▎  | 193/262 [01:03<00:15,  4.39it/s]
+Loading weights:  74%|███████▎  | 193/262 [01:03<00:15,  4.39it/s]Loading weights:  76%|███████▌  | 198/262 [01:06<00:24,  2.59it/s]Loading weights:  76%|███████▌  | 198/262 [01:06<00:24,  2.59it/s]
+Loading weights:  76%|███████▌  | 198/262 [01:06<00:24,  2.59it/s]Loading weights:  78%|███████▊  | 205/262 [01:06<00:13,  4.36it/s]Loading weights:  78%|███████▊  | 205/262 [01:06<00:13,  4.36it/s]
+Loading weights:  78%|███████▊  | 205/262 [01:06<00:13,  4.36it/s]Loading weights:  79%|███████▉  | 207/262 [01:07<00:12,  4.58it/s]Loading weights:  79%|███████▉  | 207/262 [01:07<00:12,  4.58it/s]
+Loading weights:  79%|███████▉  | 207/262 [01:07<00:12,  4.58it/s]Loading weights:  81%|████████  | 211/262 [01:07<00:11,  4.55it/s]Loading weights:  81%|████████  | 211/262 [01:07<00:11,  4.55it/s]
+Loading weights:  81%|████████  | 211/262 [01:07<00:11,  4.55it/s]Loading weights:  81%|████████  | 212/262 [01:09<00:18,  2.73it/s]Loading weights:  81%|████████  | 212/262 [01:09<00:18,  2.73it/s]
+Loading weights:  81%|████████  | 212/262 [01:09<00:18,  2.73it/s]Loading weights:  83%|████████▎ | 217/262 [01:09<00:10,  4.20it/s]Loading weights:  83%|████████▎ | 217/262 [01:09<00:10,  4.20it/s]
+Loading weights:  83%|████████▎ | 217/262 [01:09<00:10,  4.20it/s]Loading weights:  84%|████████▍ | 220/262 [01:10<00:08,  5.09it/s]Loading weights:  84%|████████▍ | 220/262 [01:10<00:08,  5.09it/s]
+Loading weights:  84%|████████▍ | 220/262 [01:10<00:08,  5.09it/s]Loading weights:  85%|████████▌ | 224/262 [01:11<00:07,  4.92it/s]Loading weights:  85%|████████▌ | 224/262 [01:11<00:07,  4.92it/s]
+Loading weights:  85%|████████▌ | 224/262 [01:11<00:07,  4.92it/s]Loading weights:  86%|████████▌ | 225/262 [01:12<00:13,  2.78it/s]Loading weights:  86%|████████▌ | 225/262 [01:12<00:13,  2.78it/s]
+Loading weights:  86%|████████▌ | 225/262 [01:12<00:13,  2.78it/s]Loading weights:  88%|████████▊ | 230/262 [01:13<00:08,  3.96it/s]Loading weights:  88%|████████▊ | 230/262 [01:13<00:08,  3.96it/s]
+Loading weights:  88%|████████▊ | 230/262 [01:13<00:08,  3.96it/s]Loading weights:  90%|█████████ | 237/262 [01:15<00:07,  3.19it/s]Loading weights:  90%|█████████ | 237/262 [01:15<00:07,  3.19it/s]
+Loading weights:  90%|█████████ | 237/262 [01:15<00:07,  3.19it/s]Loading weights:  93%|█████████▎| 243/262 [01:16<00:04,  4.59it/s]Loading weights:  93%|█████████▎| 243/262 [01:16<00:04,  4.59it/s]
+Loading weights:  93%|█████████▎| 243/262 [01:16<00:04,  4.59it/s]Loading weights:  94%|█████████▍| 246/262 [01:16<00:03,  5.31it/s]Loading weights:  94%|█████████▍| 246/262 [01:16<00:03,  5.31it/s]
+Loading weights:  94%|█████████▍| 246/262 [01:16<00:03,  5.31it/s]Loading weights:  95%|█████████▌| 250/262 [01:19<00:03,  3.08it/s]Loading weights:  95%|█████████▌| 250/262 [01:19<00:03,  3.08it/s]
+Loading weights:  95%|█████████▌| 250/262 [01:19<00:03,  3.08it/s]Loading weights:  98%|█████████▊| 257/262 [01:19<00:01,  4.82it/s]Loading weights:  98%|█████████▊| 257/262 [01:19<00:01,  4.82it/s]
+Loading weights:  98%|█████████▊| 257/262 [01:19<00:01,  4.82it/s]Loading weights:  99%|█████████▉| 259/262 [01:19<00:00,  5.12it/s]Loading weights: 100%|██████████| 262/262 [01:19<00:00,  3.29it/s]
+[transformers] [1mGlm4Model LOAD REPORT[0m from: /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25
+Key                                                         | Status     |  | 
+------------------------------------------------------------+------------+--+-
+layers.{20, 21, 22, 23, 24}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.gate_up_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_self_attn_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_mlp_layernorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:  99%|█████████▉| 259/262 [01:19<00:00,  5.12it/s]Loading weights: 100%|██████████| 262/262 [01:19<00:00,  3.29it/s]
+[transformers] [1mGlm4Model LOAD REPORT[0m from: /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25
+Key                                                         | Status     |  | 
+------------------------------------------------------------+------------+--+-
+layers.{20, 21, 22, 23, 24}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.gate_up_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_self_attn_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_mlp_layernorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:  99%|█████████▉| 259/262 [01:19<00:00,  5.12it/s]Loading weights: 100%|██████████| 262/262 [01:19<00:00,  3.29it/s]
+[transformers] [1mGlm4Model LOAD REPORT[0m from: /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25
+Key                                                         | Status     |  | 
+------------------------------------------------------------+------------+--+-
+layers.{20, 21, 22, 23, 24}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.gate_up_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_self_attn_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_mlp_layernorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:   0%|          | 0/262 [00:00<?, ?it/s]Loading weights:   0%|          | 0/262 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/262 [00:00<?, ?it/s]Loading weights:   0%|          | 1/262 [00:09<39:56,  9.18s/it]Loading weights:   0%|          | 1/262 [00:09<39:56,  9.18s/it]
+Loading weights:   0%|          | 1/262 [00:09<39:56,  9.18s/it]Loading weights:   1%|          | 2/262 [00:11<22:36,  5.22s/it]Loading weights:   1%|          | 2/262 [00:11<22:36,  5.22s/it]
+Loading weights:   1%|          | 2/262 [00:11<22:36,  5.22s/it]Loading weights:   4%|▍         | 10/262 [00:11<02:57,  1.42it/s]Loading weights:   4%|▍         | 10/262 [00:11<02:57,  1.42it/s]
+Loading weights:   4%|▍         | 10/262 [00:11<02:57,  1.42it/s]Loading weights:   5%|▍         | 12/262 [00:12<02:21,  1.77it/s]Loading weights:   5%|▍         | 12/262 [00:12<02:21,  1.77it/s]
+Loading weights:   5%|▍         | 12/262 [00:12<02:21,  1.77it/s]Loading weights:   6%|▌         | 16/262 [00:12<01:44,  2.36it/s]Loading weights:   6%|▌         | 16/262 [00:12<01:44,  2.36it/s]
+Loading weights:   6%|▌         | 16/262 [00:12<01:44,  2.36it/s]Loading weights:   6%|▋         | 17/262 [00:14<02:23,  1.71it/s]Loading weights:   6%|▋         | 17/262 [00:14<02:23,  1.71it/s]
+Loading weights:   6%|▋         | 17/262 [00:14<02:23,  1.71it/s]Loading weights:   9%|▉         | 23/262 [00:14<01:12,  3.32it/s]Loading weights:   9%|▉         | 23/262 [00:14<01:12,  3.32it/s]
+Loading weights:   9%|▉         | 23/262 [00:14<01:12,  3.32it/s]Loading weights:  10%|▉         | 25/262 [00:15<01:02,  3.79it/s]Loading weights:  10%|▉         | 25/262 [00:15<01:02,  3.79it/s]
+Loading weights:  10%|▉         | 25/262 [00:15<01:02,  3.79it/s]Loading weights:  11%|█         | 29/262 [00:16<00:57,  4.07it/s]Loading weights:  11%|█         | 29/262 [00:16<00:57,  4.07it/s]
+Loading weights:  11%|█         | 29/262 [00:16<00:57,  4.07it/s]Loading weights:  11%|█▏        | 30/262 [00:17<01:37,  2.38it/s]Loading weights:  11%|█▏        | 30/262 [00:17<01:37,  2.38it/s]
+Loading weights:  11%|█▏        | 30/262 [00:17<01:37,  2.38it/s]Loading weights:  14%|█▎        | 36/262 [00:18<00:52,  4.28it/s]Loading weights:  14%|█▎        | 36/262 [00:18<00:52,  4.28it/s]
+Loading weights:  14%|█▎        | 36/262 [00:18<00:52,  4.28it/s]Loading weights:  15%|█▍        | 38/262 [00:18<00:47,  4.69it/s]Loading weights:  15%|█▍        | 38/262 [00:18<00:47,  4.69it/s]
+Loading weights:  15%|█▍        | 38/262 [00:18<00:47,  4.69it/s]Loading weights:  16%|█▌        | 42/262 [00:20<01:15,  2.90it/s]Loading weights:  16%|█▌        | 42/262 [00:20<01:15,  2.90it/s]
+Loading weights:  16%|█▌        | 42/262 [00:20<01:15,  2.90it/s]Loading weights:  19%|█▊        | 49/262 [00:20<00:43,  4.91it/s]Loading weights:  19%|█▉        | 51/262 [00:21<00:39,  5.35it/s]Loading weights:  19%|█▊        | 49/262 [00:20<00:43,  4.91it/s]Loading weights:  19%|█▉        | 51/262 [00:21<00:39,  5.35it/s]
+Loading weights:  19%|█▊        | 49/262 [00:20<00:43,  4.91it/s]Loading weights:  19%|█▉        | 51/262 [00:21<00:39,  5.35it/s]Loading weights:  21%|██        | 55/262 [00:21<00:40,  5.12it/s]Loading weights:  21%|██        | 55/262 [00:21<00:40,  5.12it/s]
+Loading weights:  21%|██        | 55/262 [00:21<00:40,  5.12it/s]Loading weights:  21%|██▏       | 56/262 [00:23<01:07,  3.03it/s]Loading weights:  21%|██▏       | 56/262 [00:23<01:07,  3.03it/s]
+Loading weights:  21%|██▏       | 56/262 [00:23<01:07,  3.03it/s]Loading weights:  24%|██▎       | 62/262 [00:23<00:39,  5.02it/s]Loading weights:  24%|██▍       | 64/262 [00:23<00:35,  5.57it/s]Loading weights:  24%|██▎       | 62/262 [00:23<00:39,  5.02it/s]Loading weights:  24%|██▍       | 64/262 [00:23<00:35,  5.57it/s]
+Loading weights:  24%|██▎       | 62/262 [00:23<00:39,  5.02it/s]Loading weights:  24%|██▍       | 64/262 [00:23<00:35,  5.57it/s]Loading weights:  26%|██▌       | 68/262 [00:24<00:35,  5.41it/s]Loading weights:  26%|██▌       | 68/262 [00:24<00:35,  5.41it/s]
+Loading weights:  26%|██▌       | 68/262 [00:24<00:35,  5.41it/s]Loading weights:  26%|██▋       | 69/262 [00:26<01:04,  2.97it/s]Loading weights:  26%|██▋       | 69/262 [00:26<01:04,  2.97it/s]
+Loading weights:  26%|██▋       | 69/262 [00:26<01:04,  2.97it/s]Loading weights:  28%|██▊       | 73/262 [00:26<00:44,  4.22it/s]Loading weights:  29%|██▉       | 77/262 [00:26<00:31,  5.85it/s]Loading weights:  28%|██▊       | 73/262 [00:26<00:44,  4.22it/s]Loading weights:  29%|██▉       | 77/262 [00:26<00:31,  5.85it/s]
+Loading weights:  28%|██▊       | 73/262 [00:26<00:44,  4.22it/s]Loading weights:  29%|██▉       | 77/262 [00:26<00:31,  5.85it/s]Loading weights:  31%|███       | 81/262 [00:29<00:58,  3.08it/s]Loading weights:  31%|███       | 81/262 [00:29<00:58,  3.08it/s]
+Loading weights:  31%|███       | 81/262 [00:29<00:58,  3.08it/s]Loading weights:  34%|███▎      | 88/262 [00:29<00:34,  5.12it/s]Loading weights:  34%|███▎      | 88/262 [00:29<00:34,  5.12it/s]
+Loading weights:  34%|███▎      | 88/262 [00:29<00:34,  5.12it/s]Loading weights:  34%|███▍      | 90/262 [00:29<00:31,  5.50it/s]Loading weights:  34%|███▍      | 90/262 [00:29<00:31,  5.50it/s]
+Loading weights:  34%|███▍      | 90/262 [00:29<00:31,  5.50it/s]Loading weights:  36%|███▌      | 94/262 [00:30<00:32,  5.17it/s]Loading weights:  36%|███▌      | 94/262 [00:30<00:32,  5.17it/s]
+Loading weights:  36%|███▌      | 94/262 [00:30<00:32,  5.17it/s]Loading weights:  36%|███▋      | 95/262 [00:32<00:54,  3.06it/s]Loading weights:  36%|███▋      | 95/262 [00:32<00:54,  3.06it/s]
+Loading weights:  36%|███▋      | 95/262 [00:32<00:54,  3.06it/s]Loading weights:  39%|███▊      | 101/262 [00:32<00:32,  4.97it/s]Loading weights:  39%|███▊      | 101/262 [00:32<00:32,  4.97it/s]
+Loading weights:  39%|███▊      | 101/262 [00:32<00:32,  4.97it/s]Loading weights:  39%|███▉      | 103/262 [00:32<00:29,  5.43it/s]Loading weights:  39%|███▉      | 103/262 [00:32<00:29,  5.43it/s]
+Loading weights:  39%|███▉      | 103/262 [00:32<00:29,  5.43it/s]Loading weights:  40%|████      | 105/262 [00:33<00:35,  4.38it/s]Loading weights:  40%|████      | 105/262 [00:33<00:35,  4.38it/s]
+Loading weights:  40%|████      | 105/262 [00:33<00:35,  4.38it/s]Loading weights:  41%|████      | 108/262 [00:35<00:51,  2.96it/s]Loading weights:  41%|████      | 108/262 [00:35<00:51,  2.96it/s]
+Loading weights:  41%|████      | 108/262 [00:35<00:51,  2.96it/s]Loading weights:  44%|████▎     | 114/262 [00:35<00:30,  4.92it/s]Loading weights:  44%|████▎     | 114/262 [00:35<00:30,  4.92it/s]
+Loading weights:  44%|████▎     | 114/262 [00:35<00:30,  4.92it/s]Loading weights:  44%|████▍     | 116/262 [00:35<00:27,  5.35it/s]Loading weights:  44%|████▍     | 116/262 [00:35<00:27,  5.35it/s]
+Loading weights:  44%|████▍     | 116/262 [00:35<00:27,  5.35it/s]Loading weights:  46%|████▌     | 120/262 [00:36<00:27,  5.23it/s]Loading weights:  46%|████▌     | 120/262 [00:36<00:27,  5.23it/s]
+Loading weights:  46%|████▌     | 120/262 [00:36<00:27,  5.23it/s]Loading weights:  46%|████▌     | 121/262 [00:38<00:47,  2.95it/s]Loading weights:  46%|████▌     | 121/262 [00:38<00:47,  2.95it/s]
+Loading weights:  46%|████▌     | 121/262 [00:38<00:47,  2.95it/s]Loading weights:  48%|████▊     | 126/262 [00:38<00:29,  4.61it/s]Loading weights:  48%|████▊     | 126/262 [00:38<00:29,  4.61it/s]
+Loading weights:  48%|████▊     | 126/262 [00:38<00:29,  4.61it/s]Loading weights:  49%|████▉     | 129/262 [00:38<00:24,  5.44it/s]Loading weights:  49%|████▉     | 129/262 [00:38<00:24,  5.44it/s]
+Loading weights:  49%|████▉     | 129/262 [00:38<00:24,  5.44it/s]Loading weights:  51%|█████     | 133/262 [00:40<00:37,  3.40it/s]Loading weights:  53%|█████▎    | 139/262 [00:41<00:22,  5.51it/s]Loading weights:  51%|█████     | 133/262 [00:40<00:37,  3.40it/s]Loading weights:  53%|█████▎    | 139/262 [00:41<00:22,  5.51it/s]
+Loading weights:  51%|█████     | 133/262 [00:40<00:37,  3.40it/s]Loading weights:  53%|█████▎    | 139/262 [00:41<00:22,  5.51it/s]Loading weights:  54%|█████▍    | 141/262 [00:41<00:20,  5.95it/s]Loading weights:  54%|█████▍    | 141/262 [00:41<00:20,  5.95it/s]
+Loading weights:  54%|█████▍    | 141/262 [00:41<00:20,  5.95it/s]Loading weights:  56%|█████▌    | 146/262 [00:43<00:30,  3.83it/s]Loading weights:  56%|█████▌    | 146/262 [00:43<00:30,  3.83it/s]
+Loading weights:  56%|█████▌    | 146/262 [00:43<00:30,  3.83it/s]Loading weights:  58%|█████▊    | 152/262 [00:43<00:20,  5.37it/s]Loading weights:  58%|█████▊    | 152/262 [00:43<00:20,  5.37it/s]
+Loading weights:  58%|█████▊    | 152/262 [00:43<00:20,  5.37it/s]Loading weights:  61%|██████    | 159/262 [00:44<00:15,  6.52it/s]Loading weights:  61%|██████    | 159/262 [00:44<00:15,  6.52it/s]
+Loading weights:  61%|██████    | 159/262 [00:44<00:15,  6.52it/s]Loading weights:  61%|██████▏   | 161/262 [00:45<00:22,  4.43it/s]Loading weights:  61%|██████▏   | 161/262 [00:45<00:22,  4.43it/s]
+Loading weights:  61%|██████▏   | 161/262 [00:45<00:22,  4.43it/s]Loading weights:  63%|██████▎   | 166/262 [00:46<00:16,  5.93it/s]Loading weights:  64%|██████▍   | 168/262 [00:46<00:14,  6.42it/s]Loading weights:  63%|██████▎   | 166/262 [00:46<00:16,  5.93it/s]Loading weights:  64%|██████▍   | 168/262 [00:46<00:14,  6.42it/s]
+Loading weights:  63%|██████▎   | 166/262 [00:46<00:16,  5.93it/s]Loading weights:  64%|██████▍   | 168/262 [00:46<00:14,  6.42it/s]Loading weights:  66%|██████▌   | 172/262 [00:46<00:14,  6.15it/s]Loading weights:  66%|██████▌   | 172/262 [00:46<00:14,  6.15it/s]
+Loading weights:  66%|██████▌   | 172/262 [00:46<00:14,  6.15it/s]Loading weights:  66%|██████▌   | 173/262 [00:48<00:25,  3.47it/s]Loading weights:  68%|██████▊   | 179/262 [00:48<00:14,  5.93it/s]Loading weights:  66%|██████▌   | 173/262 [00:48<00:25,  3.47it/s]Loading weights:  68%|██████▊   | 179/262 [00:48<00:14,  5.93it/s]
+Loading weights:  66%|██████▌   | 173/262 [00:48<00:25,  3.47it/s]Loading weights:  68%|██████▊   | 179/262 [00:48<00:14,  5.93it/s]Loading weights:  69%|██████▉   | 181/262 [00:48<00:12,  6.32it/s]Loading weights:  69%|██████▉   | 181/262 [00:48<00:12,  6.32it/s]
+Loading weights:  69%|██████▉   | 181/262 [00:48<00:12,  6.32it/s]Loading weights:  71%|███████   | 185/262 [00:50<00:21,  3.65it/s]Loading weights:  71%|███████   | 185/262 [00:50<00:21,  3.65it/s]
+Loading weights:  71%|███████   | 185/262 [00:50<00:21,  3.65it/s]Loading weights:  73%|███████▎  | 190/262 [00:51<00:13,  5.18it/s]Loading weights:  74%|███████▍  | 194/262 [00:51<00:09,  7.02it/s]Loading weights:  73%|███████▎  | 190/262 [00:51<00:13,  5.18it/s]Loading weights:  74%|███████▍  | 194/262 [00:51<00:09,  7.02it/s]
+Loading weights:  73%|███████▎  | 190/262 [00:51<00:13,  5.18it/s]Loading weights:  74%|███████▍  | 194/262 [00:51<00:09,  7.02it/s]Loading weights:  76%|███████▌  | 198/262 [00:51<00:10,  6.27it/s]Loading weights:  76%|███████▌  | 198/262 [00:51<00:10,  6.27it/s]
+Loading weights:  76%|███████▌  | 198/262 [00:51<00:10,  6.27it/s]Loading weights:  76%|███████▋  | 200/262 [00:53<00:15,  4.00it/s]Loading weights:  78%|███████▊  | 205/262 [00:53<00:09,  6.00it/s]Loading weights:  76%|███████▋  | 200/262 [00:53<00:15,  4.00it/s]Loading weights:  78%|███████▊  | 205/262 [00:53<00:09,  6.00it/s]
+Loading weights:  76%|███████▋  | 200/262 [00:53<00:15,  4.00it/s]Loading weights:  78%|███████▊  | 205/262 [00:53<00:09,  6.00it/s]Loading weights:  79%|███████▉  | 207/262 [00:53<00:08,  6.35it/s]Loading weights:  79%|███████▉  | 207/262 [00:53<00:08,  6.35it/s]
+Loading weights:  79%|███████▉  | 207/262 [00:53<00:08,  6.35it/s]Loading weights:  80%|████████  | 210/262 [00:54<00:09,  5.58it/s]Loading weights:  80%|████████  | 210/262 [00:54<00:09,  5.58it/s]
+Loading weights:  80%|████████  | 210/262 [00:54<00:09,  5.58it/s]Loading weights:  81%|████████  | 212/262 [00:55<00:13,  3.59it/s]Loading weights:  83%|████████▎ | 218/262 [00:55<00:07,  6.18it/s]Loading weights:  81%|████████  | 212/262 [00:55<00:13,  3.59it/s]Loading weights:  83%|████████▎ | 218/262 [00:55<00:07,  6.18it/s]
+Loading weights:  81%|████████  | 212/262 [00:55<00:13,  3.59it/s]Loading weights:  83%|████████▎ | 218/262 [00:55<00:07,  6.18it/s]Loading weights:  84%|████████▍ | 220/262 [00:56<00:06,  6.54it/s]Loading weights:  84%|████████▍ | 220/262 [00:56<00:06,  6.54it/s]
+Loading weights:  84%|████████▍ | 220/262 [00:56<00:06,  6.54it/s]Loading weights:  85%|████████▌ | 224/262 [00:56<00:05,  6.47it/s]Loading weights:  85%|████████▌ | 224/262 [00:56<00:05,  6.47it/s]
+Loading weights:  85%|████████▌ | 224/262 [00:56<00:05,  6.47it/s]Loading weights:  86%|████████▋ | 226/262 [00:58<00:08,  4.04it/s]Loading weights:  86%|████████▋ | 226/262 [00:58<00:08,  4.04it/s]
+Loading weights:  86%|████████▋ | 226/262 [00:58<00:08,  4.04it/s]Loading weights:  88%|████████▊ | 231/262 [00:58<00:05,  6.13it/s]Loading weights:  88%|████████▊ | 231/262 [00:58<00:05,  6.13it/s]
+Loading weights:  88%|████████▊ | 231/262 [00:58<00:05,  6.13it/s]Loading weights:  89%|████████▉ | 233/262 [00:58<00:04,  6.57it/s]Loading weights:  89%|████████▉ | 233/262 [00:58<00:04,  6.57it/s]
+Loading weights:  89%|████████▉ | 233/262 [00:58<00:04,  6.57it/s]Loading weights:  90%|█████████ | 236/262 [00:59<00:04,  5.62it/s]Loading weights:  90%|█████████ | 236/262 [00:59<00:04,  5.62it/s]
+Loading weights:  90%|█████████ | 236/262 [00:59<00:04,  5.62it/s]Loading weights:  91%|█████████ | 238/262 [01:00<00:06,  3.72it/s]Loading weights:  91%|█████████ | 238/262 [01:00<00:06,  3.72it/s]
+Loading weights:  91%|█████████ | 238/262 [01:00<00:06,  3.72it/s]Loading weights:  93%|█████████▎| 244/262 [01:00<00:02,  6.41it/s]Loading weights:  93%|█████████▎| 244/262 [01:00<00:02,  6.41it/s]
+Loading weights:  93%|█████████▎| 244/262 [01:00<00:02,  6.41it/s]Loading weights:  94%|█████████▍| 246/262 [01:00<00:02,  6.85it/s]Loading weights:  94%|█████████▍| 246/262 [01:00<00:02,  6.85it/s]
+Loading weights:  94%|█████████▍| 246/262 [01:00<00:02,  6.85it/s]Loading weights:  95%|█████████▌| 250/262 [01:02<00:03,  3.69it/s]Loading weights:  98%|█████████▊| 256/262 [01:03<00:01,  5.90it/s]Loading weights:  95%|█████████▌| 250/262 [01:02<00:03,  3.69it/s]Loading weights:  98%|█████████▊| 256/262 [01:03<00:01,  5.90it/s]
+Loading weights:  95%|█████████▌| 250/262 [01:02<00:03,  3.69it/s]Loading weights:  98%|█████████▊| 256/262 [01:03<00:01,  5.90it/s]Loading weights:  99%|█████████▉| 259/262 [01:03<00:00,  6.96it/s]Loading weights: 100%|██████████| 262/262 [01:03<00:00,  4.15it/s]
+[transformers] [1mGlm4Model LOAD REPORT[0m from: /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25
+Key                                                         | Status     |  | 
+------------------------------------------------------------+------------+--+-
+layers.{20, 21, 22, 23, 24}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.gate_up_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_self_attn_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_mlp_layernorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:  99%|█████████▉| 259/262 [01:03<00:00,  6.96it/s]Loading weights: 100%|██████████| 262/262 [01:03<00:00,  4.15it/s]
+[transformers] [1mGlm4Model LOAD REPORT[0m from: /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25
+Key                                                         | Status     |  | 
+------------------------------------------------------------+------------+--+-
+layers.{20, 21, 22, 23, 24}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.gate_up_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_self_attn_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_mlp_layernorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:  99%|█████████▉| 259/262 [01:03<00:00,  6.96it/s]Loading weights: 100%|██████████| 262/262 [01:03<00:00,  4.15it/s]
+[transformers] [1mGlm4Model LOAD REPORT[0m from: /kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25
+Key                                                         | Status     |  | 
+------------------------------------------------------------+------------+--+-
+layers.{20, 21, 22, 23, 24}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_attention_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.input_layernorm.weight          | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.down_proj.weight            | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.mlp.gate_up_proj.weight         | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_self_attn_layernorm.weight | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+layers.{20, 21, 22, 23, 24}.post_mlp_layernorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   4172s]   l24 glm9v3: adapter glm9v3_f0 done (bf16 redo batches 0)
+[   4172s]   l24 glm9v3: adapter glm9v3_f0 done (bf16 redo batches 0)
+[   4201s]   l24 glm9v3: adapter glm9v3_f1 done (bf16 redo batches 0)
+[   4201s]   l24 glm9v3: adapter glm9v3_f1 done (bf16 redo batches 0)
+[   4232s]   l24 glm9v3: adapter glm9v3_f2 done (bf16 redo batches 0)
+[   4232s]   l24 glm9v3: adapter glm9v3_f2 done (bf16 redo batches 0)
+[   4262s]   l24 glm9v3: adapter glm9v3_f3 done (bf16 redo batches 0)
+[   4262s]   l24 glm9v3: adapter glm9v3_f3 done (bf16 redo batches 0)
+[   4292s]   l24 glm9v3: adapter glm9v3_f4 done (bf16 redo batches 0)
+[   4292s]   l24 glm9v3: adapter glm9v3_f4 done (bf16 redo batches 0)
+[   4322s]   l24 glm9v3: adapter glm9v3 done (bf16 redo batches 0)
+[   4322s]   l24 glm9v3: adapter glm9v3 done (bf16 redo batches 0)
+[   4322s] glm9v3 done gpu0:0.0GB gpu1:0.0GB
+[   4322s] l24 n14b_proven
+[   4322s] glm9v3 done gpu0:0.0GB gpu1:0.0GB
+[   4322s] l24 n14b_proven
+Loading weights:   0%|          | 0/299 [00:00<?, ?it/s]Loading weights:   0%|          | 0/299 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/299 [00:00<?, ?it/s]Loading weights:   0%|          | 1/299 [00:10<50:35, 10.18s/it]Loading weights:   0%|          | 1/299 [00:10<50:35, 10.18s/it]
+Loading weights:   0%|          | 1/299 [00:10<50:35, 10.18s/it]Loading weights:  22%|██▏       | 66/299 [00:10<00:26,  8.79it/s]Loading weights:  22%|██▏       | 66/299 [00:10<00:26,  8.79it/s]
+Loading weights:  22%|██▏       | 66/299 [00:10<00:26,  8.79it/s]Loading weights:  28%|██▊       | 85/299 [00:12<00:23,  8.92it/s]Loading weights:  28%|██▊       | 85/299 [00:12<00:23,  8.92it/s]
+Loading weights:  28%|██▊       | 85/299 [00:12<00:23,  8.92it/s]Loading weights:  31%|███▏      | 94/299 [00:13<00:23,  8.82it/s]Loading weights:  31%|███▏      | 94/299 [00:13<00:23,  8.82it/s]
+Loading weights:  31%|███▏      | 94/299 [00:13<00:23,  8.82it/s]Loading weights:  34%|███▍      | 102/299 [00:14<00:21,  9.00it/s]Loading weights:  34%|███▍      | 102/299 [00:14<00:21,  9.00it/s]
+Loading weights:  34%|███▍      | 102/299 [00:14<00:21,  9.00it/s]Loading weights:  35%|███▌      | 106/299 [00:14<00:20,  9.31it/s]Loading weights:  35%|███▌      | 106/299 [00:14<00:20,  9.31it/s]
+Loading weights:  35%|███▌      | 106/299 [00:14<00:20,  9.31it/s]Loading weights:  38%|███▊      | 113/299 [00:15<00:20,  8.96it/s]Loading weights:  38%|███▊      | 113/299 [00:15<00:20,  8.96it/s]
+Loading weights:  38%|███▊      | 113/299 [00:15<00:20,  8.96it/s]Loading weights:  41%|████▏     | 124/299 [00:16<00:18,  9.23it/s]Loading weights:  42%|████▏     | 126/299 [00:16<00:18,  9.57it/s]Loading weights:  41%|████▏     | 124/299 [00:16<00:18,  9.23it/s]Loading weights:  42%|████▏     | 126/299 [00:16<00:18,  9.57it/s]
+Loading weights:  41%|████▏     | 124/299 [00:16<00:18,  9.23it/s]Loading weights:  42%|████▏     | 126/299 [00:16<00:18,  9.57it/s]Loading weights:  45%|████▌     | 135/299 [00:17<00:15, 10.31it/s]Loading weights:  45%|████▌     | 135/299 [00:17<00:15, 10.31it/s]
+Loading weights:  45%|████▌     | 135/299 [00:17<00:15, 10.31it/s]Loading weights:  46%|████▌     | 137/299 [00:17<00:16,  9.64it/s]Loading weights:  46%|████▌     | 137/299 [00:17<00:16,  9.64it/s]
+Loading weights:  46%|████▌     | 137/299 [00:17<00:16,  9.64it/s]Loading weights:  49%|████▉     | 146/299 [00:18<00:15, 10.14it/s]Loading weights:  49%|████▉     | 146/299 [00:18<00:15, 10.14it/s]
+Loading weights:  49%|████▉     | 146/299 [00:18<00:15, 10.14it/s]Loading weights:  49%|████▉     | 148/299 [00:19<00:15, 10.01it/s]Loading weights:  49%|████▉     | 148/299 [00:19<00:15, 10.01it/s]
+Loading weights:  49%|████▉     | 148/299 [00:19<00:15, 10.01it/s]Loading weights:  53%|█████▎    | 157/299 [00:19<00:14, 10.06it/s]Loading weights:  53%|█████▎    | 159/299 [00:19<00:13, 10.64it/s]Loading weights:  53%|█████▎    | 157/299 [00:19<00:14, 10.06it/s]Loading weights:  53%|█████▎    | 159/299 [00:19<00:13, 10.64it/s]
+Loading weights:  53%|█████▎    | 157/299 [00:19<00:14, 10.06it/s]Loading weights:  53%|█████▎    | 159/299 [00:19<00:13, 10.64it/s]Loading weights:  56%|█████▌    | 168/299 [00:20<00:11, 10.94it/s]Loading weights:  56%|█████▌    | 168/299 [00:20<00:11, 10.94it/s]
+Loading weights:  56%|█████▌    | 168/299 [00:20<00:11, 10.94it/s]Loading weights:  57%|█████▋    | 170/299 [00:21<00:12, 10.57it/s]Loading weights:  57%|█████▋    | 170/299 [00:21<00:12, 10.57it/s]
+Loading weights:  57%|█████▋    | 170/299 [00:21<00:12, 10.57it/s]Loading weights:  60%|█████▉    | 179/299 [00:21<00:11, 10.35it/s]Loading weights:  61%|██████    | 181/299 [00:22<00:11, 10.38it/s]Loading weights:  60%|█████▉    | 179/299 [00:21<00:11, 10.35it/s]Loading weights:  61%|██████    | 181/299 [00:22<00:11, 10.38it/s]
+Loading weights:  60%|█████▉    | 179/299 [00:21<00:11, 10.35it/s]Loading weights:  61%|██████    | 181/299 [00:22<00:11, 10.38it/s]Loading weights:  64%|██████▎   | 190/299 [00:22<00:10, 10.70it/s]Loading weights:  64%|██████▍   | 192/299 [00:23<00:10, 10.70it/s]Loading weights:  64%|██████▎   | 190/299 [00:22<00:10, 10.70it/s]Loading weights:  64%|██████▍   | 192/299 [00:23<00:10, 10.70it/s]
+Loading weights:  64%|██████▎   | 190/299 [00:22<00:10, 10.70it/s]Loading weights:  64%|██████▍   | 192/299 [00:23<00:10, 10.70it/s]Loading weights:  67%|██████▋   | 201/299 [00:24<00:09, 10.10it/s]Loading weights:  68%|██████▊   | 203/299 [00:24<00:08, 10.74it/s]Loading weights:  67%|██████▋   | 201/299 [00:24<00:09, 10.10it/s]Loading weights:  68%|██████▊   | 203/299 [00:24<00:08, 10.74it/s]
+Loading weights:  67%|██████▋   | 201/299 [00:24<00:09, 10.10it/s]Loading weights:  68%|██████▊   | 203/299 [00:24<00:08, 10.74it/s]Loading weights:  71%|███████   | 212/299 [00:25<00:08, 10.65it/s]Loading weights:  72%|███████▏  | 214/299 [00:25<00:07, 11.00it/s]Loading weights:  71%|███████   | 212/299 [00:25<00:08, 10.65it/s]Loading weights:  72%|███████▏  | 214/299 [00:25<00:07, 11.00it/s]
+Loading weights:  71%|███████   | 212/299 [00:25<00:08, 10.65it/s]Loading weights:  72%|███████▏  | 214/299 [00:25<00:07, 11.00it/s]Loading weights:  75%|███████▍  | 223/299 [00:26<00:07, 10.78it/s]Loading weights:  75%|███████▌  | 225/299 [00:26<00:06, 10.82it/s]Loading weights:  75%|███████▍  | 223/299 [00:26<00:07, 10.78it/s]Loading weights:  75%|███████▌  | 225/299 [00:26<00:06, 10.82it/s]
+Loading weights:  75%|███████▍  | 223/299 [00:26<00:07, 10.78it/s]Loading weights:  75%|███████▌  | 225/299 [00:26<00:06, 10.82it/s]Loading weights:  78%|███████▊  | 234/299 [00:26<00:05, 10.95it/s]Loading weights:  79%|███████▉  | 236/299 [00:27<00:05, 11.20it/s]Loading weights:  78%|███████▊  | 234/299 [00:26<00:05, 10.95it/s]Loading weights:  79%|███████▉  | 236/299 [00:27<00:05, 11.20it/s]
+Loading weights:  78%|███████▊  | 234/299 [00:26<00:05, 10.95it/s]Loading weights:  79%|███████▉  | 236/299 [00:27<00:05, 11.20it/s]Loading weights:  82%|████████▏ | 245/299 [00:28<00:05, 10.09it/s]Loading weights:  82%|████████▏ | 245/299 [00:28<00:05, 10.09it/s]
+Loading weights:  82%|████████▏ | 245/299 [00:28<00:05, 10.09it/s]Loading weights:  86%|████████▌ | 256/299 [00:29<00:03, 10.78it/s]Loading weights:  86%|████████▌ | 256/299 [00:29<00:03, 10.78it/s]
+Loading weights:  86%|████████▌ | 256/299 [00:29<00:03, 10.78it/s]Loading weights:  86%|████████▋ | 258/299 [00:29<00:03, 10.61it/s]Loading weights:  86%|████████▋ | 258/299 [00:29<00:03, 10.61it/s]
+Loading weights:  86%|████████▋ | 258/299 [00:29<00:03, 10.61it/s]Loading weights:  89%|████████▉ | 267/299 [00:30<00:02, 10.71it/s]Loading weights:  90%|████████▉ | 269/299 [00:30<00:02, 10.84it/s]Loading weights:  89%|████████▉ | 267/299 [00:30<00:02, 10.71it/s]Loading weights:  90%|████████▉ | 269/299 [00:30<00:02, 10.84it/s]
+Loading weights:  89%|████████▉ | 267/299 [00:30<00:02, 10.71it/s]Loading weights:  90%|████████▉ | 269/299 [00:30<00:02, 10.84it/s]Loading weights:  93%|█████████▎| 278/299 [00:31<00:02,  9.86it/s]Loading weights:  93%|█████████▎| 278/299 [00:31<00:02,  9.86it/s]
+Loading weights:  93%|█████████▎| 278/299 [00:31<00:02,  9.86it/s]Loading weights:  97%|█████████▋| 289/299 [00:32<00:00, 11.15it/s]Loading weights:  97%|█████████▋| 289/299 [00:32<00:00, 11.15it/s]
+Loading weights:  97%|█████████▋| 289/299 [00:32<00:00, 11.15it/s]Loading weights:  97%|█████████▋| 291/299 [00:32<00:00, 10.80it/s]Loading weights: 100%|██████████| 299/299 [00:32<00:00,  9.24it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{27...39}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:  97%|█████████▋| 291/299 [00:32<00:00, 10.80it/s]Loading weights: 100%|██████████| 299/299 [00:32<00:00,  9.24it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{27...39}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:  97%|█████████▋| 291/299 [00:32<00:00, 10.80it/s]Loading weights: 100%|██████████| 299/299 [00:32<00:00,  9.24it/s]
+[transformers] [1mQwen3Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{27...39}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.k_norm.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{27...39}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{27...39}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   4458s]   l24 n14b_proven: adapter lora_qwen3_14b done (bf16 redo batches 0)
+[   4458s]   l24 n14b_proven: adapter lora_qwen3_14b done (bf16 redo batches 0)
+[   4892s]   l24 n14b_proven: adapter ntl-q14-lora done (bf16 redo batches 18)
+[   4892s]   l24 n14b_proven: adapter ntl-q14-lora done (bf16 redo batches 18)
+[   4996s]   l24 n14b_proven: adapter ntl-q14-lora-v4 done (bf16 redo batches 18)
+[   4996s]   l24 n14b_proven: adapter ntl-q14-lora-v4 done (bf16 redo batches 18)
+[   4996s] n14b_proven done gpu0:0.0GB gpu1:0.0GB
+[   4996s] l24 q25_14
+[   4996s] n14b_proven done gpu0:0.0GB gpu1:0.0GB
+[   4996s] l24 q25_14
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/386 [00:00<?, ?it/s]Loading weights:   0%|          | 1/386 [00:09<1:02:54,  9.80s/it]Loading weights:  23%|██▎       | 89/386 [00:09<00:23, 12.68it/s] Loading weights:   0%|          | 1/386 [00:09<1:02:54,  9.80s/it]Loading weights:  23%|██▎       | 89/386 [00:09<00:23, 12.68it/s] 
+Loading weights:   0%|          | 1/386 [00:09<1:02:54,  9.80s/it]Loading weights:  23%|██▎       | 89/386 [00:09<00:23, 12.68it/s] Loading weights:  33%|███▎      | 129/386 [00:12<00:19, 13.26it/s]Loading weights:  33%|███▎      | 129/386 [00:12<00:19, 13.26it/s]
+Loading weights:  33%|███▎      | 129/386 [00:12<00:19, 13.26it/s]Loading weights:  39%|███▉      | 152/386 [00:14<00:17, 13.54it/s]Loading weights:  39%|███▉      | 152/386 [00:14<00:17, 13.54it/s]
+Loading weights:  39%|███▉      | 152/386 [00:14<00:17, 13.54it/s]Loading weights:  43%|████▎     | 167/386 [00:15<00:15, 14.08it/s]Loading weights:  43%|████▎     | 167/386 [00:15<00:15, 14.08it/s]
+Loading weights:  43%|████▎     | 167/386 [00:15<00:15, 14.08it/s]Loading weights:  46%|████▌     | 177/386 [00:16<00:15, 13.73it/s]Loading weights:  46%|████▌     | 177/386 [00:16<00:15, 13.73it/s]
+Loading weights:  46%|████▌     | 177/386 [00:16<00:15, 13.73it/s]Loading weights:  48%|████▊     | 184/386 [00:16<00:15, 12.68it/s]Loading weights:  48%|████▊     | 184/386 [00:16<00:15, 12.68it/s]
+Loading weights:  48%|████▊     | 184/386 [00:16<00:15, 12.68it/s]Loading weights:  51%|█████     | 195/386 [00:17<00:14, 12.76it/s]Loading weights:  51%|█████     | 195/386 [00:17<00:14, 12.76it/s]
+Loading weights:  51%|█████     | 195/386 [00:17<00:14, 12.76it/s]Loading weights:  54%|█████▎    | 207/386 [00:18<00:13, 13.35it/s]Loading weights:  54%|█████▎    | 207/386 [00:18<00:13, 13.35it/s]
+Loading weights:  54%|█████▎    | 207/386 [00:18<00:13, 13.35it/s]Loading weights:  57%|█████▋    | 219/386 [00:19<00:11, 13.99it/s]Loading weights:  57%|█████▋    | 219/386 [00:19<00:11, 13.99it/s]
+Loading weights:  57%|█████▋    | 219/386 [00:19<00:11, 13.99it/s]Loading weights:  58%|█████▊    | 222/386 [00:19<00:11, 13.80it/s]Loading weights:  58%|█████▊    | 222/386 [00:19<00:11, 13.80it/s]
+Loading weights:  58%|█████▊    | 222/386 [00:19<00:11, 13.80it/s]Loading weights:  60%|█████▉    | 231/386 [00:20<00:11, 13.59it/s]Loading weights:  60%|█████▉    | 231/386 [00:20<00:11, 13.59it/s]
+Loading weights:  60%|█████▉    | 231/386 [00:20<00:11, 13.59it/s]Loading weights:  63%|██████▎   | 243/386 [00:21<00:10, 13.91it/s]Loading weights:  63%|██████▎   | 243/386 [00:21<00:10, 13.91it/s]
+Loading weights:  63%|██████▎   | 243/386 [00:21<00:10, 13.91it/s]Loading weights:  66%|██████▌   | 255/386 [00:21<00:09, 13.29it/s]Loading weights:  66%|██████▌   | 255/386 [00:21<00:09, 13.29it/s]
+Loading weights:  66%|██████▌   | 255/386 [00:21<00:09, 13.29it/s]Loading weights:  69%|██████▉   | 267/386 [00:22<00:08, 13.75it/s]Loading weights:  69%|██████▉   | 267/386 [00:22<00:08, 13.75it/s]
+Loading weights:  69%|██████▉   | 267/386 [00:22<00:08, 13.75it/s]Loading weights:  72%|███████▏  | 279/386 [00:23<00:07, 13.94it/s]Loading weights:  72%|███████▏  | 279/386 [00:23<00:07, 13.94it/s]
+Loading weights:  72%|███████▏  | 279/386 [00:23<00:07, 13.94it/s]Loading weights:  75%|███████▌  | 291/386 [00:24<00:06, 14.10it/s]Loading weights:  75%|███████▌  | 291/386 [00:24<00:06, 14.10it/s]
+Loading weights:  75%|███████▌  | 291/386 [00:24<00:06, 14.10it/s]Loading weights:  78%|███████▊  | 303/386 [00:25<00:05, 14.17it/s]Loading weights:  78%|███████▊  | 303/386 [00:25<00:05, 14.17it/s]
+Loading weights:  78%|███████▊  | 303/386 [00:25<00:05, 14.17it/s]Loading weights:  82%|████████▏ | 315/386 [00:26<00:05, 14.10it/s]Loading weights:  82%|████████▏ | 315/386 [00:26<00:05, 14.10it/s]
+Loading weights:  82%|████████▏ | 315/386 [00:26<00:05, 14.10it/s]Loading weights:  85%|████████▍ | 327/386 [00:26<00:04, 14.24it/s]Loading weights:  85%|████████▍ | 327/386 [00:26<00:04, 14.24it/s]
+Loading weights:  85%|████████▍ | 327/386 [00:26<00:04, 14.24it/s]Loading weights:  88%|████████▊ | 339/386 [00:27<00:03, 14.17it/s]Loading weights:  88%|████████▊ | 339/386 [00:27<00:03, 14.17it/s]
+Loading weights:  88%|████████▊ | 339/386 [00:27<00:03, 14.17it/s]Loading weights:  91%|█████████ | 351/386 [00:28<00:02, 14.26it/s]Loading weights:  91%|█████████ | 351/386 [00:28<00:02, 14.26it/s]
+Loading weights:  91%|█████████ | 351/386 [00:28<00:02, 14.26it/s]Loading weights:  94%|█████████▍| 363/386 [00:29<00:01, 14.14it/s]Loading weights:  94%|█████████▍| 363/386 [00:29<00:01, 14.14it/s]
+Loading weights:  94%|█████████▍| 363/386 [00:29<00:01, 14.14it/s]Loading weights:  97%|█████████▋| 375/386 [00:30<00:00, 14.14it/s]Loading weights: 100%|██████████| 386/386 [00:30<00:00, 12.68it/s]
+[transformers] [1mQwen2Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen2.5/transformers/14b/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{32...47}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:  97%|█████████▋| 375/386 [00:30<00:00, 14.14it/s]Loading weights: 100%|██████████| 386/386 [00:30<00:00, 12.68it/s]
+[transformers] [1mQwen2Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen2.5/transformers/14b/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{32...47}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+
+Loading weights:  97%|█████████▋| 375/386 [00:30<00:00, 14.14it/s]Loading weights: 100%|██████████| 386/386 [00:30<00:00, 12.68it/s]
+[transformers] [1mQwen2Model LOAD REPORT[0m from: /kaggle/input/models/qwen-lm/qwen2.5/transformers/14b/1
+Key                                                    | Status     |  | 
+-------------------------------------------------------+------------+--+-
+model.layers.{32...47}.mlp.down_proj.weight            | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.v_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.mlp.up_proj.weight              | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.q_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.input_layernorm.weight          | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.o_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.k_proj.bias           | UNEXPECTED |  | 
+model.layers.{32...47}.post_attention_layernorm.weight | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.q_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.k_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.self_attn.v_proj.weight         | UNEXPECTED |  | 
+model.layers.{32...47}.mlp.gate_proj.weight            | UNEXPECTED |  | 
+lm_head.weight                                         | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[   5129s]   l24 q25_14: adapter lora_qwen25_14b done (bf16 redo batches 0)
+[   5129s]   l24 q25_14: adapter lora_qwen25_14b done (bf16 redo batches 0)
+[   5130s] q25_14 done gpu0:0.0GB gpu1:0.0GB
+[   5130s] enc deb
+[   5130s] q25_14 done gpu0:0.0GB gpu1:0.0GB
+[   5130s] enc deb
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:   1%|          | 3/390 [00:03<07:49,  1.21s/it]Loading weights:  94%|█████████▍| 367/390 [00:03<00:00, 137.94it/s]Loading weights:   1%|          | 3/390 [00:03<07:49,  1.21s/it]Loading weights:  94%|█████████▍| 367/390 [00:03<00:00, 137.94it/s]
+Loading weights:   1%|          | 3/390 [00:03<07:49,  1.21s/it]Loading weights:  94%|█████████▍| 367/390 [00:03<00:00, 137.94it/s]Loading weights: 100%|██████████| 390/390 [00:03<00:00, 99.60it/s] 
+Loading weights: 100%|██████████| 390/390 [00:03<00:00, 99.60it/s] 
+
+Loading weights: 100%|██████████| 390/390 [00:03<00:00, 99.60it/s] 
+[   5164s] deb done gpu0:0.0GB gpu1:0.0GB
+[   5164s] COMP SKIPPED: no stack output
+[   5164s] atlas on 55/540 rows (top-2 margin < 0.36)
+[   5164s] deb done gpu0:0.0GB gpu1:0.0GB
+[   5164s] COMP SKIPPED: no stack output
+[   5164s] atlas on 55/540 rows (top-2 margin < 0.36)
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:   0%|          | 1/399 [00:06<41:03,  6.19s/it]Loading weights:   0%|          | 1/399 [00:06<41:03,  6.19s/it]
+Loading weights:   0%|          | 1/399 [00:06<41:03,  6.19s/it]Loading weights:  26%|██▌       | 103/399 [00:06<00:13, 22.02it/s]Loading weights:  26%|██▌       | 103/399 [00:06<00:13, 22.02it/s]
+Loading weights:  26%|██▌       | 103/399 [00:06<00:13, 22.02it/s]Loading weights:  31%|███       | 122/399 [00:06<00:11, 24.78it/s]Loading weights:  31%|███       | 122/399 [00:06<00:11, 24.78it/s]
+Loading weights:  31%|███       | 122/399 [00:06<00:11, 24.78it/s]Loading weights:  34%|███▍      | 135/399 [00:07<00:09, 26.52it/s]Loading weights:  34%|███▍      | 135/399 [00:07<00:09, 26.52it/s]
+Loading weights:  34%|███▍      | 135/399 [00:07<00:09, 26.52it/s]Loading weights:  36%|███▌      | 144/399 [00:07<00:09, 27.17it/s]Loading weights:  36%|███▌      | 144/399 [00:07<00:09, 27.17it/s]
+Loading weights:  36%|███▌      | 144/399 [00:07<00:09, 27.17it/s]Loading weights:  38%|███▊      | 151/399 [00:07<00:09, 26.67it/s]Loading weights:  38%|███▊      | 151/399 [00:07<00:09, 26.67it/s]
+Loading weights:  38%|███▊      | 151/399 [00:07<00:09, 26.67it/s]Loading weights:  40%|███▉      | 158/399 [00:08<00:10, 23.30it/s]Loading weights:  40%|███▉      | 158/399 [00:08<00:10, 23.30it/s]
+Loading weights:  40%|███▉      | 158/399 [00:08<00:10, 23.30it/s]Loading weights:  42%|████▏     | 169/399 [00:08<00:10, 22.03it/s]Loading weights:  42%|████▏     | 169/399 [00:08<00:10, 22.03it/s]
+Loading weights:  42%|████▏     | 169/399 [00:08<00:10, 22.03it/s]Loading weights:  45%|████▌     | 180/399 [00:09<00:10, 20.96it/s]Loading weights:  45%|████▌     | 180/399 [00:09<00:10, 20.96it/s]
+Loading weights:  45%|████▌     | 180/399 [00:09<00:10, 20.96it/s]Loading weights:  48%|████▊     | 191/399 [00:10<00:10, 20.62it/s]Loading weights:  48%|████▊     | 191/399 [00:10<00:10, 20.62it/s]
+Loading weights:  48%|████▊     | 191/399 [00:10<00:10, 20.62it/s]Loading weights:  51%|█████     | 202/399 [00:10<00:09, 20.97it/s]Loading weights:  51%|█████     | 202/399 [00:10<00:09, 20.97it/s]
+Loading weights:  51%|█████     | 202/399 [00:10<00:09, 20.97it/s]Loading weights:  53%|█████▎    | 213/399 [00:11<00:09, 20.57it/s]Loading weights:  53%|█████▎    | 213/399 [00:11<00:09, 20.57it/s]
+Loading weights:  53%|█████▎    | 213/399 [00:11<00:09, 20.57it/s]Loading weights:  56%|█████▌    | 224/399 [00:11<00:08, 20.10it/s]Loading weights:  56%|█████▌    | 224/399 [00:11<00:08, 20.10it/s]
+Loading weights:  56%|█████▌    | 224/399 [00:11<00:08, 20.10it/s]Loading weights:  59%|█████▉    | 235/399 [00:12<00:08, 19.74it/s]Loading weights:  59%|█████▉    | 235/399 [00:12<00:08, 19.74it/s]
+Loading weights:  59%|█████▉    | 235/399 [00:12<00:08, 19.74it/s]Loading weights:  62%|██████▏   | 246/399 [00:12<00:07, 19.30it/s]Loading weights:  62%|██████▏   | 246/399 [00:12<00:07, 19.30it/s]
+Loading weights:  62%|██████▏   | 246/399 [00:12<00:07, 19.30it/s]Loading weights:  64%|██████▍   | 257/399 [00:13<00:07, 19.42it/s]Loading weights:  64%|██████▍   | 257/399 [00:13<00:07, 19.42it/s]
+Loading weights:  64%|██████▍   | 257/399 [00:13<00:07, 19.42it/s]Loading weights:  67%|██████▋   | 268/399 [00:13<00:06, 19.68it/s]Loading weights:  67%|██████▋   | 268/399 [00:13<00:06, 19.68it/s]
+Loading weights:  67%|██████▋   | 268/399 [00:13<00:06, 19.68it/s]Loading weights:  70%|██████▉   | 279/399 [00:14<00:06, 19.20it/s]Loading weights:  70%|██████▉   | 279/399 [00:14<00:06, 19.20it/s]
+Loading weights:  70%|██████▉   | 279/399 [00:14<00:06, 19.20it/s]Loading weights:  73%|███████▎  | 290/399 [00:15<00:05, 18.90it/s]Loading weights:  73%|███████▎  | 290/399 [00:15<00:05, 18.90it/s]
+Loading weights:  73%|███████▎  | 290/399 [00:15<00:05, 18.90it/s]Loading weights:  75%|███████▌  | 301/399 [00:15<00:04, 20.29it/s]Loading weights:  76%|███████▌  | 304/399 [00:15<00:04, 20.57it/s]Loading weights:  75%|███████▌  | 301/399 [00:15<00:04, 20.29it/s]Loading weights:  76%|███████▌  | 304/399 [00:15<00:04, 20.57it/s]
+Loading weights:  75%|███████▌  | 301/399 [00:15<00:04, 20.29it/s]Loading weights:  76%|███████▌  | 304/399 [00:15<00:04, 20.57it/s]Loading weights:  78%|███████▊  | 312/399 [00:16<00:04, 19.08it/s]Loading weights:  78%|███████▊  | 312/399 [00:16<00:04, 19.08it/s]
+Loading weights:  78%|███████▊  | 312/399 [00:16<00:04, 19.08it/s]Loading weights:  81%|████████  | 323/399 [00:16<00:04, 18.51it/s]Loading weights:  81%|████████  | 323/399 [00:16<00:04, 18.51it/s]
+Loading weights:  81%|████████  | 323/399 [00:16<00:04, 18.51it/s]Loading weights:  84%|████████▎ | 334/399 [00:17<00:03, 18.71it/s]Loading weights:  84%|████████▎ | 334/399 [00:17<00:03, 18.71it/s]
+Loading weights:  84%|████████▎ | 334/399 [00:17<00:03, 18.71it/s]Loading weights:  86%|████████▋ | 345/399 [00:17<00:02, 20.34it/s]Loading weights:  87%|████████▋ | 348/399 [00:18<00:02, 20.31it/s]Loading weights:  86%|████████▋ | 345/399 [00:17<00:02, 20.34it/s]Loading weights:  87%|████████▋ | 348/399 [00:18<00:02, 20.31it/s]
+Loading weights:  86%|████████▋ | 345/399 [00:17<00:02, 20.34it/s]Loading weights:  87%|████████▋ | 348/399 [00:18<00:02, 20.31it/s]Loading weights:  89%|████████▉ | 356/399 [00:18<00:02, 19.34it/s]Loading weights:  89%|████████▉ | 356/399 [00:18<00:02, 19.34it/s]
+Loading weights:  89%|████████▉ | 356/399 [00:18<00:02, 19.34it/s]Loading weights:  92%|█████████▏| 367/399 [00:19<00:01, 18.77it/s]Loading weights:  92%|█████████▏| 367/399 [00:19<00:01, 18.77it/s]
+Loading weights:  92%|█████████▏| 367/399 [00:19<00:01, 18.77it/s]Loading weights:  95%|█████████▍| 378/399 [00:19<00:01, 18.51it/s]Loading weights:  95%|█████████▍| 378/399 [00:19<00:01, 18.51it/s]
+Loading weights:  95%|█████████▍| 378/399 [00:19<00:01, 18.51it/s]Loading weights:  97%|█████████▋| 389/399 [00:20<00:00, 19.01it/s]Loading weights: 100%|██████████| 399/399 [00:20<00:00, 19.65it/s]
+Loading weights:  97%|█████████▋| 389/399 [00:20<00:00, 19.01it/s]Loading weights: 100%|██████████| 399/399 [00:20<00:00, 19.65it/s]
+
+Loading weights:  97%|█████████▋| 389/399 [00:20<00:00, 19.01it/s]Loading weights: 100%|██████████| 399/399 [00:20<00:00, 19.65it/s]
+[   5193s] atlas atlas_adapter 4/55 projected finish 5368s
+[   5193s] atlas atlas_adapter 4/55 projected finish 5368s
+[   5352s] atlas completed 55/55 rows before budget
+[   5352s] atlas completed 55/55 rows before budget
+[   5353s] atlas /kaggle/input/ntl-atlas-qwen3-8b-v1/atlas_adapter/atlas_adapter mixed 55/55 rows at 0.22 gpu0:0.0GB gpu1:0.0GB
+[   5353s] atlas /kaggle/input/ntl-atlas-qwen3-8b-v1/atlas_adapter/atlas_adapter mixed 55/55 rows at 0.22 gpu0:0.0GB gpu1:0.0GB
+[   5353s] native expert mixed at 0.4: {'changed': 12, 'agree_native_parent': 0.9166666666666666}
+[   5353s] native expert mixed at 0.4: {'changed': 12, 'agree_native_parent': 0.9166666666666666}
+[   5353s] wrote /kaggle/working/submission.parquet {'claude-fable-5': 32, 'claude-sonnet-5': 32, 'gemini-3.7-flash': 32, 'gemini-3.6-flash': 31, 'glm-5.3': 31, 'claude-opus-5': 30, 'claude-opus-4-8': 30, 'qwen3.8-max': 30, 'gpt-5.6-terra': 30, 'gpt-5.6-sol': 30, 'claude-opus-4-6': 30, 'gpt-5.6-luna': 30, 'gpt-5.5': 30, 'gemini-3.1-pro-preview': 30, 'gpt-6-astra': 30, 'kimi-k3': 28, 'gemini-3.8-flash': 27, 'glm-5.3-flash': 27}
+[   5353s] wrote /kaggle/working/submission.parquet {'claude-fable-5': 32, 'claude-sonnet-5': 32, 'gemini-3.7-flash': 32, 'gemini-3.6-flash': 31, 'glm-5.3': 31, 'claude-opus-5': 30, 'claude-opus-4-8': 30, 'qwen3.8-max': 30, 'gpt-5.6-terra': 30, 'gpt-5.6-sol': 30, 'claude-opus-4-6': 30, 'gpt-5.6-luna': 30, 'gpt-5.5': 30, 'gemini-3.1-pro-preview': 30, 'gpt-6-astra': 30, 'kimi-k3': 28, 'gemini-3.8-flash': 27, 'glm-5.3-flash': 27}
+[   5355s] V40A family-only OOF residual fitted
+Traceback (most recent call last):
+  File "/kaggle/working/infer.py", line 753, in <module>
+    _pairwise_path = pathlib.Path('/kaggle/working/v34_pairwise_probs.npy')
+                     ^^^^^^^
+NameError: name 'pathlib' is not defined. Did you forget to import 'pathlib'?
+[   5355s] V40A family-only OOF residual fitted
+Traceback (most recent call last):
+  File "/kaggle/working/infer.py", line 753, in <module>
+    _pairwise_path = pathlib.Path('/kaggle/working/v34_pairwise_probs.npy')
+                     ^^^^^^^
+NameError: name 'pathlib' is not defined. Did you forget to import 'pathlib'?
+
+Traceback (most recent call last):
+  File "/kaggle/working/infer.py", line 753, in <module>
+    _pairwise_path = pathlib.Path('/kaggle/working/v34_pairwise_probs.npy')
+                     ^^^^^^^
+NameError: name 'pathlib' is not defined. Did you forget to import 'pathlib'?
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys;import papermill as pm;pm.execute_notebook("__notebook__.ipynb","__notebook__.ipynb",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=43200)
+                                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/papermill/execute.py", line 131, in execute_notebook
+    raise_for_execution_errors(nb, output_path)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.13/dist-packages/papermill/execute.py", line 251, in raise_for_execution_errors
+    raise error
+papermill.exceptions.PapermillExecutionError: 
+---------------------------------------------------------------------------
+Exception encountered at "In [29]":
+---------------------------------------------------------------------------
+CalledProcessError                        Traceback (most recent call last)
+/tmp/ipykernel_24/4267757130.py in <cell line: 0>()
+     27     pd.DataFrame({'id': _test_ph.id, 'model': 'gpt-5.5'}).to_parquet('/kaggle/working/submission.parquet', index=False)
+     28 else:
+---> 29     subprocess.run(cmd, check=True)
+     30 submission = pd.read_parquet('/kaggle/working/submission.parquet')
+     31 assert len(submission) == len(pd.read_csv(os.path.join(DATA, 'test.csv')))
+
+/usr/lib/python3.13/subprocess.py in run(input, capture_output, timeout, check, *popenargs, **kwargs)
+    576         retcode = process.poll()
+    577         if check and retcode:
+--> 578             raise CalledProcessError(retcode, process.args,
+    579                                      output=stdout, stderr=stderr)
+    580     return CompletedProcess(process.args, retcode, stdout, stderr)
+
+CalledProcessError: Command '['/usr/bin/python3', 'infer.py', '--data', '/kaggle/working/ntl_val_data', '--models', '[{"name": "q14v5", "type": "l24", "path": "/kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1", "adapters": ["/kaggle/input/nlm-l24-adapters-v5/q14v5_f0", "/kaggle/input/nlm-l24-adapters-v5/q14v5_f1", "/kaggle/input/nlm-l24-adapters-v5/q14v5_f2", "/kaggle/input/nlm-l24-adapters-v5/q14v5_f3", "/kaggle/input/nlm-l24-adapters-v5/q14v5_f4", "/kaggle/input/nlm-l24-adapters-v5/q14v5"], "keep": 27, "layers": [2, 4, 6, 8, 12, 16, 20, 24], "w": 3.0, "bs": 8, "max_len": 384, "twin": 0.35, "gauss": 0.7}, {"name": "q8v5", "type": "l24", "path": "/kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1", "adapters": ["/kaggle/input/nlm-l24-adapters-v5/q8v5_f0", "/kaggle/input/nlm-l24-adapters-v5/q8v5_f1", "/kaggle/input/nlm-l24-adapters-v5/q8v5_f2", "/kaggle/input/nlm-l24-adapters-v5/q8v5_f3", "/kaggle/input/nlm-l24-adapters-v5/q8v5_f4", "/kaggle/input/nlm-l24-adapters-v5/q8v5"], "keep": 24, "layers": [2, 4, 6, 8, 12, 16, 20, 24], "w": 2.0, "bs": 16, "max_len": 384, "twin": 0.35, "gauss": 0.44, "dp": true}, {"name": "ll8v5", "type": "l24", "path": "/tmp/llama-3.1/8b", "adapters": ["/kaggle/input/nlm-l24-adapters-v5/ll8v5_f0", "/kaggle/input/nlm-l24-adapters-v5/ll8v5_f1", "/kaggle/input/nlm-l24-adapters-v5/ll8v5_f2", "/kaggle/input/nlm-l24-adapters-v5/ll8v5_f3", "/kaggle/input/nlm-l24-adapters-v5/ll8v5_f4", "/kaggle/input/nlm-l24-adapters-v5/ll8v5"], "keep": 24, "layers": [2, 4, 6, 8, 12, 16, 20, 24], "w": 1.0, "bs": 16, "max_len": 384, "twin": 0.35, "dp": true}, {"name": "q8v7", "type": "l24", "path": "/kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1", "adapters": ["/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f0", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f1", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f2", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f3", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7_f4", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/q8v7"], "keep": 24, "layers": [2, 4, 6, 8, 12, 16, 20, 24], "w": 2.0, "bs": 16, "max_len": 384, "twin": 0.35, "no_final_norm": true, "dp": true}, {"name": "glm9v3", "type": "l24", "path": "/kaggle/input/name-that-llm-glm4-9b-trunc25/glm4_9b_trunc25", "adapters": ["/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f0", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f1", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f2", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f3", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3_f4", "/kaggle/input/ntl-two-stage-lora24-members-q8-glm9/glm9v3"], "keep": 20, "layers": [2, 4, 6, 8, 10, 12, 16, 20], "w": 1.0, "bs": 16, "max_len": 384, "twin": 0.35, "no_final_norm": true, "dp": true}, {"name": "n14b_proven", "type": "l24", "path": "/kaggle/input/models/qwen-lm/qwen-3/transformers/14b-base/1", "adapters": ["/kaggle/input/ntl-handwriting-blend/lora_qwen3_14b", "/kaggle/input/ntl-q14-lora", "/kaggle/input/ntl-q14-lora-v4"], "adapter_weights": [0.34, 0.33, 0.33], "keep": 27, "layers": [2, 4, 6, 9, 13, 17, 22, 27], "w": 2.8, "bs": 8, "max_len": 447, "twin": 0.35, "no_final_norm": true, "eos_id": 151643}, {"name": "q25_14", "type": "l24", "path": "/kaggle/input/models/qwen-lm/qwen2.5/transformers/14b/1", "adapters": ["/kaggle/input/ntl-handwriting-blend/lora_qwen25_14b"], "keep": 32, "layers": [3, 5, 8, 11, 16, 21, 27, 32], "w": 1.0, "bs": 8, "max_len": 447, "twin": 0.35, "no_final_norm": true, "eos_id": 151643}, {"name": "deb", "type": "enc", "ckpt": "/kaggle/working/deberta_v3_large", "w": 1.0}]', '--perpassage', '1', '--extra', '/kaggle/working/extra_matched.parquet', '--extra_w', '0.5', '--tfidf_w', '0.25', '--distort_w', '0.10', '--svc_w', '10.0', '--ours_svc', '/kaggle/input/ntl-svc-prefit-pool-v4n', '--ours_svc_w', '1.2', '--top34_w', '0.20', '--pool', '/kaggle/working/pool_master.parquet', '--adapt_w', '1.0', '--adapt_thr', '0.15', '--sinkhorn', '0.30', '--sinkhorn_target_mix', '0.35', '--post', '0', '--atlas_dir', '/kaggle/input/ntl-atlas-qwen3-8b-v1/atlas_adapter/atlas_adapter', '--atlas_base', '/kaggle/input/models/qwen-lm/qwen-3/transformers/8b-base/1', '--atlas_w', '0.22', '--atlas_margin', '0.36', '--atlas_bs', '4', '--atlas_chunk', '3', '--atlas_budget', '25223', '--comp_path', '/kaggle/working/comp_logit.npy', '--comp_w', '0.15', '--native_npz', '/kaggle/working/native_q8.npz', '--native_assets', '/kaggle/input/ntl-olmo2-native24-final-inference-assets/ntl-native-q8-multidepth-fivefold-0679', '--native_share', '0.4', '--out', '/kaggle/working/submission.parquet', '--cache', '/kaggle/working/cache']' returned non-zero exit status 1.
+
+/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+  cells[i][c] = re.sub('\\\\\|', '|', cell)
+/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+  text = re.sub(r'_', '\_', text) # Escape underscores in display text
+[NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+[NbConvertApp] Writing 317436 bytes to __notebook__.ipynb
+[NbConvertApp] Converting notebook __notebook__.ipynb to html
+[NbConvertApp] Writing 1481587 bytes to __results__.html

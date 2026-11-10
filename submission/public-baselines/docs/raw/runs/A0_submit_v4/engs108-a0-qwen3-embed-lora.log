@@ -1,0 +1,91 @@
+[{"stream_name":"stderr","time":11.428358398,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.428408703,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.428418898,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.428421921,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":12.165945574,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.16598938,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.166008755,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.166013518,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":13.625883134,"data":"engs108 experiment A0 mode submit\n"}
+,{"stream_name":"stdout","time":14.946161683,"data":"engs108 mounts: ['/kaggle/input/models', '/kaggle/input/name-that-llm', '/kaggle/input/name-that-llm-desklib-weights', '/kaggle/input/name-that-llm-electra-large-weights', '/kaggle/input/name-that-llm-extract-encoders2', '/kaggle/input/name-that-llm-glm4-9b-trunc25', '/kaggle/input/name-that-llm-train-lora24-s7', '/kaggle/input/name-that-llm-train-tokattn', '/kaggle/input/name-that-llm-train-tokattn2', '/kaggle/input/nlm-enc-v5', '/kaggle/input/nlm-l24-adapters', '/kaggle/input/nlm-l24-adapters-v5', '/kaggle/input/ntl-atlas-qwen3-8b-v1', '/kaggle/input/ntl-extra-api-passages', '/kaggle/input/ntl-free-proxy-generations', '/kaggle/input/ntl-generations', '/kaggle/input/ntl-handwriting-blend', '/kaggle/input/ntl-olmo2-native24-final-inference-assets', '/kaggle/input/ntl-proxy-generations', '/kaggle/input/ntl-q14-lora', '/kaggle/input/ntl-q14-lora-v4', '/kaggle/input/ntl-qwen3-8b-lora-claude-head', '/kaggle/input/ntl-spectral-style-heads-paired-4404', '/kaggle/input/ntl-svc-prefit-pool-v4n', '/kaggle/input/ntl-train-lora-qwen25-instyle', '/kaggle/input/ntl-two-stage-encoders', '/kaggle/input/ntl-two-stage-lora', '/kaggle/input/ntllm-chatgpt-a-b', '/kaggle/input/prvsiyans-extended-name-that-llm-dataset', '/kaggle/input/qwen35-9b-safetensors', '/kaggle/input/ultrabert-380m-ntl'] [] ['/kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts']\n"}
+,{"stream_name":"stdout","time":14.97794175,"data":"engs108 input layout: flat\n"}
+,{"stream_name":"stdout","time":16.630417589,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_math.py\n"}
+,{"stream_name":"stdout","time":16.652160767,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/cache_contract.py\n"}
+,{"stream_name":"stdout","time":16.6765882,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gauss.py\n"}
+,{"stream_name":"stdout","time":16.69962644,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/svc4_runtime.py\n"}
+,{"stream_name":"stdout","time":16.725910849,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/ntl660_readout.py\n"}
+,{"stream_name":"stdout","time":16.751039653,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/stage_assets.py\n"}
+,{"stream_name":"stdout","time":16.773264517,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_readout.py\n"}
+,{"stream_name":"stdout","time":16.811114857,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/stage_checkpoint_files.py\n"}
+,{"stream_name":"stdout","time":16.839448207,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_worker.py\n"}
+,{"stream_name":"stdout","time":16.879582779,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/stage_dataset_weights.py\n"}
+,{"stream_name":"stdout","time":16.993889235,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/asset_paths.py\n"}
+,{"stream_name":"stdout","time":17.017688203,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/runtime_support.py\n"}
+,{"stream_name":"stdout","time":17.041888231,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/reference_helpers.py\n"}
+,{"stream_name":"stdout","time":17.063835336,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/portable.py\n"}
+,{"stream_name":"stdout","time":17.088081091,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/reference_gauss.py\n"}
+,{"stream_name":"stdout","time":17.131461425,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/comp_cached.py\n"}
+,{"stream_name":"stdout","time":17.170446139,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/__init__.py\n"}
+,{"stream_name":"stdout","time":17.197495573,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/model.py\n"}
+,{"stream_name":"stdout","time":17.220877726,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/inference.py\n"}
+,{"stream_name":"stdout","time":17.241980579,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_rlcd/__init__.py\n"}
+,{"stream_name":"stdout","time":17.266578776,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_rlcd/data.py\n"}
+,{"stream_name":"stdout","time":17.289637343,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ultra/configuration_ultrabert.py\n"}
+,{"stream_name":"stdout","time":17.32666319,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ultra/modeling_ultrabert.py\n"}
+,{"stream_name":"stdout","time":17.351178288,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/atlas_worker.py\n"}
+,{"stream_name":"stdout","time":17.396497036,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/gsq_infer_model.py\n"}
+,{"stream_name":"stdout","time":17.420263849,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/gsq_infer_layers.py\n"}
+,{"stream_name":"stdout","time":17.445208281,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/delta_turing.py\n"}
+,{"stream_name":"stdout","time":17.468654717,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/adapter.py\n"}
+,{"stream_name":"stdout","time":17.493741521,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/infer.py\n"}
+,{"stream_name":"stdout","time":17.534568179,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/stage_dataset_weights.py\n"}
+,{"stream_name":"stdout","time":17.561940904,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/ensemble.py\n"}
+,{"stream_name":"stdout","time":20.14652636,"data":"{\"mode\": \"lossless_numeric_cache_parts\", \"parts\": 12, \"files\": 51, \"archive_bytes\": 277787338, \"manifest_status\": \"COMPLETE\", \"source_script_version_id\": 363008892, \"runtime_source_in_parts\": false}\n"}
+,{"stream_name":"stdout","time":21.147458204,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/native_embedding_worker.py\n"}
+,{"stream_name":"stdout","time":21.175071609,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/native_fusion.py\n"}
+,{"stream_name":"stdout","time":2595.685635132,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/accelerate-1.15.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2595.787978663,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/bitsandbytes-0.50.2-py3-none-manylinux_2_24_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2595.928561291,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/accelerate-1.15.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2595.928605475,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/bitsandbytes-0.50.2-py3-none-manylinux_2_24_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2596.194983832,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/huggingface_hub-1.32.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2596.277877308,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2596.354150565,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2596.398759824,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/huggingface_hub-1.32.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2596.398814225,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2596.398821691,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2596.447369758,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/transformers-5.14.1-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2596.650571946,"data":"Processing /kaggle/input/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/transformers-5.14.1-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2596.737961662,"data":"Installing collected packages: transformers, tokenizers, safetensors, huggingface-hub, bitsandbytes, accelerate\n"}
+,{"stream_name":"stdout","time":2596.940328308,"data":"Installing collected packages: transformers, tokenizers, safetensors, huggingface-hub, bitsandbytes, accelerate\n"}
+,{"stream_name":"stdout","time":2606.54025204,"data":"Successfully installed accelerate-1.15.0 bitsandbytes-0.50.2 huggingface-hub-1.32.0 safetensors-0.8.0 tokenizers-0.22.2 transformers-5.14.1\n"}
+,{"stream_name":"stdout","time":2606.742653131,"data":"Successfully installed accelerate-1.15.0 bitsandbytes-0.50.2 huggingface-hub-1.32.0 safetensors-0.8.0 tokenizers-0.22.2 transformers-5.14.1\n"}
+,{"stream_name":"stdout","time":2606.932212245,"data":"{\"stage\": \"gsq3-base\", \"file\": \"config.json\", \"bytes\": 5038, \"elapsed_seconds\": 0.03}\n"}
+,{"stream_name":"stdout","time":2607.021891228,"data":"{\"stage\": \"gsq3-base\", \"file\": \"merges.txt\", \"bytes\": 3353259, \"elapsed_seconds\": 0.12}\n"}
+,{"stream_name":"stdout","time":2607.057837355,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model.safetensors.index.json\", \"bytes\": 198539, \"elapsed_seconds\": 0.16}\n"}
+,{"stream_name":"stdout","time":2607.134853781,"data":"{\"stage\": \"gsq3-base\", \"file\": \"config.json\", \"bytes\": 5038, \"elapsed_seconds\": 0.03}\n"}
+,{"stream_name":"stdout","time":2607.134894293,"data":"{\"stage\": \"gsq3-base\", \"file\": \"merges.txt\", \"bytes\": 3353259, \"elapsed_seconds\": 0.12}\n"}
+,{"stream_name":"stdout","time":2607.134898636,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model.safetensors.index.json\", \"bytes\": 198539, \"elapsed_seconds\": 0.16}\n"}
+,{"stream_name":"stdout","time":2607.371156084,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer.json\", \"bytes\": 12809320, \"elapsed_seconds\": 0.47}\n"}
+,{"stream_name":"stdout","time":2607.396938915,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer_config.json\", \"bytes\": 17928, \"elapsed_seconds\": 0.5}\n"}
+,{"stream_name":"stdout","time":2607.463659316,"data":"{\"stage\": \"gsq3-base\", \"file\": \"vocab.json\", \"bytes\": 6722759, \"elapsed_seconds\": 0.56}\n"}
+,{"stream_name":"stdout","time":2607.574319793,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer.json\", \"bytes\": 12809320, \"elapsed_seconds\": 0.47}\n"}
+,{"stream_name":"stdout","time":2607.574356573,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer_config.json\", \"bytes\": 17928, \"elapsed_seconds\": 0.5}\n"}
+,{"stream_name":"stdout","time":2607.574362293,"data":"{\"stage\": \"gsq3-base\", \"file\": \"vocab.json\", \"bytes\": 6722759, \"elapsed_seconds\": 0.56}\n"}
+,{"stream_name":"stdout","time":2613.620310898,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00001-of-00003.safetensors\", \"bytes\": 2272369784, \"elapsed_seconds\": 6.72}\n"}
+,{"stream_name":"stdout","time":2613.82323094,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00001-of-00003.safetensors\", \"bytes\": 2272369784, \"elapsed_seconds\": 6.72}\n"}
+,{"stream_name":"stdout","time":2650.490234412,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00002-of-00003.safetensors\", \"bytes\": 4777704120, \"elapsed_seconds\": 43.59}\n"}
+,{"stream_name":"stdout","time":2650.712072817,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00002-of-00003.safetensors\", \"bytes\": 4777704120, \"elapsed_seconds\": 43.59}\n"}
+,{"stream_name":"stdout","time":2670.128206499,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00003-of-00003.safetensors\", \"bytes\": 4777704376, \"elapsed_seconds\": 63.23}\n"}
+,{"stream_name":"stdout","time":2670.330656664,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00003-of-00003.safetensors\", \"bytes\": 4777704376, \"elapsed_seconds\": 63.23}\n"}
+,{"stream_name":"stdout","time":2726.136164235,"data":"{\"stage\": \"gsq3-base\", \"event\": \"STAGING_CLEANED\"}\n"}
+,{"stream_name":"stdout","time":2726.358206915,"data":"{\"stage\": \"gsq3-base\", \"event\": \"STAGING_CLEANED\"}\n"}
+,{"stream_name":"stdout","time":3052.338058609,"data":"ENGS108_RUN_REPORT {\"experiment\": \"A0\", \"mode\": \"submit\", \"config_version\": 1, \"rows\": 3, \"checks\": {\"columns_exactly_id_model\": true, \"row_count_matches_test\": true, \"ids_and_order_match_test\": true, \"ids_unique\": true, \"no_null_labels\": true, \"labels_in_18_valid\": true}, \"all_checks_passed\": true, \"wall_seconds\": 3038.7, \"peak_gpu_mem_mib\": {\"0\": 9965, \"1\": 10287}, \"label_counts\": {\"claude-sonnet-5\": 1, \"gpt-5.6-sol\": 1, \"gemini-3.1-pro-preview\": 1}}\n"}
+,{"stream_name":"stderr","time":3058.770180814,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3058.770218929,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3059.237843055,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3059.237873351,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3061.716740514,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3061.841844097,"data":"[NbConvertApp] Writing 360719 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3064.50559705,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3066.555605374,"data":"[NbConvertApp] Writing 1754404 bytes to __results__.html\n"}
+]

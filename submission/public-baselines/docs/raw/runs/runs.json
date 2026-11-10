@@ -60,5 +60,17 @@
    "dir": "V1_submit_v2",
    "status": "COMPLETE"
   }
+ },
+ "V3": {
+  "validate": {
+   "version": 1,
+   "dir": "V3_validate_v1",
+   "status": "COMPLETE"
+  },
+  "submit": {
+   "version": 2,
+   "dir": "V3_submit_v2",
+   "status": "COMPLETE"
+  }
  }
 }

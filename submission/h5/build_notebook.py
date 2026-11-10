@@ -50,7 +50,13 @@ import importlib.metadata as metadata
 
 import numpy as np
 import pandas as pd
+import pyarrow.parquet as pq
 import torch
+
+if not torch.cuda.is_available():
+    print("!" * 100 + "\nWARNING: torch.cuda.is_available() is False: this session has NO GPU. The H5 notebook needs a T4 "
+          "(4-bit Qwen3-8B); a CPU run would OOM or fail later. Enable Accelerator = GPU T4 for this notebook.\n"
+          + "!" * 100, flush=True)
 
 RUN_START = time.time()
 CONFIG = json.loads(r"""__CONFIG__""")
@@ -58,7 +64,7 @@ MC, DC, SHA = CONFIG["model"], CONFIG["dev_check"], CONFIG["sha256"]
 SEED, MAX_LENGTH, BATCH, N_CLASSES = CONFIG["seed"], MC["max_length"], MC["batch_size"], len(CONFIG["class_names"])
 # Optional 414-row dev reproduction (diagnostic). Off for the official run: then train.csv is never hashed or read.
 RUN_DEV_CHECK = CONFIG.get("run_dev_check", False)
-DATA_DIR = "/kaggle/input/competitions/name-that-llm"
+INPUT_ROOT = "/kaggle/input"
 MODEL_PATH = MC["base_path"]
 OUT = "/kaggle/working"
 
@@ -84,6 +90,34 @@ def find_one(pattern):
     return hits[0]
 
 
+def find_data_dir(root, slug="name-that-llm"):
+    """Competition data dir: the known mounts, then any competitions/* mount, then any top-level mount, holding BOTH
+    test.csv and sample_submission.parquet with the expected columns. Dataset mounts (datasets/<owner>/<slug>) are never
+    candidates, so an attached dataset with similarly named files cannot be picked."""
+    candidates = [f"{root}/competitions/{slug}", f"{root}/{slug}"]
+    candidates += sorted(glob.glob(f"{root}/competitions/*/")) + sorted(glob.glob(f"{root}/*/"))
+    tried = []
+    for d in dict.fromkeys(os.path.normpath(c) for c in candidates):
+        missing = [f for f in ("test.csv", "sample_submission.parquet") if not os.path.isfile(f"{d}/{f}")]
+        if missing:
+            tried.append(f"{d}: missing {missing}")
+            continue
+        try:
+            cols = set(pd.read_csv(f"{d}/test.csv").columns)
+            names = pq.read_schema(f"{d}/sample_submission.parquet").names
+        except Exception as e:
+            tried.append(f"{d}: unreadable ({type(e).__name__}: {e})")
+            continue
+        if not {"id", "text"} <= cols or names != ["id", "model"]:
+            tried.append(f"{d}: test.csv columns {sorted(cols)}, sample_submission.parquet names {names}")
+            continue
+        return d, tried
+    raise AssertionError("no competition data dir with test.csv (id, text) + sample_submission.parquet (id, model) "
+                         f"under {root}; candidates tried:\n  " + "\n  ".join(tried))
+
+
+DATA_DIR, data_dir_rejected = find_data_dir(INPUT_ROOT)
+print("DATA_DIR:", DATA_DIR, "| rejected candidates before it:", data_dir_rejected)
 ADAPTER_DIR = os.path.dirname(find_one("/kaggle/input/**/engs108-exp03-armh-artifacts/adapter/adapter_config.json"))
 H5_DIR = os.path.dirname(find_one("/kaggle/input/**/engs108-submission-h5-artifacts/probe_armh.npz"))
 print("adapter:", ADAPTER_DIR, sorted(os.listdir(ADAPTER_DIR)))
@@ -350,10 +384,18 @@ def build():
              ("code", ARTIFACTS), ("code", MODEL), ("code", FORWARD), ("code", DEV), ("code", TEST), ("code", SUMMARY)]
     nb = {"cells": [{"cell_type": t, "id": f"cell-{i:02d}", "metadata": {}, "source": s.splitlines(keepends=True),
                      **({"outputs": [], "execution_count": None} if t == "code" else {})} for i, (t, s) in enumerate(cells)],
-          "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
-                       "language_info": {"name": "python"}},
+          "metadata": notebook_metadata(),
           "nbformat": 4, "nbformat_minor": 5}
     return json.dumps(nb, indent=1) + "\n"
+
+
+def notebook_metadata():
+    """GPU flags kept consistent with kernel-metadata.json (an accelerator with isGpuEnabled=false is contradictory)."""
+    k = json.loads((HERE / "config.json").read_text())["kaggle"]
+    assert k["gpu"] and k["machine_shape"] == "NvidiaTeslaT4", k
+    return {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+            "language_info": {"name": "python"},
+            "kaggle": {"accelerator": "nvidiaTeslaT4", "isGpuEnabled": True, "isInternetEnabled": k["internet"]}}
 
 
 def kernel_metadata():

@@ -43,9 +43,16 @@
    "agreement_with_A0_validate": 1.0
   },
   "submit": {
-   "version": 2,
-   "dir": "V2_submit_v2",
-   "status": "COMPLETE"
+   "version": 3,
+   "dir": "V2_submit_v3",
+   "status": "COMPLETE",
+   "config_version": 3,
+   "supersedes": {
+    "version": 2,
+    "dir": "V2_submit_v2",
+    "status": "COMPLETE",
+    "note": "config v2: identical behaviour; execution-contract recorded sinkhorn_strength .30. v3 output is byte-identical in content (same 3 ids/labels)."
+   }
   }
  },
  "V1": {

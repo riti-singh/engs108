@@ -140,6 +140,8 @@
   "V2_submit_v2/engs108_run/run_report.json": "9b788e757f300dee52f68e85b149c4afe4cb773cac11e17c37a2fb6702f6209e",
   "V2_validate_v1/engs108_run/run_report.json": "f5051cd3627bc6516f38b2692fe09b9a8baaf360551e9c01436ce16b2615e42d",
   "V3_submit_v2/engs108_run/run_report.json": "564a4cb32568ed7a4822620cca885b636181d5d68ef1704af41327057849b6a3",
-  "V3_validate_v1/engs108_run/run_report.json": "05d737e414162a1e248318d6dbcbbd9ce2748d34191cd74b211c50977947bd08"
+  "V3_validate_v1/engs108_run/run_report.json": "05d737e414162a1e248318d6dbcbbd9ce2748d34191cd74b211c50977947bd08",
+  "V2_submit_v3/submission.parquet": "2d26e7de920e646e14db358bafe001e292800b4fed1d3c19c077d5eae204e9ba",
+  "V2_submit_v3/engs108_run/run_report.json": "3e9705bf3cf96594c848c6d13af2191cdfd6d793e55cca8c448cfe5686e53033"
  }
 }

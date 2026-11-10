@@ -46,6 +46,8 @@ def main():
         if not rv and v.get('error'):
             val = f"validate v{v['version']}: {v['status']} - {v['error']}"
         status = (run.get('submit') or {}).get('status') or (run.get('validate') or {}).get('status') or 'not run'
+        if not run.get('submit') and v.get('status') == 'ERROR':
+            status = f"BLOCKED (validate v{v['version']} ERROR; no submit version)"
         rows.append({
             'Experiment ID': exp,
             'Original source notebook': f"https://www.kaggle.com/code/{cfg['source']['ref']}",

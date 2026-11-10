@@ -13,7 +13,9 @@ Nothing here has been submitted to the competition; leaderboard scores are blank
 | B0 | [ritisingh123/engs108-b0-embed-expert-pool](https://www.kaggle.com/code/ritisingh123/engs108-b0-embed-expert-pool) | none | `configs/B0.json` | **blocked** (see below) |
 
 V2 v3 differs from V2 v2 only in the `'sinkhorn_strength'` value written to `inference-logs/execution-contract.json`
-(.30 → .25) and the `config_version` in the run report; that record is never read, so predictions are unaffected.
+(.30 → .25) and the `config_version` in the run report; that record is never read, so predictions are unaffected. V2 v3
+completed (58m, peak ~9.7 / 10.0 GiB), its contract records `sinkhorn_strength: 0.25`, and its `submission.parquet` is identical
+to v2's. V2's 540-row validation run (v1) used config v2, which has the same behaviour.
 
 Production checks (`verify_kaggle_versions.py` on notebooks pulled from Kaggle after cleanup): for each of A0/V1/V2/V3 the
 latest saved version's code cells are identical to `build/<ID>/submit`; all four sources are distinct; each reads

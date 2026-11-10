@@ -1,0 +1,19 @@
+{
+ "experiment_id": "V1",
+ "config_version": 1,
+ "frozen": false,
+ "base": "B0",
+ "slug": "engs108-v1-b0-compw018",
+ "description": "B0 with exactly one change: --comp_w 0.15 -> 0.18",
+ "change": {
+  "id": "comp_w",
+  "cell": 54,
+  "old": "'--comp_w', '0.15'",
+  "new": "'--comp_w', '0.18'",
+  "parameter": "--comp_w",
+  "original_value": "0.15",
+  "modified_value": "0.18",
+  "what": "ensemble component weight +20%: the complementary public stack (comp_logit.npy) log-prob weight in infer.py's final blend",
+  "why": "Smallest suggested weight change on a single, isolated component; comp_w multiplies one logit block, so +20% tests whether the complementary stack is under-weighted without touching any other member."
+ }
+}

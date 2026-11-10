@@ -29,3 +29,11 @@ submission. No variant is derived from another; each config lists exactly one `c
 
 ## Out of scope
 No retraining/fine-tuning, no new train.csv reads, no stacking of changes, no leaderboard submissions (user submits manually).
+
+## Notes from inspecting candidate parameters (pre-run)
+* Ref A's complementary share is hard-coded twice in `ensemble.py` (`prior = .85 * softmax(core) + .15 * softmax(...)`, cell 41)
+  and pinned by `assert config['complementary_share'] == .15` plus a provenance record; a V1 on A means 4 coordinated literal edits for one parameter.
+* Ref A's ATLAS `prod_temperatures` is read from the attached ATLAS bundle config (`self.config['prod_temperatures']`), not from
+  notebook code; changing it would require overriding a dataset file.
+* Ref B exposes every candidate as a single `infer.py` CLI argument in cell 54 (`--comp_w`, `--sinkhorn`, `--atlas_margin`,
+  `--native_share`, …), so each variant is one literal edit. This favours B for clean single-variable variants if both run.

@@ -1,0 +1,19 @@
+{
+ "experiment_id": "V2",
+ "config_version": 1,
+ "frozen": false,
+ "base": "B0",
+ "slug": "engs108-v2-b0-sinkhorn025",
+ "description": "B0 with exactly one change: --sinkhorn 0.30 -> 0.25",
+ "change": {
+  "id": "sinkhorn",
+  "cell": 54,
+  "old": "'--sinkhorn', '0.30'",
+  "new": "'--sinkhorn', '0.25'",
+  "parameter": "--sinkhorn",
+  "original_value": "0.30",
+  "modified_value": "0.25",
+  "what": "Sinkhorn balancing weight: infer.py line ~1418 sets final log-score = (1 - s)*log P + s*log Q, where Q is P Sinkhorn-balanced toward a class marginal (35% official-train prior); s is the weight on the balanced posterior",
+  "why": "infer.py exposes no logit-temperature argument, so the closest existing probability-calibration knob is used: s geometrically interpolates the raw and class-balanced posteriors. 0.30 -> 0.25 (-1/6) relaxes the assumption that hidden-test classes are balanced; it touches nothing else."
+ }
+}

@@ -1,0 +1,63 @@
+{
+ "id": "ritisingh123/engs108-v3-b0-atlasmargin030",
+ "title": "engs108-v3-b0-atlasmargin030",
+ "code_file": "engs108-v3-b0-atlasmargin030.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": false,
+ "competition_sources": [
+  "name-that-llm"
+ ],
+ "dataset_sources": [
+  "dhruvtibarewal/nlm-l24-adapters",
+  "lightningv08/ntl-olmo2-native24-final-inference-assets",
+  "crtproduction/name-that-llm-open-pool",
+  "seyitkaangunes/ntl-extra-api-passages",
+  "abdullah1afify/ntl-generations",
+  "dophuchung/ntl-proxy-generations",
+  "zbigniewkirchner/ntl-qwen3-8b-lora-claude-head",
+  "dhruvtibarewal/nlm-matched-clean",
+  "dhruvtibarewal/nlm-offline-wheels",
+  "josephadamski91/ntl-atlas-qwen3-8b-v1",
+  "lucasboesen/ntl-free-proxy-generations",
+  "nuridudak/ntl-q14-lora",
+  "nuridudak/ntl-q14-lora-v4",
+  "mathleteutd/ntl-public-pool-v2",
+  "nuridudak/ntl-svc-prefit-pool-v4n",
+  "nishantdahal/ntl-two-stage-lora",
+  "nishantdahal/ntl-handwriting-blend",
+  "dhruvtibarewal/nlm-l24-adapters-v5",
+  "mathleteutd/ntl-two-stage-lora24-members-q8-glm9",
+  "mercurydust/ntllm-chatgpt-a-b",
+  "prvsiyan/prvsiyans-extended-name-that-llm-dataset",
+  "pjmathematician/ultrabert-380m-ntl"
+ ],
+ "kernel_sources": [
+  "lucasboesen/name-that-llm-glm4-9b-trunc25",
+  "lucasboesen/name-that-llm-extract-encoders2",
+  "lucasboesen/name-that-llm-electra-large-weights",
+  "lucasboesen/name-that-llm-desklib-weights",
+  "lucasboesen/name-that-llm-train-lora24-s7",
+  "lucasboesen/name-that-llm-train-tokattn",
+  "lucasboesen/name-that-llm-train-tokattn2",
+  "vnton37nguyn/ntl-train-lora-qwen25-instyle"
+ ],
+ "model_sources": [
+  "alexchilton/llama-3-1-8b-base/Transformers/default/1",
+  "qwen-lm/qwen-3/Transformers/14b/1",
+  "qwen-lm/qwen-3/Transformers/8b/1",
+  "qwen-lm/qwen-3/Transformers/4b-base/1",
+  "qwen-lm/qwen-3/Transformers/14b-base/1",
+  "qwen-lm/qwen-3/Transformers/8b-base/1",
+  "qwen-lm/qwen-3-embedding/Transformers/8b/1",
+  "qwen-lm/qwen2.5/Transformers/7b/1",
+  "qwen-lm/qwen2.5/Transformers/14b/1"
+ ],
+ "machine_shape": "NvidiaTeslaT4",
+ "docker_image_pinning_type": "original",
+ "docker_image": "gcr.io/kaggle-private-byod/python@sha256:de153e6d303881930c51286216393d56f56b26458d0661350305a1e8144eea01",
+ "keywords": []
+}

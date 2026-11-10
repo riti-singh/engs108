@@ -516,3 +516,18 @@ def test_no_cuda_prints_loud_warning_and_stops(tmp_path):
     assert "WARNING: torch.cuda.is_available() is False" in res.stdout
     assert "AssertionError: GPU required" in res.stderr
     assert not (tmp_path / "working" / "submission.parquet").exists()
+
+
+def test_sim4k_kernel_runs_the_submission_cells_unchanged():
+    sys.path.insert(0, str(HERE / "sim4k"))
+    import build_sim as S
+    assert (HERE / "sim4k" / S.NB_NAME).read_text() == S.build()
+    assert (HERE / "sim4k" / "kernel-metadata.json").read_text() == S.kernel_metadata()
+    sim = json.loads(S.build())
+    runner = "".join(sim["cells"][3]["source"])
+    cells = json.loads(runner[runner.index('r"""') + 4:runner.index('""")')])
+    sub = nb_code()[1:]
+    assert cells[0] == sub[0].replace('INPUT_ROOT = "/kaggle/input"', f'INPUT_ROOT = "{S.SIM_ROOT}"') != sub[0]
+    assert cells[1:] == sub[1:]
+    k = json.loads(S.kernel_metadata())
+    assert k["id"] != json.loads(B.kernel_metadata())["id"] and k["enable_gpu"] is True

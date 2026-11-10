@@ -29,6 +29,7 @@ the later commits on `exp03-stylo-probe` add stylegram/SVC models that H5 does n
 | `artifacts/h5_dev_reference.csv` | per-row dev component + H5 probabilities from the Arm H shared pooled pass (pooled logits + `pooled_hidden_armh.npy`) |
 | `tests/test_h5.py` | offline tests (notebook in sync with config, inference-only, hashes, class order, H5 reproduction, submission checks) |
 | `kaggle_run_v3/` | output from the saved Kaggle run (summary, dev check, per-batch log, visible-stub predictions) |
+| `sim4k/` | `build_sim.py` generates kernel `ritisingh123/rs2027-engs108-h5-sim4k`, a 4,000-row real-model simulation that runs the submission cells unchanged; `kaggle_run_v1/` holds its output |
 
 ## Kernel
 
@@ -37,7 +38,18 @@ the later commits on `exp03-stylo-probe` add stylegram/SVC models that H5 does n
 `ritisingh123/engs108-submission-h5-artifacts` (`probe_armh.npz`, `stylo_exp03_model.joblib`, `blend_H5_dev.csv`,
 `h5_dev_reference.csv`, `SHA256SUMS`) and `ritisingh123/engs108-offline-wheels` (bitsandbytes).
 
+Notebook metadata sets `"kaggle": {"accelerator": "nvidiaTeslaT4", "isGpuEnabled": true, "isInternetEnabled": false}`, the
+same GPU/internet settings as `kernel-metadata.json`.
+
 What the notebook does:
+0. Setup. Prints a loud warning right after `import torch` if `torch.cuda.is_available()` is False, then stops at the existing
+   `GPU required` assert. It does not fall back to CPU. It then resolves `DATA_DIR` with `find_data_dir("/kaggle/input")`
+   instead of a hardcoded path. Candidates, in order: `competitions/name-that-llm`, `name-that-llm`, `competitions/*/`,
+   then `*/`. The first one that has both `test.csv` (columns include `id`, `text`) and `sample_submission.parquet` (schema
+   names `["id", "model"]`) wins. Dataset mounts (`datasets/<owner>/<slug>`) are never candidates, so an attached dataset
+   with the same file names cannot be picked. If no candidate qualifies, an `AssertionError` lists each one with the reason
+   it was rejected. The resolved `DATA_DIR` is printed and used for `test.csv`, `sample_submission.parquet` and (dev check
+   only) `train.csv`. `ADAPTER_DIR`/`H5_DIR` still come from the unchanged `find_one` globs.
 1. Checks SHA-256 hashes for the adapter and H5 artifacts and loads `test.csv` (does not assume a row count). `train.csv` is
    only hashed and read, and the exp01 dev split (414 rows / 23 prompts) only rebuilt, when `run_dev_check` is true (see below).
 2. Loads `Qwen3ForSequenceClassification` in 4-bit NF4 (fp16 compute, double quant), `num_labels=18`, alphabetical classes, then

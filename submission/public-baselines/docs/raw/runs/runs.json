@@ -34,5 +34,23 @@
    "error": "Source bug in Ref B v2 infer.py: NameError: name 'pathlib' is not defined at infer.py line 753 (post-processing after the parquet was written), so infer.py exits 1 and the notebook cell subprocess.run(cmd, check=True) raises CalledProcessError. The same NameError earlier made infer.py skip ours_svc/top34 ('WARNING: ours_svc / top34 skipped'). Separately comp_stack.py failed its parity assert (lora24_public: our features do not match the checkpoint, max abs 6.06, mean rel 0.54) so the complementary stack was skipped (COMP SKIPPED: no stack output)."
   },
   "submit": null
+ },
+ "V2": {
+  "validate": {
+   "version": 1,
+   "dir": "V2_validate_v1",
+   "status": "COMPLETE",
+   "agreement_with_A0_validate": 1.0
+  },
+  "submit": null
+ },
+ "V1": {
+  "validate": {
+   "version": 1,
+   "dir": "V1_validate_v1",
+   "status": "COMPLETE",
+   "agreement_with_A0_validate": 0.9944
+  },
+  "submit": null
  }
 }

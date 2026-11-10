@@ -1,0 +1,91 @@
+[{"stream_name":"stderr","time":12.32125345,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":12.321304074,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":12.321308325,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":12.321310993,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":13.136111358,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":13.136147672,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":13.136151518,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":13.136154201,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":14.671985356,"data":"engs108 experiment V2 mode submit\n"}
+,{"stream_name":"stdout","time":14.674112747,"data":"engs108 mounts: ['/kaggle/input/competitions', '/kaggle/input/datasets', '/kaggle/input/models', '/kaggle/input/notebooks'] ['/kaggle/input/competitions/name-that-llm'] ['/kaggle/input/competitions/name-that-llm']\n"}
+,{"stream_name":"stdout","time":14.707274584,"data":"engs108 input layout: nested\n"}
+,{"stream_name":"stdout","time":16.585319614,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_math.py\n"}
+,{"stream_name":"stdout","time":16.606895841,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/cache_contract.py\n"}
+,{"stream_name":"stdout","time":16.631426311,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gauss.py\n"}
+,{"stream_name":"stdout","time":16.654342109,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/svc4_runtime.py\n"}
+,{"stream_name":"stdout","time":16.680077375,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/ntl660_readout.py\n"}
+,{"stream_name":"stdout","time":16.705927083,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/stage_assets.py\n"}
+,{"stream_name":"stdout","time":16.730465219,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_readout.py\n"}
+,{"stream_name":"stdout","time":16.767941133,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/stage_checkpoint_files.py\n"}
+,{"stream_name":"stdout","time":16.796508568,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_worker.py\n"}
+,{"stream_name":"stdout","time":16.83756464,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/stage_dataset_weights.py\n"}
+,{"stream_name":"stdout","time":16.959176534,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/asset_paths.py\n"}
+,{"stream_name":"stdout","time":16.982482402,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/runtime_support.py\n"}
+,{"stream_name":"stdout","time":17.007683547,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/reference_helpers.py\n"}
+,{"stream_name":"stdout","time":17.030841895,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/portable.py\n"}
+,{"stream_name":"stdout","time":17.055310342,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/reference_gauss.py\n"}
+,{"stream_name":"stdout","time":17.096202153,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/comp_cached.py\n"}
+,{"stream_name":"stdout","time":17.132593471,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/__init__.py\n"}
+,{"stream_name":"stdout","time":17.158354422,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/model.py\n"}
+,{"stream_name":"stdout","time":17.181942917,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/inference.py\n"}
+,{"stream_name":"stdout","time":17.203900501,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_rlcd/__init__.py\n"}
+,{"stream_name":"stdout","time":17.228318213,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_rlcd/data.py\n"}
+,{"stream_name":"stdout","time":17.251930829,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ultra/configuration_ultrabert.py\n"}
+,{"stream_name":"stdout","time":17.292562665,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ultra/modeling_ultrabert.py\n"}
+,{"stream_name":"stdout","time":17.317577118,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/atlas_worker.py\n"}
+,{"stream_name":"stdout","time":17.361908074,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/gsq_infer_model.py\n"}
+,{"stream_name":"stdout","time":17.385907113000002,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/gsq_infer_layers.py\n"}
+,{"stream_name":"stdout","time":17.410277886,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/delta_turing.py\n"}
+,{"stream_name":"stdout","time":17.432608544,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/adapter.py\n"}
+,{"stream_name":"stdout","time":17.458577697,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/infer.py\n"}
+,{"stream_name":"stdout","time":17.499953864,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/stage_dataset_weights.py\n"}
+,{"stream_name":"stdout","time":17.528283336,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/ensemble.py\n"}
+,{"stream_name":"stdout","time":20.029518912,"data":"{\"mode\": \"lossless_numeric_cache_parts\", \"parts\": 12, \"files\": 51, \"archive_bytes\": 277787338, \"manifest_status\": \"COMPLETE\", \"source_script_version_id\": 363008892, \"runtime_source_in_parts\": false}\n"}
+,{"stream_name":"stdout","time":20.936728151,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/native_embedding_worker.py\n"}
+,{"stream_name":"stdout","time":20.96108496,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/native_fusion.py\n"}
+,{"stream_name":"stdout","time":2768.613628863,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/accelerate-1.15.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2768.678099543,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/bitsandbytes-0.50.2-py3-none-manylinux_2_24_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2768.839653929,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/accelerate-1.15.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2768.839684264,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/bitsandbytes-0.50.2-py3-none-manylinux_2_24_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2768.992766502,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/huggingface_hub-1.32.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2769.055819258,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2769.119772499,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2769.190624427,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/transformers-5.14.1-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2769.195508635,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/huggingface_hub-1.32.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2769.195530841,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2769.195535457,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":2769.195539259,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/transformers-5.14.1-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":2769.407929215,"data":"Installing collected packages: transformers, tokenizers, safetensors, huggingface-hub, bitsandbytes, accelerate\n"}
+,{"stream_name":"stdout","time":2769.610321213,"data":"Installing collected packages: transformers, tokenizers, safetensors, huggingface-hub, bitsandbytes, accelerate\n"}
+,{"stream_name":"stdout","time":2778.886223869,"data":"Successfully installed accelerate-1.15.0 bitsandbytes-0.50.2 huggingface-hub-1.32.0 safetensors-0.8.0 tokenizers-0.22.2 transformers-5.14.1\n"}
+,{"stream_name":"stdout","time":2779.088323906,"data":"Successfully installed accelerate-1.15.0 bitsandbytes-0.50.2 huggingface-hub-1.32.0 safetensors-0.8.0 tokenizers-0.22.2 transformers-5.14.1\n"}
+,{"stream_name":"stdout","time":2779.280691789,"data":"{\"stage\": \"gsq3-base\", \"file\": \"config.json\", \"bytes\": 5038, \"elapsed_seconds\": 0.03}\n"}
+,{"stream_name":"stdout","time":2779.335016868,"data":"{\"stage\": \"gsq3-base\", \"file\": \"merges.txt\", \"bytes\": 3353259, \"elapsed_seconds\": 0.08}\n"}
+,{"stream_name":"stdout","time":2779.367285525,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model.safetensors.index.json\", \"bytes\": 198539, \"elapsed_seconds\": 0.12}\n"}
+,{"stream_name":"stdout","time":2779.473210256,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer.json\", \"bytes\": 12809320, \"elapsed_seconds\": 0.22}\n"}
+,{"stream_name":"stdout","time":2779.482881518,"data":"{\"stage\": \"gsq3-base\", \"file\": \"config.json\", \"bytes\": 5038, \"elapsed_seconds\": 0.03}\n"}
+,{"stream_name":"stdout","time":2779.482903531,"data":"{\"stage\": \"gsq3-base\", \"file\": \"merges.txt\", \"bytes\": 3353259, \"elapsed_seconds\": 0.08}\n"}
+,{"stream_name":"stdout","time":2779.482908674,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model.safetensors.index.json\", \"bytes\": 198539, \"elapsed_seconds\": 0.12}\n"}
+,{"stream_name":"stdout","time":2779.482912949,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer.json\", \"bytes\": 12809320, \"elapsed_seconds\": 0.22}\n"}
+,{"stream_name":"stdout","time":2779.50456662,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer_config.json\", \"bytes\": 17928, \"elapsed_seconds\": 0.25}\n"}
+,{"stream_name":"stdout","time":2779.570027445,"data":"{\"stage\": \"gsq3-base\", \"file\": \"vocab.json\", \"bytes\": 6722759, \"elapsed_seconds\": 0.32}\n"}
+,{"stream_name":"stdout","time":2779.706911451,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer_config.json\", \"bytes\": 17928, \"elapsed_seconds\": 0.25}\n"}
+,{"stream_name":"stdout","time":2779.706949037,"data":"{\"stage\": \"gsq3-base\", \"file\": \"vocab.json\", \"bytes\": 6722759, \"elapsed_seconds\": 0.32}\n"}
+,{"stream_name":"stdout","time":2790.728035951,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00001-of-00003.safetensors\", \"bytes\": 2272369784, \"elapsed_seconds\": 11.48}\n"}
+,{"stream_name":"stdout","time":2790.931099524,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00001-of-00003.safetensors\", \"bytes\": 2272369784, \"elapsed_seconds\": 11.48}\n"}
+,{"stream_name":"stdout","time":2825.278044107,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00002-of-00003.safetensors\", \"bytes\": 4777704120, \"elapsed_seconds\": 46.03}\n"}
+,{"stream_name":"stdout","time":2825.490171258,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00002-of-00003.safetensors\", \"bytes\": 4777704120, \"elapsed_seconds\": 46.03}\n"}
+,{"stream_name":"stdout","time":2843.103043265,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00003-of-00003.safetensors\", \"bytes\": 4777704376, \"elapsed_seconds\": 63.85}\n"}
+,{"stream_name":"stdout","time":2843.305298878,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00003-of-00003.safetensors\", \"bytes\": 4777704376, \"elapsed_seconds\": 63.85}\n"}
+,{"stream_name":"stdout","time":2897.475231011,"data":"{\"stage\": \"gsq3-base\", \"event\": \"STAGING_CLEANED\"}\n"}
+,{"stream_name":"stdout","time":2897.695818036,"data":"{\"stage\": \"gsq3-base\", \"event\": \"STAGING_CLEANED\"}\n"}
+,{"stream_name":"stdout","time":3248.056493339,"data":"ENGS108_RUN_REPORT {\"experiment\": \"V2\", \"mode\": \"submit\", \"config_version\": 2, \"rows\": 3, \"checks\": {\"columns_exactly_id_model\": true, \"row_count_matches_test\": true, \"ids_and_order_match_test\": true, \"ids_unique\": true, \"no_null_labels\": true, \"labels_in_18_valid\": true}, \"all_checks_passed\": true, \"wall_seconds\": 3233.4, \"peak_gpu_mem_mib\": {\"0\": 9965, \"1\": 10287}, \"label_counts\": {\"claude-sonnet-5\": 1, \"gpt-5.6-sol\": 1, \"gemini-3.1-pro-preview\": 1}}\n"}
+,{"stream_name":"stderr","time":3254.173714741,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3254.173757911,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3254.640295055,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3254.64032777,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3256.21353169,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3256.333517649,"data":"[NbConvertApp] Writing 359683 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3258.892732435,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3260.89014777,"data":"[NbConvertApp] Writing 1753165 bytes to __results__.html\n"}
+]

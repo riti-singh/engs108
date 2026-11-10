@@ -42,7 +42,11 @@
    "status": "COMPLETE",
    "agreement_with_A0_validate": 1.0
   },
-  "submit": null
+  "submit": {
+   "version": 2,
+   "dir": "V2_submit_v2",
+   "status": "COMPLETE"
+  }
  },
  "V1": {
   "validate": {
@@ -51,6 +55,10 @@
    "status": "COMPLETE",
    "agreement_with_A0_validate": 0.9944
   },
-  "submit": null
+  "submit": {
+   "version": 2,
+   "dir": "V1_submit_v2",
+   "status": "COMPLETE"
+  }
  }
 }

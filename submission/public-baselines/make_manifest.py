@@ -42,14 +42,17 @@ def main():
                    f"{'PASS' if rv['all_checks_passed'] else 'FAIL'}, in-sample acc {rv['in_sample_accuracy_not_a_score']:.3f} (not a score)")
         if rs:
             val += f"; submit v{run['submit']['version']}: {rs['rows']}-row test.csv, checks {'PASS' if rs['all_checks_passed'] else 'FAIL'}"
+        v = run.get('validate') or {}
+        if not rv and v.get('error'):
+            val = f"validate v{v['version']}: {v['status']} - {v['error']}"
         status = (run.get('submit') or {}).get('status') or (run.get('validate') or {}).get('status') or 'not run'
         rows.append({
             'Experiment ID': exp,
             'Original source notebook': f"https://www.kaggle.com/code/{cfg['source']['ref']}",
             'Original source version': cfg['source']['version'],
             'Kaggle notebook slug': f"{bn.OWNER}/{cfg['slug']}",
-            'Saved version': (f"submit v{run['submit']['version']}" if run.get('submit') else '') +
-                             (f" (validate v{run['validate']['version']})" if run.get('validate') else ''),
+            'Saved version': ((f"submit v{run['submit']['version']}" if run.get('submit') else '') +
+                              (f" (validate v{run['validate']['version']})" if run.get('validate') else '')).strip(),
             'Exact change from baseline': (f"{ch['parameter']}: {ch['what']}" if ch else
                                            'none (baseline); compat edits: ' + ', '.join(e['id'] for e in cfg['compat_edits'])
                                            + (', map_input_layout' if cfg.get('map_input_layout') else '')),
@@ -58,8 +61,10 @@ def main():
             'Attached asset versions': assets,
             'Local validation result': val,
             'Official leaderboard score': '',
-            'Runtime': '; '.join(f"{m} {hms(r['wall_seconds'])}" for m, r in (('validate', rv), ('submit', rs)) if r),
-            'Peak GPU memory': '; '.join(f"{m} {gpu(r)}" for m, r in (('validate', rv), ('submit', rs)) if r),
+            'Runtime': '; '.join(f"{m} {hms(r['wall_seconds'])}" for m, r in (('validate', rv), ('submit', rs)) if r)
+                       or (f"validate ~{hms(v['wall_seconds_approx'])} until {v['status']}" if v.get('wall_seconds_approx') else ''),
+            'Peak GPU memory': '; '.join(f"{m} {gpu(r)}" for m, r in (('validate', rv), ('submit', rs)) if r)
+                               or (f"validate {gpu(v)}" if v.get('peak_gpu_mem_mib') else ''),
             'Status': status,
             'Submission link': f"https://www.kaggle.com/code/{bn.OWNER}/{cfg['slug']}",
         })

@@ -1,0 +1,2952 @@
+
+# ===== CELL 0 [markdown] =====
+# Name That LLM 0.678 | Embedding Expert, LoRA, Pool
+
+**Public LB 0.678** · 2× T4 · internet off · every input is a public dataset, model or notebook output
+
+## The task in plain words
+Every passage in this competition is one paragraph (about 40 to 250 words) written by one of **18 large language models**, and the job is to say which one. The training file has 2,699 passages: 150 prompts, each answered by every model. The test passages answer prompts that never appear in train, so memorising topics does not help; a model has to learn each author's **style**. The metric is **balanced accuracy**, the average of the 18 per-model recalls, so a hard-to-recognise model counts as much as an easy one.
+
+## The idea in one picture
+```
+                          test passage
+                               │
+   ┌────────────┬──────────────┼───────────────────┬───────────────────┐
+   ▼            ▼              ▼                   ▼                   ▼
+ LoRA members  n-gram models   frozen-feature     pairwise A/B       native expert
+ (8 decoders,  (4-view SVM on  stack              verifier           (Qwen3-Embedding-8B,
+  + 2 of ours)  train + POOL,  (style n-grams,    (evidence spans)    36 layers, LoRA,
+               prefit SVC,     LightGBM,                              8 depths, 5 folds)
+               TF-IDF, LGBM)   encoders)                                    │
+   └────────────┴──────────────┬───────────────────┘                        │
+                               ▼                                            │
+          weighted sum of log-probabilities (one vote per member)           │
+                               ▼                                            │
+                 ATLAS on the uncertain passages                            │
+                               ▼                                            ▼
+            geometric mixture:  60% blend  ·  40% native expert  ◄──────────┘
+                               ▼
+                    Sinkhorn class balancing
+                               ▼
+                     one author per passage
+```
+Each member gives a log-probability for each of the 18 authors. The members are very different from each other (fine-tuned decoders, an encoder, character and word n-grams, hand-made stylometric counts), and that diversity is what makes the blend strong: they make different mistakes. The native expert is the most different of all: it reads the *whole* of an embedding model at several depths, where the decoder members read only a truncated stack. Mixing it in at 40% is the single biggest step in this notebook.
+
+## What is ours in this version
+* **A cleaned master pool as the SVM's training data** (`mathleteutd/ntl-public-pool-v2`, about 234,000 passages). The 4-view n-gram SVM can learn from far more passages than the 2,699 official ones, as long as they come from the same 18 models. Our pool merges crtproduction's open pool with every other public passage set for this competition and cleans all of them the same way: refusals, API dumps, chat preambles, cut-off and multi-paragraph text removed; punctuation that a model never uses in the official data dropped; exact duplicates, near-copies of train passages and train-prompt topics removed; and kimi-k3 rows from sources whose kimi-k3 passages a model trained only on the official data almost never recognises dropped (a label audit). Because the pool is cleaner, its rows get weight **0.5** in the SVM instead of the usual 0.35. On the leaderboard this change gave +0.002 on two different base notebooks.
+* **Two LoRA members we trained ourselves** (`q8v7` on Qwen3-8B-Base, `glm9v3` on GLM-4-9B; public dataset `mathleteutd/ntl-two-stage-lora24-members-q8-glm9`). Training has two stages: *stage 1* runs over the big public pool (two sessions of 9.5 hours, the second continuing from the first one's saved state), *stage 2* fits the official train file, once per fold and once on everything. Out-of-fold balanced accuracy on train: 0.621 and 0.597. They enter the blend at weights 2.0 and 1.0.
+* **The native embedding expert, connected to this pipeline.** The expert itself (its trained fold states, its worker and its calibration) is CHEN Han's and lightningv08's, unchanged. Ours is the connection to this blend:
+  * it runs in its own process after the frozen-feature stack, capped at 2.5 hours, and its time is taken from ATLAS's budget so the notebook stays inside the 9-hour limit;
+  * it is calibrated with this pipeline's own recovered prompt groups;
+  * it is mixed in at **0.40** after ATLAS and before the class balancing;
+  * if anything goes wrong, the notebook carries on without it;
+  * on the 3-row commit run it scores the sample rows with all five folds, so a broken input fails the commit and not the submission.
+
+Everything else is the public pipeline described in the credits, kept exactly as published.
+
+## Credits
+This notebook is the end of a long chain of public work, and each step is theirs:
+* **CHEN Han (concyclics)**: the native multi-depth Qwen3-Embedding-8B expert, its five trained fold states and its calibration (*0.679*). **lightningv08**: the inference-assets dataset that carries those states, the worker that runs them on two T4s and the geometric mixture (*0.680 | ModernBERT + LoRA + Sparse Ensemble*).
+* **Ertuğrul Özer (ozertuu)**: the 0.672 *Dual-SVC* recipe this notebook runs (prefit SVC weight 1.2, Top-34 LightGBM 0.20, the extra Qwen3-14B adapters, SVM weight 10, Sinkhorn 0.30, ATLAS 0.22 at margin 0.36). **gedouluhui**: the faithful reproduction of it, including the pin of the open pool to the release it was scored on.
+* **nuridudak**: the prefit 4-view SVC (`ntl-svc-prefit-pool-v4n`) with the Top-34 LightGBM, and the Qwen3-14B LoRAs (`ntl-q14-lora`, `ntl-q14-lora-v4`).
+* **synthreaper** (*Sovereign Gold Apex*) and **alexchilton** (its 0.666 run and the Llama-3.1-8B upload); **mercurydust** (V31, the V34.1 pairwise verifier and its A/B dataset); **Roman Tamrazov** (*Who am I?*, the sibling-style residual); **Dhruv Tibarewal** (the nlm-v27 pipeline, the LoRA24 members and the matched pool); **Joseph Adamski** (ATLAS, arXiv 2610.19583, and its Qwen3-8B bundle); **Nishant Dahal** (the two-stage LoRA idea and his Qwen3-14B / Qwen2.5-14B members); **zbigniewkirchner** (the open pool as SVM pool, the Claude head); **areebbb** (match-weighted extra rows); **crtproduction** (the open pool); **prvsiyan, Kirill Tymchyshyn, sangam21** (the shared-prompt Gaussian head); **Lucas Boesen, vnton37nguyn, pjmathematician** (the complementary stack's members and UltraBERT); **samarth1006** (the label-audit idea behind our pool's kimi-k3 filter).
+* The base models: Qwen3, Qwen3-Embedding and Qwen2.5 (Qwen team), GLM-4-9B (Zhipu AI), Llama-3.1-8B (Meta), DeBERTa-v3 (Microsoft).
+
+**If this notebook helps you, an upvote is appreciated, and please upvote the notebooks above too.**
+
+## How to read and run it
+* Every code cell has a short explanation above it. The two long scripts (`infer.py`, `comp_stack.py`) are written to disk in several consecutive cells (`%%writefile`, then `%%writefile -a` to append) so each part sits under its own explanation; the files on disk are the complete scripts.
+* **Saving a version** (the commit run) takes about 15 GPU minutes: the test file there is the 3-row public sample, so `FAST_COMMIT` skips the heavy cells and writes a placeholder; only the native expert runs, on the 3 rows, as a check. **Submitting** triggers the real run on the hidden test, which runs everything and takes several hours on two T4s.
+* Nothing needs internet: every model, adapter and dataset is attached as a Kaggle input.
+
+
+# ===== CELL 1 [markdown] =====
+## 1. Inputs and set-up
+This cell finds every input under `/kaggle/input` with `glob`, so it works whatever folder layout Kaggle mounts:
+* the competition files, and `FAST_COMMIT` (true only on the 3-row commit run);
+* **the SVM's pool.** It first loads crtproduction's open pool, keeps only the release the 0.672 recipe was scored on (Kaggle attaches the newest version of a dataset to a fork, and the newer release scores lower), and removes passages regenerated from train prompts. **Then our part:** it replaces that pool with our master pool and writes it to `/kaggle/working/pool_master.parquet`, which `infer.py` receives as `--pool`;
+* the *extra* rows (open-pool passages drawn per author by their typography match weight, as many as Dhruv Tibarewal's matched pool has);
+* the base models (Qwen3-8B / 14B, Qwen2.5-7B / 14B, Llama-3.1-8B, copied to local disk because reading the mount is slow), every public adapter, the DeBERTa encoder, the ATLAS bundle, nuridudak's prefit SVC, and **our two members** (`OWN_Q8V7`, `OWN_GLM9V3`: five fold fits plus the full fit each).
+
+# ===== CELL 2 [code] =====
+# Name That LLM - full solution: fold-averaged two-stage LoRA24 (Qwen3-8B-Base, Qwen3-14B-Base, Qwen2.5-7B),
+# Nishant two-stage checkpoints, 4-view n-gram SVM on train+pool, shared-prompt Gaussian, adaptive centred twins,
+# 10% public ATLAS (source-conditioned likelihood, arXiv 2610.19583) before Sinkhorn balancing.
+import glob, os, subprocess, json, sys
+whl = glob.glob('/kaggle/input/**/bitsandbytes-*.whl', recursive=True)
+if whl: print(subprocess.run([sys.executable, '-m', 'pip', 'install', '--no-index', '--no-deps', '-q'] + whl, capture_output=True, text=True).returncode)
+cfgs = sorted(glob.glob('/kaggle/input/**/config.json', recursive=True))
+def mdir(*parts):
+    c = [os.path.dirname(x) for x in cfgs if all(p in x.lower() for p in parts)]
+    assert c, parts; return c[0]
+def adir(name):
+    h = glob.glob(f'/kaggle/input/**/{name}/heads.pt', recursive=True); assert h, name; return os.path.dirname(h[0])
+DATA = next(p for p in ['/kaggle/input/competitions/name-that-llm', '/kaggle/input/name-that-llm'] if os.path.exists(p + '/train.csv'))
+import pandas as _pd
+FAST_COMMIT = len(_pd.read_csv(DATA + '/test.csv')) < 50   # fork: the 3-row commit run skips the heavy cells; the hidden rerun runs everything
+print('FAST_COMMIT', FAST_COMMIT)
+HEADS = os.path.dirname(next(iter(glob.glob('/kaggle/input/**/heads/q3_8bx.npz', recursive=True))))
+EXTRA = next(iter(glob.glob('/kaggle/input/**/nlm_matched_clean.parquet', recursive=True)))
+POOL = next(iter(glob.glob('/kaggle/input/**/nlm_pool_v5.parquet', recursive=True)))
+# fork (zbigniewkirchner's 0.664): the SVC learns from crtproduction's open pool (198k public real-model passages,
+# CC BY-SA 4.0) instead of nlm_pool_v5, minus the passages regenerated from train prompts
+_op = _pd.read_parquet(next(iter(glob.glob('/kaggle/input/**/ntl_open_pool.parquet', recursive=True))), columns=['id', 'text', 'model', 'flag_train_prompt_regen', 'match_weight'])
+# pin to Open Pool release v11 / dataset version 13 (190,588 rows):
+# Kaggle attaches the newest dataset version on a fresh fork, and metadata
+# version suffixes are ignored on the competition rerun.
+if 'id' in _op.columns and len(_op) > 190588:
+    _pool_num = _op['id'].astype(str).str.extract(r'_(\d+)$')[0].astype('float')
+    _op = _op[(_pool_num < 279271) | _pool_num.isna()]
+_op = _op[~_op.flag_train_prompt_regen.astype(bool)]
+_op[['text', 'model']].to_parquet('/kaggle/working/open_pool.parquet')
+POOL = '/kaggle/working/open_pool.parquet'; print('svc pool = open pool', len(_op))
+import glob as _glob
+# ours: the 4-view SVM's pool is our master pool (open pool v9 + every public passage set, cleaned alike, kimi-k3 label audit)
+_mp = sorted(_glob.glob('/kaggle/input/**/ntl_public_pool_v2.parquet', recursive=True))
+assert _mp, 'master pool not attached'
+_m = _pd.read_parquet(_mp[0], columns=['text', 'model'])
+_m = _m[_m['model'].isin(set(_pd.read_csv(DATA + '/train.csv').model.unique()))].copy()
+_m['text'] = _m['text'].fillna('').astype(str)
+_m.to_parquet('/kaggle/working/pool_master.parquet', index=False)
+POOL = '/kaggle/working/pool_master.parquet'
+print('ours: svc pool = master pool', _mp[0], len(_m), _m['model'].value_counts().to_dict(), flush=True)
+# fork (areebbb's 0.666 = their J, 1x; their K: 2x): the external rows of the TF-IDF, distort and SVC members are 1 x nlm_matched_clean's
+# count per label, drawn from the open pool by its typography match_weight, instead of nlm_matched_clean itself
+import numpy as _np
+def _draw(g, n):   # = g.sample(n, weights='match_weight', random_state=0) under pandas 2.2
+    w = _np.nan_to_num(g.match_weight.to_numpy(dtype=_np.float64))
+    return g.take(_np.random.RandomState(0).choice(len(g), size=n, replace=False, p=w / w.sum()).astype(_np.intp))
+_mix = _pd.read_parquet(EXTRA, columns=['model']).model.value_counts()
+_ex = _pd.concat([_draw(g, min(len(g), int(1 * _mix.get(m, 0)))) for m, g in _op.groupby('model')])
+EXTRA = '/kaggle/working/extra_matched.parquet'; _ex[['text', 'model']].to_parquet(EXTRA)
+print('external rows', len(_ex), 'drawn by match_weight; nlm_matched_clean had', int(_mix.sum())); del _op, _ex
+B8, B14, B25 = mdir('/qwen-3/', '/8b-base/'), mdir('/qwen-3/', '/14b-base/'), mdir('/qwen2.5/', '/7b/')
+I8, I14 = mdir('/qwen-3/', '/8b/'), mdir('/qwen-3/', '/14b/')
+A8 = [adir(f'ts_q3b8_f{k}') for k in range(5)] + [adir('ts_q3b8')]
+A14 = [adir(f'ts_q3b14_f{k}') for k in (0, 2, 4)] + [adir('ts_q3b14')]
+A25 = [adir('ts_q25_7b')]
+print(B8, B14, B25, I8, I14, A8, A14, A25, HEADS, EXTRA, POOL, sep='\n')
+def nmeta(name):
+    h = glob.glob(f'/kaggle/input/**/{name}/meta.json', recursive=True); assert h, name
+    d = os.path.dirname(h[0]); c = json.load(open(h[0]))['cfg']; return d, c
+N8, N8C = nmeta('lora8b_v1'); N14, N14C = nmeta('lora14b_v1')
+print('nishant', N8, N8C['keep'], N8C['max_len'], N14, N14C['keep'], N14C['max_len'])
+ATLAS = os.path.dirname(next(iter(glob.glob('/kaggle/input/**/atlas_bundle.json', recursive=True))))
+print('atlas', ATLAS)
+BL = mdir('/llama-3-1-8b-base/')
+_SHARDS = {'model-00001-of-00004.safetensors': 4976698672, 'model-00002-of-00004.safetensors': 4999802720, 'model-00003-of-00004.safetensors': 4915916176, 'model-00004-of-00004.safetensors': 1168138808}
+assert all(os.path.getsize(os.path.join(BL, f)) == n for f, n in _SHARDS.items()), BL   # fork: Llama-3.1-8B base from alexchilton's public model (the files of the NousResearch copy, sha256-checked: ntl-llama-mirror-check)
+AL = [adir(f'ts_llama8_f{k}') for k in (0, 2, 4)] + [adir('ts_llama8')]
+import shutil, time as _tc; _c = _tc.time()
+shutil.copytree(BL, '/tmp/llama-3.1/8b', dirs_exist_ok=True); BL = '/tmp/llama-3.1/8b'   # fork: see the intro
+print('llama copied to local disk in', round(_tc.time() - _c), 's')
+print('llama', BL, AL)
+A8S7 = [adir(f'ts8_s7_f{k}') for k in (0, 2, 4)] + [adir('ts8_s7')]
+print('seed7', A8S7)
+B25_14 = mdir('/qwen2.5/', '/14b/')
+N14B, N14BC = nmeta('lora_qwen3_14b'); Q25_14, Q25_14C = nmeta('lora_qwen25_14b')
+DEB = os.path.dirname(glob.glob('/kaggle/input/**/deberta_v3_large/meta.json', recursive=True)[0])
+import shutil; shutil.copytree(DEB, '/kaggle/working/deberta_v3_large', dirs_exist_ok=True); DEB = '/kaggle/working/deberta_v3_large'
+print('part two', N14B, N14BC['keep'], N14BC['layers'], N14BC.get('eos_id'), Q25_14, Q25_14C['keep'], Q25_14C['layers'], DEB)
+AQ8V5 = [adir(f'q8v5_f{k}') for k in range(5)] + [adir('q8v5')]
+print('q8v5', AQ8V5)
+AQ14V5 = [adir(f'q14v5_f{k}') for k in range(5)] + [adir('q14v5')]
+ALL8V5 = [adir(f'll8v5_f{k}') for k in range(5)] + [adir('ll8v5')]
+print('v5', AQ14V5, ALL8V5)
+OWN_Q8V7_BASE = B8   # ours: our own two-stage LoRA24 member q8v7
+OWN_Q8V7 = [adir(f'q8v7_f{k}') for k in range(5)] + [adir('q8v7')]
+print('q8v7', OWN_Q8V7_BASE, OWN_Q8V7)
+OWN_GLM9V3_BASE = os.path.dirname(sorted(glob.glob('/kaggle/input/**/glm4_9b_trunc25/config.json', recursive=True))[0])   # ours: our own two-stage LoRA24 member glm9v3
+OWN_GLM9V3 = [adir(f'glm9v3_f{k}') for k in range(5)] + [adir('glm9v3')]
+print('glm9v3', OWN_GLM9V3_BASE, OWN_GLM9V3)
+
+# Proven 0.654/0.665 components (v1 + v4 LoRAs and svc_v4n)
+OQ1 = os.path.dirname(glob.glob('/kaggle/input/**/ntl-q14-lora/heads.safetensors', recursive=True)[0])
+OQ4 = os.path.dirname(glob.glob('/kaggle/input/**/ntl-q14-lora-v4/heads.safetensors', recursive=True)[0])
+OSVC4N = os.path.dirname(glob.glob('/kaggle/input/**/ntl-svc-prefit-pool-v4n/metadata.json', recursive=True)[0])
+# Super-SVC V5 (trained on 39.8k clean balanced pool + Claude extra, CV 0.3630)
+_sv5 = glob.glob('/kaggle/input/**/ntl-svc-prefit-v5/metadata.json', recursive=True)
+if _sv5:
+    OSVC_FINAL = os.path.dirname(_sv5[0])
+    print('Super-SVC V5 LOADED:', OSVC_FINAL)
+else:
+    OSVC_FINAL = OSVC4N
+    print('Super-SVC V5 fallback to OSVC4N:', OSVC_FINAL)
+print('Ours 0.654/0.665 proven:', OQ1, OQ4, OSVC_FINAL)
+
+
+
+# ===== CELL 3 [markdown] =====
+## 2. Shared-prompt Gaussian head (`gauss.py`)
+Passages written for the same prompt share topic words, which confuses a classifier. This head models a passage's features as *author mean + prompt effect + noise*, integrates the unknown prompt effect out, and assigns authors jointly inside a group of passages that answer the same prompt (an author appears at most once per group).
+
+# ===== CELL 4 [code] =====
+%%writefile gauss.py
+"""Shared-prompt Gaussian group head (ported, Apache-2.0, from public Kaggle notebooks by prvsiyan / kirilltym / sangam21).
+Two-way model x = class mean + prompt effect + noise; exact (n<=3) or cavity-EM (n>3) injective group marginals."""
+import itertools
+import numpy as np
+K = 18
+DEFAULT = {"red": "wpca", "d": 256, "se_shrink": "lw", "sp_shrink": "lw", "lam_floor": 1e-4, "n_exact": 3, "inj": True,
+           "iters": 5, "repel": True, "sp_scale": 1.0}
+
+# =================================================================== primitives ====
+def _lse(A, axis=None, keepdims=False):
+    m = np.max(A, axis=axis, keepdims=True); m = np.where(np.isfinite(m), m, 0.0)
+    out = np.log(np.sum(np.exp(A - m), axis=axis, keepdims=True)) + m
+    if keepdims: return out
+    return np.squeeze(out, axis=axis) if axis is not None else float(out.item())
+
+def log_softmax(L): return L - _lse(L, axis=1, keepdims=True)
+
+def _lw_shrinkage(X):
+    """Ledoit-Wolf shrinkage coefficient for rows X that are already centred (sklearn formula, assume_centered)."""
+    from sklearn.covariance import ledoit_wolf_shrinkage
+    return float(ledoit_wolf_shrinkage(X, assume_centered=True))
+
+def _shrunk(S, a):
+    d = S.shape[0]; return (1 - a) * S + a * (np.trace(S) / d) * np.eye(d)
+
+def _two_way(Z, y, pinv, G, iters=4):
+    """additive fit Z = mu[y] + P[prompt] + E by alternating means (balanced design -> converges in 1-2 rounds)."""
+    P = np.zeros((G, Z.shape[1])); cnt_p = np.bincount(pinv, minlength=G).astype(float)
+    cls = np.unique(y); mu = np.zeros((K, Z.shape[1]))
+    for _ in range(iters):
+        R = Z - P[pinv]
+        for c in cls: mu[c] = R[y == c].mean(0)
+        R = Z - mu[y]; P = np.zeros_like(P); np.add.at(P, pinv, R); P /= cnt_p[:, None]
+    return mu, P, cnt_p
+
+def fit(X, y, prompts, cfg=None):
+    """fit the shared-prompt Gaussian on training rows. X (N, D) raw features, y (N,) labels in 0..17, prompts (N,) group ids.
+    Returns a params dict (numpy arrays + floats); temperatures default to 1 (set by the caller's cross-fit)."""
+    c = dict(DEFAULT); c.update(cfg or {})
+    X = np.asarray(X, dtype=np.float64); y = np.asarray(y); N, D = X.shape
+    pu, pinv = np.unique(np.asarray(prompts), return_inverse=True); G = len(pu)
+    mx = X.mean(0); sx = X.std(0); sx = np.where(sx > 1e-8, sx, 1.0); Xs = (X - mx) / sx
+    if c["red"] == "none":
+        V = np.eye(D)
+    else:
+        if c["red"] == "wpca":
+            Pm = np.zeros((G, D)); np.add.at(Pm, pinv, Xs); Pm /= np.bincount(pinv)[:, None]; R = Xs - Pm[pinv]
+        elif c["red"] == "pca": R = Xs
+        else: raise ValueError(c["red"])
+        d = int(min(c["d"], N - G - 1, D))
+        # economy SVD through the (N x N) Gram matrix (N << D for the real views)
+        if N < D:
+            w, U = np.linalg.eigh(R @ R.T); o = np.argsort(w)[::-1][:d]; w, U = np.clip(w[o], 1e-12, None), U[:, o]
+            V = (R.T @ U) / np.sqrt(w)
+        else:
+            _, _, Vt = np.linalg.svd(R, full_matrices=False); V = Vt[:d].T
+    Z = Xs @ V; d = Z.shape[1]
+    mu, P, ng = _two_way(Z, y, pinv, G)
+    E = Z - mu[y] - P[pinv]; dof = max(N - G - len(np.unique(y)) + 1, 1)
+    Se_raw = E.T @ E / dof
+    ae = _lw_shrinkage(E) if c["se_shrink"] == "lw" else float(c["se_shrink"]); Se = _shrunk(Se_raw, ae)
+    Pc = P - P.mean(0); Sp_raw = Pc.T @ Pc / max(G - 1, 1) - np.mean(1.0 / ng) * Se_raw
+    ap = _lw_shrinkage(Pc) if c["sp_shrink"] == "lw" else float(c["sp_shrink"])
+    tr = max(np.trace(Sp_raw), 1e-8 * np.trace(Se)); Sp = (1 - ap) * Sp_raw + ap * (tr / d) * np.eye(d); Sp *= c["sp_scale"]
+    # joint diagonalisation: A Se A' = I, A Sp A' = diag(lam)
+    L = np.linalg.cholesky(Se); Li = np.linalg.inv(L); M = Li @ Sp @ Li.T; M = 0.5 * (M + M.T)
+    lam, Q = np.linalg.eigh(M); lam = np.clip(lam, c["lam_floor"], None); A = Q.T @ Li
+    W = V @ A.T
+    return {"mx": mx, "sx": sx, "W": W, "m": mu @ A.T, "lam": lam, "T1": 1.0, "Tg": 1.0,
+            "info": {"d": int(d), "a_e": round(ae, 4), "a_p": round(ap, 4), "lam_pct": np.round(np.percentile(lam, [5, 50, 95, 100]), 3).tolist()}, "cfg": c}
+
+def transform(X, prm): return ((np.asarray(X, dtype=np.float64) - prm["mx"]) / prm["sx"]) @ prm["W"]
+
+_MASK = {}
+def _inj_mask(n, C):
+    if (n, C) not in _MASK:
+        grids = np.meshgrid(*[np.arange(C)] * n, indexing="ij"); bad = np.zeros([C] * n, bool)
+        for i, j in itertools.combinations(range(n), 2): bad |= grids[i] == grids[j]
+        _MASK[(n, C)] = bad
+    return _MASK[(n, C)]
+
+def singleton_ll(U, m, lam):
+    """(n, C) log N(u; m_c, I + diag lam) up to a constant (p integrated out)."""
+    R = U[:, None, :] - m[None]; return -0.5 * (R ** 2 / (1 + lam)).sum(-1)
+
+def joint_terms(U, m, lam):
+    """a (n, C) and B (n, n, C, C) of the exact joint log-likelihood of one group (constant in c dropped)."""
+    n = len(U); gam = lam / (1 + n * lam); R = U[:, None, :] - m[None]
+    a = -0.5 * (R ** 2 * (1 - gam)).sum(-1); G = R * np.sqrt(gam); B = np.einsum("icd,jed->ijce", G, G)
+    return a, B
+
+def joint_table(a, B):
+    """full tuple table Q[c_1, ..., c_n] = sum_i a_i + sum_{i<j} B_ij."""
+    n, C = a.shape; Q = np.zeros([C] * n)
+    for i in range(n):
+        sh = [1] * n; sh[i] = C; Q = Q + a[i].reshape(sh)
+    for i, j in itertools.combinations(range(n), 2):
+        sh = [1] * n; sh[i] = C; sh[j] = C; Q = Q + B[i, j].reshape(sh)
+    return Q
+
+def exact_marginals(Q, T=1.0, inj=True):
+    """per-passage log marginal posteriors (n, C) from a tuple table Q (unnormalised log joint), tempered by 1/T."""
+    n = Q.ndim; C = Q.shape[0]; Qt = Q / T
+    if inj and n >= 2: Qt = np.where(_inj_mask(n, C), -np.inf, Qt)
+    lz = _lse(Qt); out = np.empty((n, C))
+    for i in range(n):
+        ax = tuple(k for k in range(n) if k != i); out[i] = (_lse(Qt, axis=ax) if ax else Qt) - lz
+    return out
+
+def em_marginals(U, m, lam, T=1.0, iters=5, repel=False, q0=None):
+    """cavity EM for one group (any n >= 2): returns (n, C) log q."""
+    n = len(U); v = lam / (1 + (n - 1) * lam)
+    L = singleton_ll(U, m, lam) / T if q0 is None else np.log(np.clip(q0, 1e-300, None))
+    q = np.exp(log_softmax(L))
+    for _ in range(iters):
+        s = U - q @ m; S = s.sum(0); Pm = (S[None] - s) * v                  # cavity prompt-effect means (n, d)
+        R = U[:, None, :] - Pm[:, None, :] - m[None]; L = -0.5 * (R ** 2 / (1 + v)).sum(-1) / T
+        if repel:   # mean-field at-most-once: discourage classes the other members already hold
+            lo = np.log(np.clip(1 - q, 1e-6, None)); L = L + (lo.sum(0)[None] - lo)
+        q = np.exp(log_softmax(L))
+    return log_softmax(L)
+
+LAM_DIFF = 1e6
+def lam_g(prm, cfg=None):
+    """lam used for groups: the fitted one, or ~infinity in the paired-difference ablation (cfg 'diff'): then the joint likelihood
+    only sees within-group differences (x_i - x_j around mu_a - mu_b with covariance 2 S_e; triples: centred observations vs
+    centred prototypes) and the prompt term cancels exactly."""
+    c = dict(prm.get("cfg", DEFAULT)); c.update(cfg or {})
+    return np.full_like(prm["lam"], LAM_DIFF) if c.get("diff") else prm["lam"]
+
+def group_logpost(U, prm, T1=None, Tg=None, cfg=None):
+    c = dict(prm.get("cfg", DEFAULT)); c.update(cfg or {}); n = len(U); lg = lam_g(prm, cfg)
+    T1 = prm["T1"] if T1 is None else T1; Tg = prm["Tg"] if Tg is None else Tg
+    if n == 1: return log_softmax(singleton_ll(U, prm["m"], prm["lam"]) / T1)
+    if n <= c["n_exact"]:
+        a, B = joint_terms(U, prm["m"], lg); return exact_marginals(joint_table(a, B), Tg, c["inj"])
+    return em_marginals(U, prm["m"], lg, Tg, c["iters"], c["repel"])
+
+def scores(X_pool, lab, prm, T1=None, Tg=None, cfg=None, U=None):
+    """(n, 18) log-probabilities for every pool row; lab = detected group labels of the pool rows (singletons allowed)."""
+    U = transform(X_pool, prm) if U is None else U; lab = np.asarray(lab); n = len(U); out = np.empty((n, prm["m"].shape[0]))
+    sizes = np.bincount(lab); s1 = sizes[lab] == 1
+    T1 = prm["T1"] if T1 is None else T1
+    if s1.any(): out[s1] = log_softmax(singleton_ll(U[s1], prm["m"], prm["lam"]) / T1)
+    for g in np.where(sizes >= 2)[0]:
+        ii = np.where(lab == g)[0]; out[ii] = group_logpost(U[ii], prm, T1, Tg, cfg)
+    return out
+
+
+# ===== CELL 5 [markdown] =====
+## 3. Sibling-style residual (`sibling_style.py`)
+Models of one family (the Claudes, the Geminis, the GPTs, the GLMs) are the hardest to tell apart. This module fits a prompt-grouped ridge regression on punctuation, marker words and sentence-shape counts that predicts which *sibling* wrote a passage, and adds it with a small weight while keeping each family's total probability unchanged.
+
+# ===== CELL 6 [code] =====
+%%writefile sibling_style.py
+import re
+import numpy as np
+from functools import lru_cache
+MARKERS = [',','.', ';', ':', '!', '?','—','–','-','’','‘','“','”','"',"'",'(',')','[',']','{','}','*','`','•','…','/','\\',':','\n','\n\n','\n-','\n1.','\n2.','##','```','**','> ','\t',' = ', ' e.g.', ' i.e.', 'However,','Overall,','In conclusion','Therefore,','Moreover,','First,','Finally,',' - ',': ', ' ; ', '  ']
+WORDS = ['the','and','but','that','which','with','into','from','for','you','your','our','we','I','it','its','they','their','there','this','these','those','however','therefore','moreover','although','because','perhaps','might','would','could','should','like','such','just','very','also','not','if','or','as','so','by','of','to','in','on','at','is','are','be','was','were','have','has','had','may','must','all','any','each','every','many','some','more','most','only','even','still','then','when','where','why','how','what','who']
+WRE=re.compile(r"[A-Za-z]+(?:[’'][A-Za-z]+)?")
+SRE=re.compile(r'(?<=[.?!])\s+')
+@lru_cache(maxsize=15000)
+def row(t):
+    t = str(t)
+    s = WRE.findall(t); lo=[z.lower() for z in s]; n=max(len(s),1); nt=max(len(t),1); ns=max(len(t.splitlines()),1)
+    lens=np.array([len(z) for z in s] or [0]); sent_lens=np.array([len(WRE.findall(z)) for z in SRE.split(t) if z.strip()] or [0])
+    base = [np.log1p(n),np.log1p(nt), nt/n,ns/n,len(set(lo))/n, float(np.mean(lens)), float(np.std(lens)), float(np.mean(sent_lens)), float(np.std(sent_lens)),float(np.max(sent_lens)),float(np.mean(lens>=8)),sum(c.isupper() for c in t)/nt, sum(c.isdigit() for c in t)/nt,sum(ord(c)>127 for c in t)/nt, sum(c.isspace() for c in t)/nt, sum(c=='\n' for c in t)/nt]
+    base += [min(t.count(m)/n,3) for m in MARKERS]
+    cnt = {}
+    for w in lo: cnt[w]=cnt.get(w,0)+1
+    base += [cnt.get(w,0)/n for w in WORDS]
+    return np.array(base, dtype=np.float32)
+def features(texts):
+    return np.stack([row(str(t)) for t in texts])
+
+
+def apply_grouped_style_residual(logits, train_text, test_text, labels, y, groups, max_alpha=0.10, diagnostics_path=None):
+    """OOF-estimated, conservative sibling re-ranking. Cross-family probability mass is unchanged."""
+    import json
+    import numpy as np
+    from scipy.special import logsumexp, softmax
+    from sklearn.model_selection import GroupKFold
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.pipeline import make_pipeline
+    from sklearn.metrics import balanced_accuracy_score
+    Xt = features(train_text)
+    Xq = features(test_text)
+    out = np.asarray(logits, dtype=np.float64).copy()
+    lab = np.asarray(labels)
+    yy = np.asarray(y)
+    g = np.asarray(groups)
+    diag = {}
+    for family, C in [('claude', 0.003), ('gemini', 0.003), ('gpt', 0.003), ('glm', 0.03)]:
+        cols = np.flatnonzero(np.char.startswith(lab.astype(str), family))
+        if len(cols) < 2:
+            continue
+        train_mask = np.isin(yy, cols)
+        inds = np.flatnonzero(train_mask)
+        X = Xt[inds]
+        target = np.searchsorted(cols, yy[inds])
+        grp = g[inds]
+        oof = np.empty(len(target), dtype=np.int32)
+        for a, b in GroupKFold(n_splits=5).split(X, target, groups=grp):
+            model = make_pipeline(StandardScaler(), LogisticRegression(C=C, max_iter=400, class_weight='balanced'))
+            model.fit(X[a], target[a])
+            oof[b] = model.predict(X[b])
+        bacc = float(balanced_accuracy_score(target, oof))
+        chance = 1.0 / len(cols)
+        reliability = np.clip((bacc - chance) / 0.15, 0.0, 1.0)
+        if reliability <= 0:
+            diag[family] = dict(oof_balanced_accuracy=bacc, random_level=chance, alpha_mean=0.)
+            continue
+        model = make_pipeline(StandardScaler(), LogisticRegression(C=C, max_iter=400, class_weight='balanced'))
+        model.fit(X, target)
+        style_p = np.maximum(model.predict_proba(Xq), 1e-8)
+        old_logits = out[:, cols].copy()
+        old_p = softmax(old_logits, axis=1)
+        margin = np.partition(old_p, -2, axis=1)[:, -1] - np.partition(old_p, -2, axis=1)[:, -2]
+        # Only modestly modify disputed sibling identities; preserve total provider mass.
+        gate = np.clip((0.65 - margin) / 0.65, 0., 1.)
+        strength = (max_alpha * reliability) * gate
+        mix = (1. - strength[:, None]) * old_p + strength[:, None] * style_p
+        out[:, cols] = logsumexp(old_logits, axis=1, keepdims=True) + np.log(np.maximum(mix, 1e-12))
+        assert np.allclose(logsumexp(out[:, cols], axis=1), logsumexp(old_logits, axis=1), atol=1e-8)
+        diag[family] = dict(oof_balanced_accuracy=bacc, random_level=chance,
+                            alpha_mean=float(strength.mean()), alpha_max=float(strength.max()),
+                            changed_within_family=int(np.sum(old_p.argmax(1) != mix.argmax(1))))
+    if diagnostics_path:
+        with open(diagnostics_path, 'w') as f: json.dump(diag, f, indent=2)
+    return out
+
+
+# ===== CELL 7 [markdown] =====
+## 4. Pairwise A/B verifier (`v34_pairwise.py`)
+mercurydust's A/B dataset holds annotated evidence spans for each author. The script builds evidence-quote prototypes for every author and compares a passage's top candidates two at a time ("A or B?"). It needs no neural network and runs in about half a minute.
+
+# ===== CELL 8 [code] =====
+%%writefile v34_pairwise.py
+#!/usr/bin/env python3
+"""V34.1: lightweight evidence-aware pairwise identity verifier on top of V31.
+No backbone is fine-tuned. Uses official labels, Revision03 A evidence spans and B prompt weak labels.
+"""
+import argparse, json, hashlib, time, os
+from pathlib import Path
+import numpy as np
+import pandas as pd
+from scipy import sparse
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.model_selection import GroupKFold
+from sklearn.preprocessing import normalize
+from scipy.special import softmax
+
+LABELS = ['claude-fable-5','claude-opus-4-6','claude-opus-4-8','claude-opus-5','claude-sonnet-5',
+ 'gemini-3.1-pro-preview','gemini-3.6-flash','gemini-3.7-flash','gemini-3.8-flash','glm-5.3','glm-5.3-flash',
+ 'gpt-5.5','gpt-5.6-luna','gpt-5.6-sol','gpt-5.6-terra','gpt-6-astra','kimi-k3','qwen3.8-max']
+B_COLS=['primary_task','coarse_domain','structure_family','structure_explicitness']
+
+def sha256(p):
+ h=hashlib.sha256()
+ with open(p,'rb') as f:
+  for b in iter(lambda:f.read(1<<20),b''): h.update(b)
+ return h.hexdigest()
+
+def main():
+ ap=argparse.ArgumentParser()
+ ap.add_argument('--data',required=True); ap.add_argument('--ab-root',required=True); ap.add_argument('--out',required=True); ap.add_argument('--audit',required=True)
+ ap.add_argument('--pairs-per-kind',type=int,default=18000); ap.add_argument('--refs-per-class',type=int,default=6); ap.add_argument('--seed',type=int,default=20261101)
+ a=ap.parse_args(); t0=time.time(); rng=np.random.default_rng(a.seed)
+ data=Path(a.data); root=Path(a.ab_root)
+ req=['data_manifest.json','inputs/train.csv','dataset_A_surface_observations.csv','dataset_A_semantic_fingerprint_candidates.csv','dataset_A_cue_spans.csv','dataset_B_prompt_structure.csv']
+ missing=[x for x in req if not (root/x).is_file()]
+ if missing: raise FileNotFoundError(f'V34 A/B required files missing: {missing}')
+ manifest=json.loads((root/'data_manifest.json').read_text(encoding='utf-8'))
+ if str(manifest.get('revision'))!='03': raise RuntimeError(f'Expected A/B Revision03, got {manifest.get("revision")}')
+ tr=pd.read_csv(data/'train.csv').fillna({'text':''}); te=pd.read_csv(data/'test.csv').fillna({'text':''})
+ canon=pd.read_csv(root/'inputs/train.csv').fillna({'text':''})
+ if len(canon)!=len(tr) or not canon['id'].astype(str).equals(tr['id'].astype(str)):
+  raise RuntimeError('A/B canonical train IDs/order do not match competition train.csv')
+ if not canon['text'].astype(str).equals(tr['text'].astype(str)) or not canon['model'].astype(str).equals(tr['model'].astype(str)):
+  raise RuntimeError('A/B canonical train text/model mismatch')
+ if set(tr.model.unique())!=set(LABELS): raise RuntimeError('Official labels differ from frozen 18-label list')
+ n=len(tr); y=pd.Categorical(tr.model,categories=LABELS).codes; groups=tr.prompt_id.astype(str).to_numpy(); texts=tr.text.astype(str).tolist(); test_texts=te.text.astype(str).tolist()
+ # A evidence: exact evidence spans only. Build official-row profiles with Prompt-Grouped OOF
+ # prototypes so a response's own annotation (and its Prompt group) cannot create its profile.
+ surf=pd.read_csv(root/'dataset_A_surface_observations.csv',low_memory=False)
+ sem=pd.read_csv(root/'dataset_A_semantic_fingerprint_candidates.csv',low_memory=False)
+ cues=pd.concat([surf,sem],ignore_index=True)
+ cues=cues.dropna(subset=['cue_id','feature_name_normalized','feature_family'])
+ cues['feature_key']=cues['observation_layer'].astype(str)+'|'+cues['feature_family'].astype(str)+'|'+cues['feature_name_normalized'].astype(str)
+ spans=pd.read_csv(root/'dataset_A_cue_spans.csv',low_memory=False)
+ spans=spans[spans['quote_validation'].astype(str).eq('exact_match')].copy()
+ spans=spans.merge(cues[['cue_id','feature_key','prompt_id','observation_confidence']],on='cue_id',how='inner')
+ spans=spans[spans['exact_quote'].fillna('').astype(str).str.len().between(5,240)]
+ spans=spans.drop_duplicates(['id','feature_key','exact_quote']).reset_index(drop=True)
+ if len(spans)==0: raise RuntimeError('No exact A evidence spans survived validation.')
+ # Fixed feature-key coordinate system; per-fold prototype support is calculated using train groups only.
+ global_support=spans.groupby('feature_key')['id'].nunique()
+ keys=sorted(global_support[global_support>=8].index.tolist())
+ if len(keys)<20: raise RuntimeError(f'Too few A evidence prototypes after support filter: {len(keys)}')
+ key_to_i={k:i for i,k in enumerate(keys)}
+ qvec=TfidfVectorizer(analyzer='char_wb',ngram_range=(3,5),min_df=2,max_features=90000,sublinear_tf=True,dtype=np.float32)
+ qvec.fit(spans.exact_quote.astype(str).tolist()+texts+test_texts)
+ qX=normalize(qvec.transform(spans.exact_quote.astype(str).tolist()),norm='l2')
+ textX=normalize(qvec.transform(texts+test_texts),norm='l2')
+ spans['_row']=np.arange(len(spans),dtype=np.int32)
+ A_tr=np.zeros((n,len(keys)),dtype=np.float32)
+ A_te=np.zeros((len(te),len(keys)),dtype=np.float32)
+ a_fold_audit=[]
+ for fold,(it,iv) in enumerate(GroupKFold(n_splits=5).split(np.zeros(n),y,groups)):
+  allowed_ids=set(tr.iloc[it]['id'].astype(str))
+  fs=spans[spans['id'].astype(str).isin(allowed_ids)]
+  proto_map={}
+  for k,g in fs.groupby('feature_key',sort=False):
+   if k not in key_to_i or g['id'].astype(str).nunique()<6: continue
+   pv=qX[g['_row'].to_numpy()].mean(axis=0)
+   pv=sparse.csr_matrix(np.asarray(pv).reshape(1,-1),dtype=np.float32)
+   proto_map[k]=normalize(pv,norm='l2')
+  if proto_map:
+   proto=sparse.vstack([proto_map.get(k,sparse.csr_matrix((1,qX.shape[1]),dtype=np.float32)) for k in keys],format='csr')
+   A_tr[iv]=(textX[iv] @ proto.T).toarray().astype(np.float32)
+  a_fold_audit.append({'fold':fold,'train_rows':int(len(it)),'valid_rows':int(len(iv)),'prototype_keys':int(len(proto_map)),'heldout_prompt_groups':int(pd.Series(groups[iv]).nunique())})
+ # Test profiles use all official training evidence, never external/test annotations.
+ full_map={}
+ for k,g in spans.groupby('feature_key',sort=False):
+  if k not in key_to_i or g['id'].astype(str).nunique()<8: continue
+  pv=qX[g['_row'].to_numpy()].mean(axis=0)
+  pv=sparse.csr_matrix(np.asarray(pv).reshape(1,-1),dtype=np.float32)
+  full_map[k]=normalize(pv,norm='l2')
+ if full_map:
+  proto_full=sparse.vstack([full_map.get(k,sparse.csr_matrix((1,qX.shape[1]),dtype=np.float32)) for k in keys],format='csr')
+  A_te=(textX[n:] @ proto_full.T).toarray().astype(np.float32)
+ A_tr=np.clip(A_tr,0,1); A_te=np.clip(A_te,0,1)
+ a_prof=np.vstack([A_tr,A_te]).astype(np.float32)
+# B: weak prompt-level attributes; infer from answer text using prompt-grouped OOF classifiers.
+ bdf=pd.read_csv(root/'dataset_B_prompt_structure.csv',low_memory=False)
+ bdf=bdf.drop_duplicates('prompt_id').set_index('prompt_id')
+ for c in B_COLS:
+  if c not in bdf: raise RuntimeError(f'B target missing: {c}')
+ b_targets=[]
+ for p in groups:
+  if p not in bdf.index: raise RuntimeError(f'No B weak label for official prompt {p}')
+  b_targets.append([str(bdf.loc[p,c]) if pd.notna(bdf.loc[p,c]) else '__UNK__' for c in B_COLS])
+ b_targets=np.asarray(b_targets,dtype=object)
+ # One shared word/char representation; OOF predictions keep each prompt group out of its own B learner.
+ bv=TfidfVectorizer(ngram_range=(1,2),min_df=2,max_features=85000,sublinear_tf=True,dtype=np.float32,strip_accents='unicode')
+ BX=bv.fit_transform(texts+test_texts); BXtr,BXte=BX[:n],BX[n:]
+ b_oof=np.empty((n,len(B_COLS)),dtype=object); b_test=np.empty((len(te),len(B_COLS)),dtype=object)
+ gkf=GroupKFold(n_splits=5)
+ for j,c in enumerate(B_COLS):
+  target=b_targets[:,j]
+  for it,iv in gkf.split(BXtr,target,groups):
+   clf=LinearSVC(C=0.5,max_iter=3000,class_weight='balanced',random_state=20261101)
+   clf.fit(BXtr[it],target[it]); b_oof[iv,j]=clf.predict(BXtr[iv])
+  clf=LinearSVC(C=0.5,max_iter=3000,class_weight='balanced',random_state=20261101)
+  clf.fit(BXtr,target); b_test[:,j]=clf.predict(BXte)
+ # Text similarity spaces for pair features.
+ cv=TfidfVectorizer(analyzer='char',ngram_range=(3,5),min_df=2,max_features=120000,sublinear_tf=True,dtype=np.float32)
+ wv=TfidfVectorizer(ngram_range=(1,2),min_df=2,max_features=80000,sublinear_tf=True,dtype=np.float32,strip_accents='unicode')
+ C=normalize(cv.fit_transform(texts+test_texts),norm='l2'); W=normalize(wv.fit_transform(texts+test_texts),norm='l2')
+ Ctr,Cte=C[:n],C[n:]; Wtr,Wte=W[:n],W[n:]
+ # Pair feature builder: symmetric, task/domain-aware, and A evidence-aware.
+ fam=np.array([('claude' if x.startswith('claude') else 'gpt' if x.startswith('gpt') else 'gemini' if x.startswith('gemini') else 'glm' if x.startswith('glm') else x) for x in tr.model])
+ lengths=np.array([max(1,len(x.split())) for x in texts],dtype=np.float32)
+ punct=np.array([[x.count(z) for z in ['.',',',';',':','!','?','—','"',"'",'(',')']] for x in texts],dtype=np.float32)
+ punct=punct/(punct.sum(1,keepdims=True)+1)
+ def feats(i,j, bj1,bj2, samefam):
+  cs=np.asarray(Ctr[i].multiply(Ctr[j]).sum(axis=1)).ravel() if len(i) and (j.max()<n) else np.asarray(C[i].multiply(C[j]).sum(axis=1)).ravel()
+  ws=np.asarray(W[i].multiply(W[j]).sum(axis=1)).ravel()
+  ap=np.sum(A_tr[i]*A_tr[j],axis=1)/(np.linalg.norm(A_tr[i],axis=1)*np.linalg.norm(A_tr[j],axis=1)+1e-6) if (i.max()<n and j.max()<n) else np.sum(a_prof[i]*a_prof[j],axis=1)/(np.linalg.norm(a_prof[i],axis=1)*np.linalg.norm(a_prof[j],axis=1)+1e-6)
+  ad=np.mean(np.abs(a_prof[i]-a_prof[j]),axis=1)
+  eq=(bj1==bj2).astype(np.float32)
+  lr=np.minimum(lengths[i],lengths[j])/(np.maximum(lengths[i],lengths[j])+1e-6)
+  ps=1.0-np.minimum(1.0,np.abs(punct[i]-punct[j]).sum(1)*0.5)
+  return np.column_stack([cs,ws,ap,ad,eq[:,0],eq[:,1],eq[:,2],eq[:,3],lr,ps]).astype(np.float32)
+ # Balanced, deterministic pair construction. Positive pairs always cross Prompt; hard negatives include same Prompt and same family.
+ idx_by_model={k:np.where(y==k)[0] for k in range(len(LABELS))}
+ pos_i=[];pos_j=[]; neg_i=[];neg_j=[]; neg_f=[]
+ P=a.pairs_per_kind
+ for k,idx in idx_by_model.items():
+  for _ in range(P//len(LABELS)+1):
+   ii,jj=rng.choice(idx,2,replace=False)
+   tries=0
+   while groups[ii]==groups[jj] and tries<20:
+    jj=rng.choice(idx); tries+=1
+   if groups[ii]!=groups[jj]: pos_i.append(ii);pos_j.append(jj)
+ pos_i=np.asarray(pos_i[:P],int);pos_j=np.asarray(pos_j[:P],int)
+ # same-prompt different model hard negatives
+ prompt_to_idx={g:np.where(groups==g)[0] for g in np.unique(groups)}
+ for _ in range(P):
+  g=rng.choice(list(prompt_to_idx)); ix=prompt_to_idx[g]
+  if len(ix)<2: continue
+  ii,jj=rng.choice(ix,2,replace=False)
+  if y[ii]!=y[jj]: neg_i.append(ii);neg_j.append(jj);neg_f.append(0)
+ # same-family, different model, different prompt negatives
+ for _ in range(P):
+  ii=int(rng.integers(n)); candidates=np.where((fam==fam[ii])&(y!=y[ii])&(groups!=groups[ii]))[0]
+  if len(candidates): neg_i.append(ii);neg_j.append(int(rng.choice(candidates)));neg_f.append(1)
+ # cross-family negatives
+ for _ in range(P):
+  ii=int(rng.integers(n)); candidates=np.where((fam!=fam[ii])&(groups!=groups[ii]))[0]
+  if len(candidates): neg_i.append(ii);neg_j.append(int(rng.choice(candidates)));neg_f.append(2)
+ ni=np.asarray(neg_i,int); nj=np.asarray(neg_j,int)
+ # Pair feature builder for train indices uses precomputed sparse matrices.
+ def train_pair_features(i,j):
+  cs=np.asarray(Ctr[i].multiply(Ctr[j]).sum(axis=1)).ravel(); ws=np.asarray(Wtr[i].multiply(Wtr[j]).sum(axis=1)).ravel()
+  ap=np.sum(A_tr[i]*A_tr[j],axis=1)/(np.linalg.norm(A_tr[i],axis=1)*np.linalg.norm(A_tr[j],axis=1)+1e-6)
+  ad=np.mean(np.abs(A_tr[i]-A_tr[j]),axis=1); eq=(b_oof[i]==b_oof[j]).astype(np.float32)
+  lr=np.minimum(lengths[i],lengths[j])/(np.maximum(lengths[i],lengths[j])+1e-6)
+  ps=1.0-np.minimum(1.0,np.abs(punct[i]-punct[j]).sum(1)*0.5)
+  sf=(fam[i]==fam[j]).astype(np.float32)
+  return np.column_stack([cs,ws,ap,ad,eq[:,0],eq[:,1],eq[:,2],eq[:,3],lr,ps]).astype(np.float32)
+ Xp=train_pair_features(pos_i,pos_j); Xn=train_pair_features(ni,nj)
+ Xpair=np.vstack([Xp,Xn]); ypair=np.r_[np.ones(len(Xp),dtype=np.int8),np.zeros(len(Xn),dtype=np.int8)]
+ verifier=LogisticRegression(C=0.35,max_iter=1000,class_weight='balanced')
+ verifier.fit(Xpair,ypair)
+ # Test-to-reference: select top reference rows per class by blended char/word similarity, then verify each pair.
+ R=a.refs_per_class; scores=np.zeros((len(te),len(LABELS)),dtype=np.float32)
+ for start in range(0,len(te),128):
+  stop=min(len(te),start+128); ci=Cte[start:stop] @ Ctr.T; wi=Wte[start:stop] @ Wtr.T
+  sim=0.55*ci.toarray()+0.45*wi.toarray()
+  for k,idx in idx_by_model.items():
+   loc=np.argsort(sim[:,idx],axis=1)[:,-R:]
+   ref=idx[loc].reshape(-1); q=np.repeat(np.arange(start,stop),R)
+   # feature arrays use combined train+test index space for pairwise lookup
+   cs=np.asarray(Cte[q-start].multiply(Ctr[ref]).sum(axis=1)).ravel()
+   ws=np.asarray(Wte[q-start].multiply(Wtr[ref]).sum(axis=1)).ravel()
+   ap=np.sum(a_prof[n+q]*A_tr[ref],axis=1)/(np.linalg.norm(a_prof[n+q],axis=1)*np.linalg.norm(A_tr[ref],axis=1)+1e-6)
+   ad=np.mean(np.abs(a_prof[n+q]-A_tr[ref]),axis=1)
+   eq=(b_test[q]==b_oof[ref]).astype(np.float32)
+   lr=np.minimum(np.array([max(1,len(test_texts[z-start].split())) for z in q]),lengths[ref])/(np.maximum(np.array([max(1,len(test_texts[z-start].split())) for z in q]),lengths[ref])+1e-6)
+   ptest=np.array([[x.count(z) for z in ['.',',',';',':','!','?','—','"',"'",'(',')']] for x in [test_texts[z-start] for z in q]],dtype=np.float32); ptest=ptest/(ptest.sum(1,keepdims=True)+1)
+   ps=1.0-np.minimum(1.0,np.abs(ptest-punct[ref]).sum(1)*0.5)
+   XF=np.column_stack([cs,ws,ap,ad,eq[:,0],eq[:,1],eq[:,2],eq[:,3],lr,ps]).astype(np.float32)
+   pp=verifier.predict_proba(XF)[:,1].reshape(stop-start,R)
+   # Robust aggregation: top-3 mean reduces dependence on one unusually similar reference.
+   scores[start:stop,k]=np.sort(pp,axis=1)[:,-min(3,R):].mean(axis=1)
+ probs=softmax((scores-np.mean(scores,axis=1,keepdims=True))*5.0,axis=1).astype(np.float32)
+ np.save(a.out,probs)
+ audit={'version':'V34.1','method':'V31 baseline + evidence-quote A prototypes + prompt-weak-label B conditioning + lightweight pairwise same-model verifier',
+  'ab_revision':manifest.get('revision'),'official_rows':n,'test_rows':len(te),'official_prompts':int(pd.Series(groups).nunique()),
+  'A_surface_rows':len(surf),'A_semantic_candidate_rows':len(sem),'A_evidence_span_rows_used':len(spans),'A_feature_keys':len(keys),'A_oof_fold_audit':a_fold_audit,'A_oof_prompt_grouped':True,
+  'B_targets':B_COLS,'B_prompt_rows':len(bdf),'B_oof_group_folds':5,'pair_positive_count':len(Xp),'pair_negative_count':len(Xn),
+  'pair_negative_types':{'same_prompt_different_model':int(np.sum(np.array(neg_f)==0)),'same_family_different_model':int(np.sum(np.array(neg_f)==1)),'cross_family':int(np.sum(np.array(neg_f)==2))},
+  'pair_features':['char_cosine','word_cosine','A_evidence_profile_cosine','A_profile_mean_abs_diff','same_task','same_domain','same_structure','same_explicitness','length_ratio','punctuation_similarity'],
+  'refs_per_class':R,'pairwise_probability_shape':list(probs.shape),'finite':bool(np.isfinite(probs).all()),'row_sum_max_error':float(np.max(np.abs(probs.sum(1)-1))),
+  'note':'A uses exact evidence quote prototypes built Prompt-Grouped OOF for official rows; absent cues are not negative labels. B labels are weak prompt attributes and are used only as pairwise nuisance/context agreement features. Pairwise verifier is trained on official labels; no Backbone is fine-tuned.',
+  'seconds':round(time.time()-t0,2)}
+ Path(a.audit).write_text(json.dumps(audit,indent=2,ensure_ascii=False),encoding='utf-8')
+ print('[V34.1 PAIRWISE COMPLETE]',json.dumps(audit,ensure_ascii=False),flush=True)
+if __name__=='__main__': main()
+
+
+# ===== CELL 9 [markdown] =====
+### Run the verifier
+Finds the A/B folder whose manifest is revision 03 and has the five files the script needs, then runs it on the CPU. Without the dataset the notebook continues without the pairwise prior.
+
+# ===== CELL 10 [code] =====
+# V34.1: run the lightweight A/B Pairwise verifier
+import glob as _ab_glob, json as _ab_json, os as _ab_os, subprocess as _ab_sp, sys as _ab_sys
+import pandas as pd
+from pathlib import Path as _ABPath
+
+_data_dir = next(_ABPath(p) for p in ['/kaggle/input/competitions/name-that-llm', '/kaggle/input/name-that-llm'] if (_ABPath(p) / 'train.csv').is_file())
+_ab_root = None
+for _mf in _ab_glob.glob('/kaggle/input/**/data_manifest.json', recursive=True):
+    _d = _ab_os.path.dirname(_mf)
+    try:
+        _m = _ab_json.load(open(_mf, encoding='utf-8'))
+        _req = ['inputs/train.csv', 'dataset_A_surface_observations.csv',
+                'dataset_A_semantic_fingerprint_candidates.csv', 'dataset_A_cue_spans.csv',
+                'dataset_B_prompt_structure.csv']
+        if str(_m.get('revision')) == '03' and all(_ab_os.path.isfile(_ab_os.path.join(_d, f)) for f in _req):
+            _ab_root = _d
+            break
+    except Exception as _e:
+        pass
+
+if _ab_root is not None:
+    _out_pair = '/kaggle/working/v34_pairwise_probs.npy'
+    _out_audit = '/kaggle/working/v34_pairwise_audit.json'
+    _cmd_pair = [_ab_sys.executable, 'v34_pairwise.py', '--data', str(_data_dir),
+                 '--ab-root', _ab_root, '--out', _out_pair, '--audit', _out_audit]
+    print('[V34.1] RUNNING EVIDENCE-AWARE PAIRWISE VERIFIER', flush=True)
+    _ab_sp.run(_cmd_pair, check=True)
+    _audit = _ab_json.load(open(_out_audit, encoding='utf-8'))
+    print('[V34.1 PAIRWISE COMPLETE]', _audit.get('method', ''), f"in {_audit.get('seconds', 0):.2f}s", flush=True)
+else:
+    print('[V34.1] A/B dataset not found; proceeding without pairwise priors.', flush=True)
+
+
+# ===== CELL 11 [markdown] =====
+## 5. Main pipeline (`infer.py`)
+Dhruv Tibarewal's pipeline with the changes of everyone in the credits. It is written in nine consecutive cells; read them in order.
+
+**5a. Set-up.** Imports, the 18 author labels and the command-line options: the member list, every member's weight, the pool, Sinkhorn, ATLAS and native-expert settings. The command that sets them is in section 9.
+
+# ===== CELL 12 [code] =====
+%%writefile infer.py
+"""End-to-end attribution pipeline (self-contained; runs on Kaggle T4x2 or locally in --sim mode).
+1. Mean-pooled hidden states from frozen LMs for train+test (computed here so precision/quantisation match).
+2. Per model: LR on raw + LR on prompt-centred features (train centred by prompt_id, test by estimated cluster).
+3. TF-IDF (char_wb + word/punct) prompt-centred LR.
+4. Test prompts recovered by size-capped average-linkage clustering on content-word TF-IDF.
+5. Sum log-probs, then Hungarian assignment inside each cluster (each model answers each prompt at most once).
+"""
+import os, sys, time, gc, argparse, json, re
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import numpy as np, pandas as pd, scipy.sparse as sp, torch
+from scipy.optimize import linear_sum_assignment
+
+LABELS = ['claude-fable-5','claude-opus-4-6','claude-opus-4-8','claude-opus-5','claude-sonnet-5',
+ 'gemini-3.1-pro-preview','gemini-3.6-flash','gemini-3.7-flash','gemini-3.8-flash','glm-5.3','glm-5.3-flash',
+ 'gpt-5.5','gpt-5.6-luna','gpt-5.6-sol','gpt-5.6-terra','gpt-6-astra','kimi-k3','qwen3.8-max']
+L2I = {l: i for i, l in enumerate(LABELS)}
+
+p = argparse.ArgumentParser()
+p.add_argument('--data', default='/kaggle/input/competitions/name-that-llm')
+p.add_argument('--models', default='')   # json list of {"path":..,"layers":[fractions],"quant":"fp16|4bit|8bit","bs":16}
+p.add_argument('--comp_path', default=''); p.add_argument('--comp_w', type=float, default=0.0)
+p.add_argument('--fake_test', type=int, default=0, help='timing probe: score N pool passages as a stand-in test')
+p.add_argument('--atlas_probe', type=int, default=0, help='timing probe: stop ATLAS after N passages')
+p.add_argument('--sim', type=str, default='', help='comma list of folds held out of train.csv as fake test')
+p.add_argument('--out', default='submission.parquet')
+p.add_argument('--cache', default='cache')
+p.add_argument('--dtype', default='fp16')
+p.add_argument('--C', type=float, default=0.005)
+p.add_argument('--tfidf_w', type=float, default=1.0)
+p.add_argument('--distort_w', type=float, default=0.0, help='weight of topic-masked (text distortion) TF-IDF member')
+p.add_argument('--ours_svc', default=''); p.add_argument('--ours_svc_w', type=float, default=0.0); p.add_argument('--top34_w', type=float, default=0.0)
+p.add_argument('--adapt_thr', type=float, default=0.15, help='cluster cut (avg cosine sim on content-word TF-IDF)')
+p.add_argument('--adapt_w', type=float, default=0.0, help='weight of centred twin evidence on rows in clusters of size>=2 (0=off)')
+p.add_argument('--post', type=int, default=0, help='1: spaced em-dash guard + Hungarian on dense test clusters (12-18)')
+p.add_argument('--atlas_dir', default=''); p.add_argument('--atlas_base', default=''); p.add_argument('--atlas_w', default='0', help='mix weight per bundle (comma list or one value)')
+p.add_argument('--atlas_margin', type=float, default=0.0, help='>0: score ATLAS only on rows whose top-2 margin is below this')
+p.add_argument('--atlas_bs', type=int, default=4); p.add_argument('--atlas_chunk', type=int, default=3); p.add_argument('--atlas_budget', type=float, default=8.3 * 3600)
+p.add_argument('--native_npz', default=''); p.add_argument('--native_assets', default=''); p.add_argument('--native_share', type=float, default=0.0, help='ours: native expert geometric share before balancing')
+p.add_argument('--sk_div', type=int, default=1, help='1: divide blend by #members before Sinkhorn (ours); 0: raw blend (public notebook)')
+p.add_argument('--sinkhorn', type=float, default=0.0, help='mix strength for damped marginal balancing (0=off)')
+p.add_argument('--sinkhorn_target_mix', type=float, default=0.35, help='shrink predicted class marginal toward official-train prior; 0=prediction marginal, 1=train prior')
+p.add_argument('--sim_k', default='', help="sim only: keep 'lo-hi' random passages per held-out prompt")
+p.add_argument('--extra', default='', help='parquet/csv (text, model) of matched external passages, used by TF-IDF/distort members')
+p.add_argument('--extra_w', type=float, default=0.5)
+p.add_argument('--svc_w', type=float, default=0.0, help='4-view n-gram LinearSVC on train + --pool')
+p.add_argument('--pool', default='')
+p.add_argument('--save_lp', default='', help='also save normalised blend log-probs (n x 18, LABELS order) to this .npy')
+p.add_argument('--perpassage', type=int, default=1, help='1: test passages treated independently (no clustering/centring/assignment)')
+a, _ = p.parse_known_args()
+os.makedirs(a.cache, exist_ok=True)
+torch.backends.cuda.matmul.allow_fp16_reduced_precision_reduction = False   # fp32 sums inside fp16 matmuls (free on T4)
+T0 = time.time()
+def log(*x): print(f'[{time.time()-T0:7.0f}s]', *x, flush=True)
+
+
+
+# ===== CELL 13 [markdown] =====
+**5b. Data.** Reads the competition files, the extra rows and the SVM pool, and prepares labels and the prompt groups of the training data.
+
+# ===== CELL 14 [code] =====
+%%writefile -a infer.py
+# ---------------- data
+train = pd.read_csv(os.path.join(a.data, 'train.csv'))
+if a.sim:
+    rng = np.random.RandomState(0); pids = np.array(sorted(train.prompt_id.unique())); rng.shuffle(pids)
+    pf = {q: i % 5 for i, q in enumerate(pids)}; fo = train.prompt_id.map(pf).values
+    hold = np.isin(fo, [int(x) for x in a.sim.split(',')])
+    if a.sim_k:
+        lo_, hi_ = map(int, a.sim_k.split('-')); keep = np.zeros(len(train), bool); idx_h = np.where(hold)[0]
+        for g in np.unique(train.prompt_id.values[idx_h]):
+            ii = idx_h[train.prompt_id.values[idx_h] == g]; keep[rng.choice(ii, min(len(ii), rng.randint(lo_, hi_ + 1)), replace=False)] = True
+        hold = keep | (hold & False)
+    test = train[hold].drop(columns=['model']).reset_index(drop=True); test_truth = train[hold].reset_index(drop=True)
+    hold_any = np.isin(fo, [int(x) for x in a.sim.split(',')])
+    train = train[~hold_any].reset_index(drop=True)
+elif a.fake_test:
+    test = pd.read_parquet(a.pool).sample(a.fake_test, random_state=0)[['text']].reset_index(drop=True)
+    test['id'] = [f'fake{i}' for i in range(len(test))]
+else:
+    test = pd.read_csv(os.path.join(a.data, 'test.csv'))
+train['text'] = train.text.fillna(''); test['text'] = test.text.fillna('')
+y = train.model.map(L2I).values; Gtr = train.prompt_id.values
+log('train', len(train), 'test', len(test))
+
+
+
+# ===== CELL 15 [markdown] =====
+**5c. Utilities.** Centring features inside a prompt group, a small GPU logistic regression, size-capped clustering, and a Hungarian-assignment helper (not used in this run: `--post 0`).
+
+# ===== CELL 16 [code] =====
+%%writefile -a infer.py
+# ---------------- utils
+def center_groups(X, groups):
+    X = X.copy()
+    for g in np.unique(groups):
+        i = groups == g; X[i] -= X[i].mean(0)
+    return X
+
+def torch_lr(Xtr, ytr, Xte, C, iters=200):
+    dev = 'cuda' if torch.cuda.is_available() else 'cpu'
+    Xtr = torch.as_tensor(Xtr, dtype=torch.float32, device=dev); Xte = torch.as_tensor(Xte, dtype=torch.float32, device=dev)
+    mu, sd = Xtr.mean(0), Xtr.std(0) + 1e-6; Xtr = (Xtr - mu) / sd; Xte = (Xte - mu) / sd
+    yt = torch.as_tensor(ytr, dtype=torch.long, device=dev)
+    W = torch.zeros(Xtr.shape[1], 18, device=dev, requires_grad=True); b = torch.zeros(18, device=dev, requires_grad=True)
+    opt = torch.optim.LBFGS([W, b], lr=1, max_iter=iters, history_size=20, line_search_fn='strong_wolfe')
+    def closure():
+        opt.zero_grad()
+        loss = torch.nn.functional.cross_entropy(Xtr @ W + b, yt, reduction='sum') + 0.5 / C * (W ** 2).sum()
+        loss.backward(); return loss
+    opt.step(closure)
+    with torch.no_grad(): return torch.log_softmax(Xte @ W + b, -1).cpu().numpy()
+
+def capped_agglo(S, cap=18, thr=0.02):
+    """Average linkage (Lance-Williams), never merging past `cap` members; stop when best avg sim < thr."""
+    n = len(S); A = S.astype(np.float32).copy(); np.fill_diagonal(A, -np.inf)
+    size = np.ones(n, np.int32); alive = np.ones(n, bool); lab = np.arange(n)
+    while True:
+        ok = (size[:, None] + size[None, :] <= cap) & alive[:, None] & alive[None, :]
+        M = np.where(ok, A, -np.inf); k = int(np.argmax(M)); i, j = divmod(k, n)
+        if not np.isfinite(M[i, j]) or M[i, j] < thr: break
+        new = (size[i] * A[i] + size[j] * A[j]) / (size[i] + size[j])
+        A[i] = new; A[:, i] = new; A[i, i] = -np.inf; A[j] = -np.inf; A[:, j] = -np.inf
+        size[i] += size[j]; alive[j] = False; lab[lab == j] = i
+    return lab
+
+def hungarian(lp, groups):
+    pred = lp.argmax(1).copy()
+    for g in np.unique(groups):
+        idx = np.where(groups == g)[0]; r, c = linear_sum_assignment(-lp[idx]); pred[idx[r]] = c
+    return pred
+
+
+
+# ===== CELL 17 [markdown] =====
+**5d. Recovering the test prompts.** The test file does not say which passages answer the same prompt; passages that do are found by clustering a content-word TF-IDF, capped at 18 per group. The groups feed the prompt-centred heads. The test has only one or two passages per prompt, so they are used gently.
+
+# ===== CELL 18 [code] =====
+%%writefile -a infer.py
+# ---------------- 1. recover test prompts
+from sklearn.feature_extraction.text import TfidfVectorizer
+if a.perpassage and a.adapt_w <= 0:
+    Gte = np.arange(len(test))
+else:
+  try:
+    v = TfidfVectorizer(sublinear_tf=True, stop_words='english', min_df=2, max_df=0.05)
+    Xc = v.fit_transform(test.text.values)
+    Gte = capped_agglo((Xc @ Xc.T).toarray(), 18, a.adapt_thr if a.perpassage else 0.02)
+  except ValueError as e:  # tiny interactive test file: nothing survives df pruning
+    log('clustering fallback:', e); Gte = np.arange(len(test))
+log('test clusters', len(np.unique(Gte)), 'sizes', np.bincount(np.bincount(Gte)[np.bincount(Gte) > 0]).tolist())
+if a.sim:
+    from sklearn.metrics import adjusted_rand_score
+    log('cluster ARI vs truth', round(adjusted_rand_score(test_truth.prompt_id, Gte), 4))
+
+LP = {}
+EXT_T, EXT_Y = np.array([], dtype=object), np.array([], dtype=int)
+EXTRA_DF = pd.DataFrame(columns=['text', 'model'])
+def _norm_text_key(value):
+    import unicodedata
+    return re.sub(r'\s+', ' ', unicodedata.normalize('NFKC', str(value or ''))).strip()
+if a.extra:
+    _E = pd.read_parquet(a.extra) if a.extra.endswith('.parquet') else pd.read_csv(a.extra)
+    if not {'text', 'model'}.issubset(_E.columns):
+        raise ValueError(f'External file must contain text/model columns: {a.extra}')
+    _E = _E[_E.model.isin(LABELS)].copy()
+    _E['text'] = _E.text.fillna('').astype(str)
+    # In --sim mode, remove any external exact-text matches to held-out official rows.
+    # For final submission, retain the public external pool as provided by the source.
+    if a.sim:
+        _held_keys = {_norm_text_key(t) for t in test.text.values}
+        _E = _E[~_E.text.map(_norm_text_key).isin(_held_keys)].copy()
+    _official_keys = {_norm_text_key(t) for t in train.text.values}
+    _seen = set(_official_keys)
+    _keep = []
+    for _t in _E.text.values:
+        _k = _norm_text_key(_t)
+        _ok = bool(_k) and _k not in _seen
+        _keep.append(_ok)
+        if _ok: _seen.add(_k)
+    EXTRA_DF = _E.loc[_keep, ['text', 'model']].reset_index(drop=True)
+    EXT_T = EXTRA_DF.text.astype(str).values
+    EXT_Y = EXTRA_DF.model.map(L2I).values.astype(int)
+    log('matched-clean extra rows after exact de-dup', len(EXT_T))
+FIT_T = np.concatenate([train.text.values, EXT_T])
+FIT_Y = np.concatenate([y, EXT_Y])
+FIT_W = np.concatenate([np.ones(len(train), dtype=np.float32), np.full(len(EXT_T), a.extra_w, dtype=np.float32)])
+
+
+# ===== CELL 19 [markdown] =====
+**5e. N-gram members.** A word and character TF-IDF logistic regression; the **four-view LinearSVC** (characters, words, word shapes, function words), trained on the official passages, the extra rows and **our master pool, whose rows weigh 0.5** against 1.0 for official ones; it is the strongest single n-gram member and gets weight 10 (`--svc_w`). Then the text-distortion member: only the 100 most frequent words and the punctuation are kept, so topic cannot leak.
+
+# ===== CELL 20 [code] =====
+%%writefile -a infer.py
+# ---------------- 2. TF-IDF centred LR
+if a.tfidf_w > 0:
+    from sklearn.linear_model import LogisticRegression
+    mats_tr, mats_te = [], []
+    for kw in [dict(analyzer='char_wb', ngram_range=(2, 5), min_df=3, max_features=60000),
+               dict(token_pattern=r"\w+|[^\w\s]", ngram_range=(1, 2), min_df=3, max_features=30000)]:
+        vec = TfidfVectorizer(sublinear_tf=True, lowercase=False, **kw).fit(FIT_T if a.perpassage else train.text.values)
+        mats_tr.append(vec.transform(FIT_T if a.perpassage else train.text.values)); mats_te.append(vec.transform(test.text.values))
+    if a.perpassage:
+        LP['tfidf'] = LogisticRegression(C=20, max_iter=3000).fit(sp.hstack(mats_tr).tocsr(), FIT_Y, sample_weight=FIT_W).predict_log_proba(sp.hstack(mats_te).tocsr()) * a.tfidf_w
+    else:
+        Xtr = center_groups(sp.hstack(mats_tr).toarray().astype(np.float32), Gtr)
+        Xte = center_groups(sp.hstack(mats_te).toarray().astype(np.float32), Gte)
+        LP['tfidf'] = LogisticRegression(C=5, max_iter=3000).fit(Xtr, y).predict_log_proba(Xte) * a.tfidf_w
+        del Xtr, Xte
+    gc.collect(); log('tfidf done')
+else:
+    LP['tfidf'] = np.zeros((len(test), 18), dtype=np.float32)
+    log('tfidf skipped (zero ensemble weight)')
+if a.svc_w > 0:  # four-view SVC: official + matched-clean + pool, with source weights and exact de-duplication
+    import re as _re
+    from scipy.sparse import hstack as _hs
+    from sklearn.svm import LinearSVC
+    _FW = set("a an the and or but if while although because as so than that which who whom whose this these those it its they them their theirs he him his she her hers we us our ours you your yours i me my mine in on at to from with without for of by over under between through into about is are was were be been being have has had do does did can could will would shall should may might must not no nor all any some each every both either neither other another such only also just very too more most less least here there when where why how what whether then now still yet even much many few little".split())
+    _shape = lambda t: _re.sub(r"[^\W\d_]+", lambda m_: "X" if m_[0].isupper() else "x", t)
+    _func = lambda t: " ".join(w.lower() if w.lower() in _FW or not w.isalnum() else "CONTENT" for w in _re.findall(r"\w+|[^\w\s]", t))
+    _parts = []
+    _official = train[['text', 'model']].copy(); _official['text'] = _official.text.fillna('').astype(str)
+    _official['_srcw'] = 1.0
+    _parts.append(_official)
+    _seen = {_norm_text_key(t) for t in _official.text.values}
+    if len(EXTRA_DF):
+        _e = EXTRA_DF[['text', 'model']].copy(); _e['_srcw'] = float(a.extra_w)
+        _keep = []
+        for _t in _e.text.values:
+            _k = _norm_text_key(_t); _ok = bool(_k) and _k not in _seen
+            _keep.append(_ok)
+            if _ok: _seen.add(_k)
+        _e = _e.loc[_keep].copy(); _parts.append(_e)
+    if a.pool and os.path.exists(a.pool):
+        _P = pd.read_parquet(a.pool)
+        if not {'text', 'model'}.issubset(_P.columns):
+            raise ValueError(f'Pool must contain text/model columns: {a.pool}')
+        _P = _P[_P.model.isin(LABELS)][['text', 'model']].copy()
+        _P['text'] = _P.text.fillna('').astype(str); _P['_srcw'] = 0.5
+        if a.sim:
+            _held_keys = {_norm_text_key(t) for t in test.text.values}
+            _P = _P[~_P.text.map(_norm_text_key).isin(_held_keys)].copy()
+        _keep = []
+        for _t in _P.text.values:
+            _k = _norm_text_key(_t); _ok = bool(_k) and _k not in _seen
+            _keep.append(_ok)
+            if _ok: _seen.add(_k)
+        _P = _P.loc[_keep].copy(); _parts.append(_P)
+    _fitdf = pd.concat(_parts, ignore_index=True)
+    _fit = _fitdf.text.astype(str).tolist(); _fy = _fitdf.model.map(L2I).to_numpy(dtype=int); _sw = _fitdf['_srcw'].to_numpy(dtype=np.float32)
+    log(f'svc4 fit rows={len(_fit)} source_weighted; external clean={len(EXTRA_DF)}')
+    _A, _B = [], []
+    for view, lo, hi, mf, wv in [("char", 3, 5, 250000, 1.0), ("word", 1, 3, 180000, 0.7), ("shape", 2, 6, 60000, 0.5), ("function", 1, 3, 50000, 0.5)]:
+        prep = _shape if view == "shape" else _func if view == "function" else (lambda s_: s_)
+        an = "char" if view == "shape" else "word" if view == "function" else view
+        o = dict(analyzer=an, ngram_range=(lo, hi), lowercase=False, sublinear_tf=True, min_df=2, max_features=mf, dtype=np.float32)
+        if an == "word": o["token_pattern"] = r"(?u)\b\w+\b|[^\w\s]"
+        _v = TfidfVectorizer(**o); _A.append(_v.fit_transform([prep(t) for t in _fit]) * wv); _B.append(_v.transform([prep(t) for t in test.text.values]) * wv)
+    _svc = LinearSVC(C=0.5, random_state=42, max_iter=5000, class_weight='balanced')
+    _svc.fit(_hs(_A, format='csr'), _fy, sample_weight=_sw)
+    _d = _svc.decision_function(_hs(_B, format='csr'))
+    LP['svc4'] = (_d - _d.max(1, keepdims=True) - np.log(np.exp(_d - _d.max(1, keepdims=True)).sum(1, keepdims=True))) * a.svc_w
+    del _A, _B, _parts, _fitdf, _svc; gc.collect(); log('svc4 done')
+if a.distort_w > 0:  # Stamatatos-style text distortion: keep top-100 frequent words + punctuation, mask the rest
+    import re, collections
+    wre = re.compile(r"[A-Za-z’']+")
+    cnt = collections.Counter(w.lower() for t in FIT_T for w in wre.findall(t))
+    keep = {w for w, _ in cnt.most_common(100)}
+    dist = lambda arr: [wre.sub(lambda m_: m_.group(0) if m_.group(0).lower() in keep else '*', t) for t in arr]
+    Dtr, Dte = dist(FIT_T), dist(test.text.values)
+    vs = [TfidfVectorizer(sublinear_tf=True, lowercase=False, analyzer='char', ngram_range=(2, 6), min_df=2),
+          TfidfVectorizer(sublinear_tf=True, lowercase=True, token_pattern=r"[^\s]+", ngram_range=(1, 3), min_df=2)]
+    Xa = sp.hstack([v_.fit_transform(Dtr) for v_ in vs]).tocsr(); Xb = sp.hstack([v_.transform(Dte) for v_ in vs]).tocsr()
+    LP['distort'] = LogisticRegression(C=10, max_iter=3000).fit(Xa, FIT_Y, sample_weight=FIT_W).predict_log_proba(Xb) * a.distort_w
+    log('distort done')
+
+
+# ===== CELL 21 [markdown] =====
+**5f. The second SVC and the Top-34 LightGBM** (the *Dual-SVC* of the 0.672 recipe). nuridudak's SVC was fitted beforehand on a different pool, so it adds a second, differently trained n-gram opinion (weight 1.2); its vocabulary and coefficients are loaded and only the test passages are transformed. The LightGBM reads 16 cheap features per passage, from token-id parity statistics to word-length means (weight 0.20).
+
+# ===== CELL 22 [code] =====
+%%writefile -a infer.py
+# ---------------- 2b. Ours pre-fit SVC-v4n and Top-34 LightGBM
+if a.ours_svc and os.path.exists(a.ours_svc) and (a.ours_svc_w > 0 or a.top34_w > 0):
+    try:
+        from scipy.sparse import hstack as _hs_c
+        _root = pathlib.Path(a.ours_svc)
+        _smeta = json.loads((_root / 'metadata.json').read_text(encoding='utf-8'))
+        _perm_svc = [_smeta['labels'].index(l) for l in LABELS]
+        _FW_c = set("a an the and or but if while although because as so than that which who whom whose this these those it its they them their theirs he him his she her hers we us our ours you your yours i me my mine in on at to from with without for of by over under between through into about is are was were be been being have has had do does did can could will would shall should may might must not no nor all any some each every both either neither other another such only also just very too more most less least here there when where why how what whether then now still yet even much many few little".split())
+        _shape_c = lambda t: re.sub(r"[^\W\d_]+", lambda m: "X" if m[0].isupper() else "x", t)
+        _small_c = lambda t: " ".join(w.lower() if w.lower() in _FW_c or not w.isalnum() else "CONTENT" for w in re.findall(r"\w+|[^\w\s]", t))
+        _mats_c = []
+        for _vname, _lo, _hi, _mf, _wv in _smeta['views']:
+            _vocab = json.loads((_root / f'{_vname}-vocabulary.json').read_text(encoding='utf-8'))
+            _prep = _shape_c if _vname == 'shape' else _small_c if _vname == 'small' else (lambda t: t)
+            _an = 'char' if _vname == 'shape' else 'word' if _vname == 'small' else _vname
+            _opts = dict(analyzer=_an, ngram_range=(_lo, _hi), lowercase=False, sublinear_tf=True, dtype=np.float32, vocabulary={_t: _i for _i, _t in enumerate(_vocab)})
+            if _an == 'word': _opts['token_pattern'] = r"(?u)\b\w+\b|[^\w\s]"
+            _vec = TfidfVectorizer(**_opts)
+            _vec.idf_ = np.load(_root / f'{_vname}-idf.npy', allow_pickle=False)
+            _mats_c.append(_vec.transform([_prep(_t) for _t in test.text.values]) * _wv)
+        with np.load(_root / 'readout.npz', allow_pickle=False) as _st:
+            _logits_raw = _hs_c(_mats_c, format='csr') @ _st['coef'].T + _st['intercept']
+            _logits_c = _logits_raw[:, _perm_svc]
+            _lp_c = _logits_c - _logits_c.max(1, keepdims=True) - np.log(np.exp(_logits_c - _logits_c.max(1, keepdims=True)).sum(1, keepdims=True))
+            if a.ours_svc_w > 0:
+                LP['ours_svc4n'] = _lp_c * a.ours_svc_w
+                log(f'ours svc4n blended with weight {a.ours_svc_w}')
+        if a.top34_w > 0 and (_root / 'top34_meta.json').is_file():
+            os.environ['TIKTOKEN_CACHE_DIR'] = str(_root)
+            import tiktoken, lightgbm as lgb, zlib
+            tok_o200k = tiktoken.get_encoding('o200k_base')
+            t34_meta = json.loads((_root / 'top34_meta.json').read_text(encoding='utf-8'))
+            stopwords_t = {"the", "be", "to", "of", "and", "a", "in", "that", "have", "i", "it", "for", "not", "on", "with", "he", "as", "you", "do", "at", "this", "but", "his", "by", "from", "they", "we", "say", "her", "she", "or", "an", "will", "my", "one", "all", "would", "there", "their", "what", "however", "therefore", "moreover", "furthermore", "additionally", "thus"}
+            discourse_t = {"the", "a", "an", "in", "on", "of", "to", "for", "with", "by", "at", "from", "however", "therefore", "furthermore", "moreover", "additionally", "consequently", "nevertheless", "nonetheless", "specifically", "notably", "importantly", "overall", "certainly", "sure", "here", "let", "us", "while", "although", "because", "since", "delve", "tapestry", "crucial", "vital", "essential", "testament", "landscape"}
+            def _to_skel(t):
+                return re.sub(r'\b[A-Za-z]{2,}\b', lambda m: m.group(0) if m.group(0).lower() in discourse_t else f"[{(('U' if m.group(0).isupper() else ('C' if m.group(0)[0].isupper() else 'L')))}{min(len(m.group(0)), 15)}T{len(tok_o200k.encode(m.group(0)))}]", t)
+            corners = np.array([[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]])
+            feats_t34 = []
+            for t in test.text.values:
+                ids = tok_o200k.encode(str(t)); n = len(ids)
+                if n < 10: f16 = np.zeros(16, dtype=np.float64)
+                else:
+                    c4 = np.bincount([(1 if (ids[i]%2) else 0)*2 + (1 if (ids[i+1]%2) else 0) for i in range(n-1)], minlength=4).astype(np.float64) / (n - 1)
+                    mu = (c4[:, None] * corners).sum(0); dev = corners - mu[None, :]; cov = (c4[:, None, None] * (dev[:, :, None] * dev[:, None, :])).sum(0)
+                    w_ev, _ = np.linalg.eigh(cov); e1, e2 = float(max(w_ev)), float(min(w_ev))
+                    f16 = np.array([mu[0], mu[1], cov[0,0], cov[1,1], cov[0,1], e1, e2, e1/max(e2, 1e-9), float(zlib.crc32(str(t).encode('utf-8')) % 1000) / 1000.0, n, float(np.mean([len(w) for w in str(t).split() or ['']])), float(sum(1 for w in str(t).split() if w.lower() in stopwords_t))/max(len(str(t).split()), 1), float(sum(1 for w in str(t).split() if w.lower() in discourse_t))/max(len(str(t).split()), 1), float(sum(1 for c in str(t) if c.isupper()))/max(len(str(t)), 1), float(sum(1 for c in str(t) if c in ',;:'))/max(len(str(t)), 1), float(sum(1 for c in str(t) if c in '.!?'))/max(len(str(t)), 1)], dtype=np.float64)
+                feats_t34.append(f16)
+            clf_t34 = lgb.Booster(model_file=str(_root / 'top34.lgb'))
+            p_t34 = clf_t34.predict(np.array(feats_t34, dtype=np.float64))
+            order_t34 = [t34_meta['labels'].index(l) for l in LABELS]
+            lp_t34 = np.log(p_t34[:, order_t34]); lp_t34 = lp_t34 - lp_t34.max(1, keepdims=True) - np.log(np.exp(lp_t34 - lp_t34.max(1, keepdims=True)).sum(1, keepdims=True))
+            LP['top34'] = lp_t34 * a.top34_w
+            log(f'top34 blended with weight {a.top34_w}')
+    except Exception as _ex:
+        log('WARNING: ours_svc / top34 skipped with error:', repr(_ex))
+
+
+
+# ===== CELL 23 [markdown] =====
+**5g. LoRA members.** `l24_predict` loads a truncated decoder (only the first 20 to 27 layers), attaches a LoRA adapter, averages the hidden states of 8 depths over the passage and applies the adapter's two linear heads: a plain one and a prompt-centred one (`twin`). Each member averages five fold fits and the full fit. Members marked `dp` put one model copy on each T4 and split the batches.
+
+# ===== CELL 24 [code] =====
+%%writefile -a infer.py
+# ---------------- 3. LM embeddings
+from transformers import AutoTokenizer, AutoModel
+@torch.no_grad()
+def embed(spec, texts):
+    tok = AutoTokenizer.from_pretrained(spec['path'])
+    if tok.pad_token is None: tok.pad_token = tok.eos_token
+    kw = dict(device_map='auto')
+    q = spec.get('quant', 'fp16')
+    if q == '4bit':
+        from transformers import BitsAndBytesConfig
+        kw['quantization_config'] = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type='nf4', bnb_4bit_compute_dtype=torch.float16)
+    elif q == '8bit':
+        from transformers import BitsAndBytesConfig
+        kw['quantization_config'] = BitsAndBytesConfig(load_in_8bit=True)
+    kw['dtype'] = torch.bfloat16 if q == 'bf16' else torch.float16
+    m = AutoModel.from_pretrained(spec['path'], **kw).eval()
+    enc = tok(list(texts), truncation=True, max_length=512)['input_ids']
+    order = np.argsort([len(x) for x in enc]); out = None; bs = spec.get('bs', 16); nan_rows = 0
+    first = next(m.parameters()).device
+    for i in range(0, len(order), bs):
+        b = order[i:i + bs]; L = max(len(enc[j]) for j in b)
+        ids = torch.full((len(b), L), tok.pad_token_id); att = torch.zeros((len(b), L), dtype=torch.long)
+        for r, j in enumerate(b): ids[r, :len(enc[j])] = torch.tensor(enc[j]); att[r, :len(enc[j])] = 1
+        hs = m(input_ids=ids.to(first), attention_mask=att.to(first), output_hidden_states=True).hidden_states
+        nL = len(hs) - 1; sel = spec['layers_abs'] if 'layers_abs' in spec else [max(1, round(f * nL)) for f in spec['layers']]
+        pooled = []
+        for l in sel:
+            h = hs[l].float(); w = att.to(h.device).unsqueeze(-1).float()
+            pooled.append(((h * w).sum(1) / w.sum(1)).cpu())
+        pooled = torch.cat(pooled, 1).numpy()
+        nan_rows += int((~np.isfinite(pooled)).any(1).sum())
+        if out is None: out = np.zeros((len(texts), pooled.shape[1]), np.float32); log('  layers', sel, 'of', nL)
+        out[b] = pooled
+    del m; gc.collect(); torch.cuda.empty_cache()
+    if nan_rows: log('  WARNING non-finite rows:', nan_rows)
+    return np.nan_to_num(out, nan=0.0, posinf=0.0, neginf=0.0)
+
+TPL = 'Identify which AI language model wrote the following passage, based only on its writing style.\n\nPassage:\n{}\n\nThe author model is:'
+@torch.no_grad()
+def lora_predict(spec, texts):
+    """LoRA classifier WITHOUT peft: merge W += (B @ A) * alpha/r into the base weights, load the trained score head."""
+    from transformers import AutoModelForSequenceClassification
+    from safetensors.torch import load_file
+    tok = AutoTokenizer.from_pretrained(spec['path'])
+    if tok.pad_token is None: tok.pad_token = tok.eos_token
+    m = AutoModelForSequenceClassification.from_pretrained(spec['path'], num_labels=18, dtype=torch.float16, device_map='auto')
+    m.config.pad_token_id = tok.pad_token_id
+    cfg = json.load(open(os.path.join(spec['adapter'], 'adapter_config.json')))
+    scale = cfg['lora_alpha'] / cfg['r']
+    sd = load_file(os.path.join(spec['adapter'], 'adapter_model.safetensors'))
+    mods = dict(m.named_modules()); n_merged = 0; head = None
+    for k, v in sd.items():
+        key = k.replace('base_model.model.', '', 1)
+        if '.lora_A.' in key:
+            mod_name = key.split('.lora_A.')[0]; B = sd[k.replace('.lora_A.', '.lora_B.')]
+            lin = mods[mod_name]; W = lin.weight
+            W += ((B.to(W.device, torch.float32) @ v.to(W.device, torch.float32)) * scale).to(W.dtype); n_merged += 1
+        elif key.startswith('score.') and 'weight' in key and 'original_module' not in key:
+            head = v
+    assert head is not None and n_merged > 0, (n_merged, [k for k in sd if 'score' in k])
+    m.score.weight.copy_(head.to(m.score.weight.device, m.score.weight.dtype))
+    log(f'  merged {n_merged} LoRA pairs (scale {scale}), head {tuple(head.shape)}')
+    del mods, sd, lin, W, B, head; gc.collect()  # drop every reference to the model's modules
+    m.eval()
+    enc = tok(list(texts), truncation=True, max_length=512)['input_ids']
+    order = np.argsort([len(x) for x in enc]); out = np.zeros((len(texts), 18), np.float32); bs = spec.get('bs', 16)
+    first = next(m.parameters()).device
+    for i in range(0, len(order), bs):
+        b = order[i:i + bs]; L = max(len(enc[j]) for j in b)
+        ids = torch.full((len(b), L), tok.pad_token_id); att = torch.zeros((len(b), L), dtype=torch.long)
+        for r, j in enumerate(b): ids[r, :len(enc[j])] = torch.tensor(enc[j]); att[r, :len(enc[j])] = 1
+        lo = m(input_ids=ids.to(first), attention_mask=att.to(first)).logits.float()
+        out[b] = torch.log_softmax(lo, -1).cpu().numpy()
+    del m; gc.collect(); torch.cuda.empty_cache()
+    return out
+
+@torch.no_grad()
+def l24_predict(spec, texts, groups=None, train_texts=None):
+    """LoRA24-recipe member(s): truncated base loaded ONCE; for each adapter dir in spec['adapters'] (or spec['adapter'])
+    merge W += B A * s, compute masked mean-pooled multi-layer features, read plain (+ centred) heads, then unmerge.
+    Returns log-probs averaged over adapters (plain, centred-or-None)."""
+    from transformers import AutoConfig
+    from safetensors.torch import load_file
+    from concurrent.futures import ThreadPoolExecutor
+    adapters = spec.get('adapters') or [spec['adapter']]
+    tok = AutoTokenizer.from_pretrained(spec['path'])
+    if tok.pad_token is None: tok.pad_token = tok.eos_token
+    cfg = AutoConfig.from_pretrained(spec['path']); tc = cfg.text_config if hasattr(cfg, 'text_config') else cfg
+    tc.num_hidden_layers = spec['keep']; tc.use_cache = False
+    if getattr(tc, 'layer_types', None) is not None: tc.layer_types = tc.layer_types[:spec['keep']]
+    _ms = []   # fork (exp018): with spec['dp'], a full copy on each GPU if the largest batch fits with 1 GiB to spare
+    if spec.get('dp') and torch.cuda.device_count() >= 2:
+        try:
+            for _d in range(2):
+                _ms.append(AutoModel.from_pretrained(spec['path'], config=cfg, dtype=torch.float16, device_map={'': _d}).eval())
+                for _n in ('vision_tower', 'multi_modal_projector'):   # Ministral 3's image path; text passes never use it
+                    if getattr(_ms[-1], _n, None) is not None: setattr(_ms[-1], _n, None)
+                gc.collect(); torch.cuda.empty_cache(); torch.cuda.reset_peak_memory_stats(_d)
+                _ms[-1](input_ids=torch.full((spec.get('bs', 16), spec.get('max_len', 384)), tok.pad_token_id, device=f'cuda:{_d}'), output_hidden_states=True, use_cache=False)
+                assert torch.cuda.max_memory_allocated(_d) < torch.cuda.get_device_properties(_d).total_memory - (1 << 30), 'under 1 GiB to spare'
+        except Exception as _e:   # out of memory, or anything else: upstream's way
+            log(f'  l24 {spec["name"]}: one split copy instead of one per GPU ({_e!r:.80})'); _ms = []
+        gc.collect(); torch.cuda.empty_cache()
+    if not _ms: _ms = [AutoModel.from_pretrained(spec['path'], config=cfg, dtype=torch.float16, device_map='auto').eval()]
+    m = _ms[0]
+    if spec.get('no_final_norm'):
+        for _m in _ms: _m.norm = torch.nn.Identity()
+    mods = dict(m.named_modules()); first = next(m.parameters()).device; L = spec['layers']
+    _mods = [dict(_m.named_modules()) for _m in _ms]
+    _eos = spec.get('eos_id')   # checkpoints trained with an end token appended (Nishant's) need the same id at inference
+    _tk = lambda tx: [x + ([_eos] if _eos is not None else []) for x in tok(list(tx), truncation=True, max_length=spec.get('max_len', 384) - (1 if _eos is not None else 0))['input_ids']]
+    enc = _tk(texts)
+    order = np.argsort([len(x) for x in enc]); bs = spec.get('bs', 16)
+    def lsm(z): return z - z.max(1, keepdims=True) - np.log(np.exp(z - z.max(1, keepdims=True)).sum(1, keepdims=True))
+    P_acc, C_acc = 0.0, 0.0; FEATS = None; OVF = [0, 0]
+    if train_texts is not None:
+        enc_tr = _tk(train_texts)
+    def featurize(enc_, norms, hid):
+        order_ = np.argsort([len(x) for x in enc_]); Z_ = np.zeros((len(enc_), hid * len(L)), np.float32)
+        def _run(k, n):   # fork: upstream's batches in upstream's order, batch i on copy i % n, one thread per copy
+            mm = _ms[k]; dev = next(mm.parameters()).device
+            with torch.no_grad():   # grad mode is per thread
+                for i in range(k * bs, len(order_), bs * n):
+                    b = order_[i:i + bs]; Lm = max(len(enc_[j]) for j in b)
+                    ids = torch.full((len(b), Lm), tok.pad_token_id); att = torch.zeros((len(b), Lm), dtype=torch.long)
+                    for r, j in enumerate(b): ids[r, :len(enc_[j])] = torch.tensor(enc_[j]); att[r, :len(enc_[j])] = 1
+                    hs = mm(input_ids=ids.to(dev), attention_mask=att.to(dev), output_hidden_states=True, use_cache=False).hidden_states
+                    if not all(torch.isfinite(hs[l]).all() for l in L):   # fp16 overflow (un-normed deep states): redo this batch in bf16
+                        mm.to(torch.bfloat16); hs = mm(input_ids=ids.to(dev), attention_mask=att.to(dev), output_hidden_states=True, use_cache=False).hidden_states; mm.to(torch.float16); OVF[k] += 1
+                    mask = att.unsqueeze(-1).float(); mask[:, 0] = 0; _mg = {d_: mask.to(d_) for d_ in {hs[l].device for l in L}}
+                    Z_[b] = torch.cat([nm(((hs[l].float() * _mg[hs[l].device]).sum(1) / _mg[hs[l].device].sum(1)).cpu()) for l, nm in zip(L, norms)], -1).numpy()   # fork: masked means on the GPU
+        if len(_ms) == 1: _run(0, 1)
+        else:
+            try:
+                with ThreadPoolExecutor(len(_ms)) as _ex:
+                    for _f in [_ex.submit(_run, k, len(_ms)) for k in range(len(_ms))]: _f.result()
+            except Exception as _e:   # never worse than one GPU: drop the second copy, every batch again on the first
+                log(f'  l24 {spec["name"]}: two-copy pass failed ({_e!r:.80}), one copy from here on'); del _ms[1:], _mods[1:]
+                gc.collect(); torch.cuda.empty_cache(); _run(0, 1)
+        return Z_
+    for ai, ad in enumerate(adapters):
+        adp = os.path.join(ad, 'adapter') if os.path.exists(os.path.join(ad, 'adapter', 'adapter_config.json')) else ad
+        acfg = json.load(open(os.path.join(adp, 'adapter_config.json'))); scale = acfg['lora_alpha'] / acfg['r']
+        sd = load_file(os.path.join(adp, 'adapter_model.safetensors')); deltas = []
+        for k, v in sd.items():
+            if '.lora_A.' not in k: continue
+            name = k.replace('base_model.model.', '', 1).split('.lora_A.')[0]
+            if name not in mods and ('model.' + name) in mods: name = 'model.' + name
+            B = sd[k.replace('.lora_A.', '.lora_B.')]
+            for _md in _mods:   # fork: every copy
+                W = _md[name].weight
+                W += ((B.to(W.device, torch.float32) @ v.to(W.device, torch.float32)) * scale).to(W.dtype)
+                deltas.append((W, B, v))   # keep only the low-rank factors; the dense delta is recomputed to unmerge
+        if os.path.exists(os.path.join(ad, 'heads.pt')): H = torch.load(os.path.join(ad, 'heads.pt'), map_location='cpu')
+        else: H = dict(load_file(os.path.join(ad, 'heads.safetensors')))
+        if os.path.exists(os.path.join(ad, 'meta.json')):   # remap head rows from the checkpoint's label order to ours
+            _lab = json.load(open(os.path.join(ad, 'meta.json')))['labels']; _perm = [_lab.index(l) for l in LABELS]
+            for _p in ('plain', 'centered'): H[f'{_p}.weight'] = H[f'{_p}.weight'][_perm]; H[f'{_p}.bias'] = H[f'{_p}.bias'][_perm]
+        hid = H['norms.0.weight'].shape[0]
+        norms = [torch.nn.LayerNorm(hid) for _ in L]
+        for i, nm in enumerate(norms): nm.load_state_dict({'weight': H[f'norms.{i}.weight'], 'bias': H[f'norms.{i}.bias']})
+        Z = featurize(enc, norms, hid)   # fork: upstream's loop, now shared with the Gaussian head's train features
+        if train_texts is not None and ai == len(adapters) - 1:   # full-data adapter: features for the Gaussian head
+            FEATS = (Z.copy(), featurize(enc_tr, norms, hid))
+        for W, B, A_ in deltas:   # unmerge before the next adapter
+            W -= ((B.to(W.device, torch.float32) @ A_.to(W.device, torch.float32)) * scale).to(W.dtype)
+        torch.cuda.empty_cache()
+        del deltas, sd; gc.collect()
+        hd = lambda p, X: lsm(X @ H[f'{p}.weight'].float().numpy().T + H[f'{p}.bias'].float().numpy())
+        P_acc = P_acc + hd('plain', Z) / len(adapters)
+        if groups is not None:
+            Zc = Z.copy()
+            for g in np.unique(groups):
+                ii = groups == g; Zc[ii] -= Zc[ii].mean(0)
+            C_acc = C_acc + hd('centered', Zc) / len(adapters)
+        log(f'  l24 {spec["name"]}: adapter {os.path.basename(ad)} done (bf16 redo batches {sum(OVF)})')
+    del m, mods, _ms, _mods; gc.collect(); torch.cuda.empty_cache()
+    if train_texts is not None: return P_acc, (C_acc if groups is not None else None), FEATS
+    return P_acc, (C_acc if groups is not None else None)
+
+def gpu_mem():
+    return ' '.join(f'gpu{i}:{torch.cuda.memory_allocated(i)/1e9:.1f}GB' for i in range(torch.cuda.device_count()))
+
+specs = json.loads(a.models) if a.models else []
+all_text = np.concatenate([train.text.values, test.text.values])
+for spec in specs:
+    if spec.get('type') == 'l24':
+        log('l24', spec['name'])
+        if len(test) < 50:
+            _p40, _ = l24_predict(spec, train.text.values[:40]); _acc = float((_p40.argmax(1) == y[:40]).mean())
+            log(f'  {spec["name"]} in-sample check acc {_acc:.2f}'); assert _acc > 0.5, f'{spec["name"]} l24 does not reproduce its fit'
+        if spec.get('gauss', 0) > 0:
+            plain, cent, (Zte_g, Ztr_g) = l24_predict(spec, test.text.values, Gte if a.adapt_w > 0 else None, train_texts=train.text.values)
+            import gauss as _ga
+            prm = _ga.fit(Ztr_g, y, Gtr, dict(red='wpca', d=128, se_shrink='lw', sp_shrink='lw', lam_floor=1e-4, n_exact=3, inj=True, iters=5, repel=True, sp_scale=1.0))
+            prm['T1'] = prm['Tg'] = 3.0
+            _sz = np.bincount(Gte)[Gte]; _rows = (_sz >= 2) & (_sz <= 18)
+            _q = _ga.scores(Ztr_g[[0, 1]], np.zeros(2, dtype=int), prm); assert np.allclose(np.exp(_q).sum(1), 1)
+            _G = np.zeros((len(test), 18))
+            if _rows.any():
+                _G[_rows] = _ga.scores(Zte_g[_rows], np.unique(Gte[_rows], return_inverse=True)[1], prm)
+            LP[spec['name'] + '_gauss'] = _G * spec['gauss']; log(f"  gaussian head {spec['name']}: {int(_rows.sum())} grouped test rows, weight {spec['gauss']}")
+        else:
+            plain, cent = l24_predict(spec, test.text.values, Gte if a.adapt_w > 0 else None)
+        LP[spec['name']] = plain * spec.get('w', 1.0)
+        if cent is not None:
+            rows = np.bincount(Gte)[Gte] >= 2
+            LP[spec['name'] + '_twin'] = np.where(rows[:, None], cent, 0.0) * a.adapt_w * spec.get('w', 1.0) * spec.get('twin', 1.0)
+        gc.collect(); torch.cuda.empty_cache(); log(spec['name'], 'done', gpu_mem()); continue
+    if spec.get('type') == 'enc':   # fully fine-tuned encoder (DeBERTa-style): fp32, mean of the last layer, linear head
+        log('enc', spec['name']); from safetensors.torch import load_file as _lf
+        _ck = spec['ckpt']; _meta = json.load(open(os.path.join(_ck, 'meta.json')))
+        _perm = [_meta['labels'].index(l) for l in LABELS]
+        _hd = _lf(os.path.join(_ck, 'head.safetensors')); _W = _hd['weight'].float().numpy()[_perm]; _b = _hd['bias'].float().numpy()[_perm]
+        _etok = AutoTokenizer.from_pretrained(os.path.join(_ck, 'encoder'))
+        _enc = AutoModel.from_pretrained(os.path.join(_ck, 'encoder'), dtype=torch.float32).to('cuda:0').eval()
+        def _enc_feats(texts):
+            _ids = _etok(list(texts), truncation=True, max_length=_meta['max_len'])['input_ids']
+            _ord = np.argsort([len(x) for x in _ids], kind='stable'); Z_ = np.zeros((len(_ids), _enc.config.hidden_size), np.float32)
+            with torch.inference_mode():
+                for _s in range(0, len(_ord), 32):
+                    _idx = _ord[_s:_s + 32]; _bt = _etok.pad({'input_ids': [_ids[i] for i in _idx]}, return_tensors='pt').to('cuda:0')
+                    _m = _bt['attention_mask'].unsqueeze(-1).float()
+                    Z_[_idx] = ((_enc(**_bt).last_hidden_state * _m).sum(1) / _m.sum(1).clamp(min=1)).cpu().numpy()
+            return Z_
+        if len(test) < 50:
+            _acc = float(((_enc_feats(train.text.values[:40]) @ _W.T + _b).argmax(1) == y[:40]).mean())
+            log(f'  {spec["name"]} in-sample check acc {_acc:.2f}'); assert _acc > 0.5, spec['name']
+        _zz = _enc_feats(test.text.values) @ _W.T + _b
+        LP[spec['name']] = (_zz - _zz.max(1, keepdims=True) - np.log(np.exp(_zz - _zz.max(1, keepdims=True)).sum(1, keepdims=True))) * spec.get('w', 1.0)
+        del _enc; gc.collect(); torch.cuda.empty_cache(); log(spec['name'], 'done', gpu_mem()); continue
+    if spec.get('type') == 'head':
+        log('head', spec['name']); H = np.load(spec['head'])
+        Ete = embed(dict(spec, layers=sorted(float(v) for v in H['layers'])), test.text.values)  # extraction stored layers in sorted order
+        if len(test) < 50:  # interactive run: in-sample sanity check on 40 train rows (head was fit on them)
+            _E40 = embed(dict(spec, layers=sorted(float(v) for v in H['layers'])), train.text.values[:40])
+            _acc = float(((((_E40 - H['mu']) / H['sd']) @ H['W'] + H['b']).argmax(1) == y[:40]).mean())
+            log(f'  {spec["name"]} in-sample check acc {_acc:.2f}'); assert _acc > 0.5, f'{spec["name"]} head does not reproduce its fit'
+        Z = (Ete - H['mu']) / H['sd']; zz = Z @ H['W'] + H['b']
+        LP[spec['name']] = (zz - zz.max(1, keepdims=True) - np.log(np.exp(zz - zz.max(1, keepdims=True)).sum(1, keepdims=True))) * spec.get('w', 1.0)
+        gc.collect(); torch.cuda.empty_cache(); log(spec['name'], 'done', gpu_mem()); continue
+    if spec.get('type') == 'lora':
+        log('lora', spec['name']); LP[spec['name']] = lora_predict(spec, test.text.values) * spec.get('w', 1.0)
+        gc.collect(); torch.cuda.empty_cache(); log(spec['name'], 'done', gpu_mem()); continue
+    name = spec['name']; cp = os.path.join(a.cache, f"{name}_{'sim' + a.sim + a.sim_k if a.sim else 'real'}.npy")
+    if os.path.exists(cp): E = np.load(cp)
+    else:
+        log('embedding', name); E = embed(spec, all_text); np.save(cp, E)
+    Etr, Ete = E[:len(train)], E[len(train):]
+    r = torch_lr(Etr, y, Ete, spec.get('C', a.C))
+    if a.perpassage:
+        LP[name] = r * spec.get('w', 1.0)
+        if a.adapt_w > 0:
+            sizes = np.bincount(Gte)[Gte]; rows = sizes >= 2
+            c = torch_lr(center_groups(Etr, Gtr), y, center_groups(Ete, Gte), spec.get('C', a.C))
+            LP[name + '_twin'] = np.where(rows[:, None], c, 0.0) * a.adapt_w * spec.get('w', 1.0)
+    else:
+        c = torch_lr(center_groups(Etr, Gtr), y, center_groups(Ete, Gte), a.C)
+        LP[name] = (r + c) * spec.get('w', 1.0)
+    gc.collect(); torch.cuda.empty_cache(); log(name, 'done', gpu_mem())
+
+
+
+# ===== CELL 25 [markdown] =====
+**5h. Typography guards and the blend.** Rules of the form *a passage with this mark can only come from a model that uses the mark in train* (a spaced em dash, a curly apostrophe and so on). The cell ends by summing the members' weighted log-probabilities, one vote per active member.
+
+# ===== CELL 26 [code] =====
+%%writefile -a infer.py
+# ---------------- 4. combine + assign
+# typography guards: (mark, models that ever use it in train). Zero violations on the 38k matched pool for every rule.
+GUARDS = [(' \u2014 ', {'claude-opus-4-6', 'claude-opus-5', 'glm-5.3', 'glm-5.3-flash'}),
+          ('\u2019', {l for l in LABELS if not l.startswith(('claude', 'glm'))}),
+          ('"', {'claude-fable-5', 'claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5', 'claude-sonnet-5', 'gemini-3.1-pro-preview', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash', 'glm-5.3', 'glm-5.3-flash', 'gpt-5.5', 'kimi-k3'}),
+          ('\u201c', {'gemini-3.8-flash', 'gpt-5.5', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'kimi-k3', 'qwen3.8-max'}),
+          ('\u2013', {'claude-opus-5', 'gemini-3.1-pro-preview', 'glm-5.3-flash', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'kimi-k3'})]
+tot = sum(LP.values())
+
+
+# ===== CELL 27 [markdown] =====
+**5i. ATLAS, the native expert, and the final assembly.**
+* **ATLAS** scores the passages whose top-2 margin is below 0.36. It runs Qwen3-8B-Base conditioned on each candidate author, within the time left of the 9-hour limit, and is mixed in at 0.22.
+* **Then our step:** if the native expert's output exists, `native_mix` combines it with the blend at a 0.40 share (section 8b explains how). If it is missing or fails, the log says `NATIVE SKIPPED` and the blend goes on unchanged.
+* The complementary stack's output is mixed in at 15%.
+* **Sinkhorn balancing** nudges the predicted class counts toward a blend of the model's own counts and the train prior.
+* The answer is written.
+
+# ===== CELL 28 [code] =====
+%%writefile -a infer.py
+def atlas_scores(bundle, rows, budget):
+    """Source-conditioned likelihood probabilities (public ATLAS bundle format) for test rows `rows`, in our label order.
+    Rows are scored shortest-first; completed rows are returned even when budget prevents finishing all rows."""
+    sys.path.insert(0, bundle)
+    for _m in [m_ for m_ in list(sys.modules) if m_.startswith(('ntl_atlas', 'ntl_rlcd'))]: del sys.modules[_m]
+    from ntl_atlas.model import load_model as _atlas_load
+    from ntl_rlcd.data import LABELS as _alab
+    from safetensors.torch import load_file as _lf
+    sys.path.remove(bundle)
+    _cfg = json.load(open(os.path.join(bundle, 'atlas_bundle.json')))['training_config']
+    _am, _atok = _atlas_load(a.atlas_base, _alab, _cfg, device='auto')
+    try:
+        _am.load_trainable(_lf(os.path.join(bundle, 'adapters.safetensors'))); _am.eval()
+        _enc = _atok(test.text.values[rows].tolist(), truncation=True, max_length=_cfg['max_length'])['input_ids']
+        _ord = np.argsort([len(t) for t in _enc], kind='stable')
+        out = np.zeros((len(rows), 18), np.float32)
+        scored = np.zeros(len(rows), dtype=bool)
+        _t1 = time.time()
+        _ctok = np.cumsum(np.array([len(_enc[int(i)]) for i in _ord], np.float64))
+        for _b in range(0, len(_ord), a.atlas_bs):
+            if _b and time.time() - T0 >= budget - 60:
+                log(f'atlas budget checkpoint: preserving {int(scored.sum())}/{len(rows)} completed predictions')
+                break
+            _idx = _ord[_b:_b + a.atlas_bs]
+            _pk = _atok.pad({'input_ids': [_enc[int(i)] for i in _idx]}, padding=True, return_tensors='pt').to(_am.device)
+            with torch.inference_mode(): _p, _ = _am.score(_pk['input_ids'], _pk['attention_mask'], source_chunk=a.atlas_chunk)
+            _batch = _p.float().cpu().numpy()
+            if not np.isfinite(_batch).all() or not np.allclose(_batch.sum(1), 1, atol=1e-3):
+                log(f'atlas invalid scores in batch {_b}; keeping previously completed rows')
+                break
+            out[_idx] = _batch
+            scored[_idx] = True
+            _done = _b + len(_idx)
+            if _b % (25 * a.atlas_bs) == 0 and _done > 0:
+                _proj = (time.time() - T0) + (time.time() - _t1) / max(float(_ctok[_done - 1]), 1.0) * float(_ctok[-1] - _ctok[_done - 1]) * 1.1
+                log(f'atlas {os.path.basename(bundle)} {_done}/{len(_ord)} projected finish {_proj:.0f}s')
+                if a.atlas_probe and _done >= a.atlas_probe:
+                    log(f'atlas probe stopped after {int(scored.sum())} scored rows')
+                    break
+        assert not scored.any() or np.isfinite(out[scored]).all()
+        log(f'atlas completed {int(scored.sum())}/{len(rows)} rows before budget')
+        return out[:, [_alab.index(l) for l in LABELS]], scored
+    finally:
+        del _am; gc.collect(); torch.cuda.empty_cache()
+
+COMP_P = None
+if a.comp_w > 0 and a.comp_path and os.path.exists(a.comp_path):   # complementary public stack, run in its own process
+    try:
+        _cm = json.load(open(a.comp_path.replace('comp_logit.npy', 'comp_meta.json')))
+        assert _cm['ids'] == test['id'].astype(str).tolist(), 'comp stack row order differs'
+        _cl = np.load(a.comp_path)[:, [_cm['labels'].index(l) for l in LABELS]]
+        COMP_P = np.exp(_cl - _cl.max(1, keepdims=True)); COMP_P /= COMP_P.sum(1, keepdims=True)
+        assert np.isfinite(COMP_P).all(); log(f"comp stack loaded ({_cm['seconds']:.0f}s)")
+    except Exception as _e:
+        log('COMP SKIPPED:', repr(_e)); COMP_P = None
+elif a.comp_w > 0: log('COMP SKIPPED: no stack output')
+_bundles = [d for d in a.atlas_dir.split(',') if d]; _aw = [float(x) for x in str(a.atlas_w).split(',')] if _bundles else []
+if _bundles and len(_aw) == 1: _aw = _aw * len(_bundles)
+if (a.sinkhorn > 0 and len(test) >= 18) or _bundles or COMP_P is not None:
+    wsum = sum(abs(v).max() > 0 for v in LP.values())
+    lpn = tot / max(1, wsum) if a.sk_div else tot; P = np.exp(lpn - lpn.max(1, keepdims=True)); P /= P.sum(1, keepdims=True)
+    if COMP_P is not None: P = (1 - a.comp_w) * P + a.comp_w * COMP_P; P /= P.sum(1, keepdims=True)
+    if _bundles and sum(_aw) > 0:
+        _s = np.sort(P, 1); _margin = _s[:, -1] - _s[:, -2]
+        rows = np.where(_margin < a.atlas_margin)[0] if a.atlas_margin > 0 and len(test) >= 50 else np.arange(len(test))
+        log(f'atlas on {len(rows)}/{len(test)} rows (top-2 margin < {a.atlas_margin})')
+        mixed = P.copy(); _wleft = 1.0
+        for _bd, _w in zip(_bundles, _aw):
+            try:
+                A_, scored = atlas_scores(_bd, rows, a.atlas_budget)
+                completed_rows = rows[scored]
+                if len(completed_rows):
+                    mixed[completed_rows] += _w * (A_[scored] - P[completed_rows])
+                log(f'atlas {_bd} mixed {len(completed_rows)}/{len(rows)} rows at {_w}', gpu_mem())
+            except Exception as _e:
+                log('ATLAS SKIPPED:', _bd, repr(_e))
+        P = mixed / mixed.sum(1, keepdims=True)
+    if a.native_share > 0 and a.native_npz and os.path.exists(a.native_npz):   # ours: the native expert, after ATLAS, before balancing
+        try:
+            from native_mix import native_mix
+            P, _nrep = native_mix(P, a.native_npz, a.native_assets, test.id.astype(str).tolist(), LABELS, Gte, a.native_share)
+            log(f'native expert mixed at {a.native_share}: {_nrep}')
+        except Exception as _e:
+            log('NATIVE SKIPPED:', repr(_e))
+    elif a.native_share > 0: log('NATIVE SKIPPED: no output')
+    Q = P.copy()
+    if not (a.sinkhorn > 0 and len(test) >= 18): tot = np.log(P + 1e-12)
+    if a.sinkhorn > 0 and len(test) >= 18:
+        # The competition states test class counts are unequal and Public/Private mixes differ.
+        # Avoid forcing a uniform marginal: shrink model-implied test marginals toward train priors.
+        _rho = float(np.clip(a.sinkhorn_target_mix, 0.0, 1.0))
+        _pred_marg = np.clip(P.mean(0), 1e-6, None); _pred_marg /= _pred_marg.sum()
+        _train_prior = np.bincount(y, minlength=18).astype(np.float64) + 1.0
+        _train_prior /= _train_prior.sum()
+        _target = (1.0 - _rho) * _pred_marg + _rho * _train_prior
+        _target = np.clip(_target, 1e-6, None); _target /= _target.sum()
+        for _ in range(100):
+            Q *= (len(Q) * _target[None, :]) / np.clip(Q.sum(0, keepdims=True), 1e-12, None)
+            Q /= np.clip(Q.sum(1, keepdims=True), 1e-12, None)
+        tot = (1 - a.sinkhorn) * np.log(P + 1e-12) + a.sinkhorn * np.log(Q + 1e-12)
+_v38_before_hard = tot.copy()
+if a.post and a.perpassage:
+    _nfix = 0
+    for _mark, _allowed in GUARDS:
+        _forb = np.array([l not in _allowed for l in LABELS])
+        for _i, _t in enumerate(test.text.values):
+            if _mark in _t and LABELS[int(tot[_i].argmax())] not in _allowed:
+                tot[_i, _forb] = -1e9; _nfix += 1
+    _sz = np.bincount(Gte)[Gte]; _nh = 0
+    for _g in np.unique(Gte[(_sz >= 12) & (_sz <= 18)]):
+        _ii = np.where(Gte == _g)[0]; _r, _c = linear_sum_assignment(-tot[_ii]); _nh += int((tot[_ii].argmax(1)[_r] != _c).sum())
+        tot[_ii[_r]] = -1e9; tot[_ii[_r], _c] = 0.0
+    log(f'post: em-dash guard fixed {_nfix}, dense-cluster Hungarian changed {_nh}')
+pred = tot.argmax(1) if a.perpassage else hungarian(tot, Gte)
+if a.sim:
+    from sklearn.metrics import balanced_accuracy_score as bas
+    yt = test_truth.model.map(L2I).values
+    for k, v_ in LP.items(): log(f'  {k:12s} arg {bas(yt, v_.argmax(1)):.4f} hung {bas(yt, hungarian(v_, Gte)):.4f}')
+    log(f'ENSEMBLE arg {bas(yt, tot.argmax(1)):.4f} | hung(est clusters) {bas(yt, pred):.4f} | hung(true prompts) {bas(yt, hungarian(tot, test_truth.prompt_id.values)):.4f}')
+    np.save(os.path.join(a.cache, f'sim{a.sim}_lp.npy'), tot)
+if a.save_lp:
+    wtot = sum(abs(float(s_.get('w', 1.0))) for s_ in specs) + (a.tfidf_w if a.tfidf_w > 0 else 0) + (a.distort_w if a.distort_w > 0 else 0) + (a.svc_w if a.svc_w > 0 else 0) + (a.ours_svc_w if a.ours_svc_w > 0 else 0) + (a.top34_w if a.top34_w > 0 else 0)
+    from scipy.special import log_softmax as _lsm
+    np.save(a.save_lp, _lsm(tot / max(wtot, 1e-6), axis=1).astype(np.float32)); log('saved', a.save_lp, 'norm', wtot)
+sub = pd.DataFrame({'id': test.id.values, 'model': [LABELS[i] for i in pred]})
+assert sub.model.isin(LABELS).all() and sub.id.is_unique and len(sub) == len(test)
+sub.to_parquet(a.out, index=False); log('wrote', a.out, sub.model.value_counts().to_dict())
+
+if not a.sim:
+    import pathlib as _V38Path
+    import scipy.special as _v38sp
+    import json as _v38json
+    _out = _V38Path.Path(a.out)
+    _marks = [' — ', '—', '–', '’', '‘', '“', '”', '«', '»', '"', ';', ':', '(', ')', '[', ']', '**', '`', '…', '•', '\n', '\n\n', 'e.g.', 'i.e.', 'However,', 'Overall,', 'In conclusion', 'Therefore,', 'Moreover,', '\t', ' - ', ' = ', '\n- ', '\n1.', '###', '```', '> ']
+    _Xtr = np.array([[float(_m in _t) for _m in _marks] for _t in train.text.values], dtype=np.float32)
+    _Xte = np.array([[float(_m in _t) for _m in _marks] for _t in test.text.values], dtype=np.float32)
+    _freq = np.bincount(y, minlength=len(LABELS)).astype(np.float64)
+    _hits = np.stack([_Xtr[y == _k].sum(axis=0) for _k in range(len(LABELS))], axis=0).astype(np.float64)
+    # Hierarchical Beta-Bernoulli smoothing: class-specific marker rates shrink toward the global rate.
+    _global_rate = (_Xtr.sum(axis=0) + 2.0) / (len(_Xtr) + 4.0)
+    _kappa = 24.0
+    _rate = (_hits + _kappa * _global_rate[None, :]) / (_freq[:, None] + _kappa)
+    _rate = np.clip(_rate, 0.01, 0.99)
+    _global_rate = np.clip(_global_rate, 0.01, 0.99)
+    _log_rate = np.log(_rate); _log_not_rate = np.log1p(-_rate)
+    _base_log_rate = np.log(_global_rate); _base_log_not_rate = np.log1p(-_global_rate)
+    # Weight markers by how consistently they separate classes, capped to avoid one marker dominating.
+    _signal = np.sqrt(np.mean((_rate - _global_rate[None, :]) ** 2, axis=0))
+    _fw = _signal / max(float(np.median(_signal[_signal > 0])) if np.any(_signal > 0) else 1.0, 1e-6)
+    _fw = np.clip(_fw, 0.25, 2.0)
+    # Matrix form: weighted Bernoulli log likelihood ratio for each class.
+    _evidence = (_Xte * _fw[None, :]) @ _log_rate.T + ((1.0 - _Xte) * _fw[None, :]) @ _log_not_rate.T
+    _evidence -= (((_Xte * _fw[None, :]) @ _base_log_rate) + (((1.0 - _Xte) * _fw[None, :]) @ _base_log_not_rate))[:, None]
+    _evidence -= _evidence.mean(axis=1, keepdims=True)
+    _evidence = np.clip(1.35 * _evidence / max(float(_fw.sum()), 1e-6), -0.30, 0.30)
+    _raw = _v38_before_hard.copy()
+    _probs = _v38sp.softmax(_raw, axis=1)
+    _sorted = np.sort(_probs, axis=1)
+    _margin = _sorted[:, -1] - _sorted[:, -2]
+    _confidence_gate = np.clip((0.60 - _margin) / 0.60, 0.0, 1.0)
+    _word_count = np.array([len(re.findall(r'\b\w+\b', str(_t))) for _t in test.text.values], dtype=np.float32)
+    _length_gate = np.clip(np.sqrt(np.maximum(_word_count, 1.0) / 80.0), 0.40, 1.0)
+    _active_markers = _Xte.sum(axis=1)
+    _coverage_gate = np.clip(np.sqrt((_active_markers + 1.0) / 4.0), 0.45, 1.0)
+    _gate = _confidence_gate * _length_gate * _coverage_gate
+    _safe_logits = _raw + _gate[:, None] * _evidence
+    # V40A: explicitly preserve the original mercury-based candidate before the family residual.
+    _reference_logits = _safe_logits.copy()
+    _v31_sub = lambda zz: pd.DataFrame({'id': test.id.values, 'model': [LABELS[int(i)] for i in zz.argmax(axis=1)]})
+    _v31_sub(_reference_logits).to_parquet(_out.with_name('candidate_reference_0660.parquet'), index=False)
+    try:
+        from sibling_style import apply_grouped_style_residual
+        _safe_logits = apply_grouped_style_residual(
+            _safe_logits, train.text.values, test.text.values, LABELS, y, Gtr,
+            max_alpha=0.10, diagnostics_path=str(_out.with_name('v40a_style_oof.json')))
+        log('V40A family-only OOF residual fitted')
+    except Exception as _style_error:
+        log('V40A family-only residual failed; using exact inherited prediction:', repr(_style_error))
+        _safe_logits = _reference_logits
+    
+    # V34.1 Confidence-Gated Pairwise Verification Fusion
+    _pairwise_path = pathlib.Path('/kaggle/working/v34_pairwise_probs.npy')
+    if _pairwise_path.is_file():
+        try:
+            _pair = np.load(str(_pairwise_path), allow_pickle=False).astype(np.float64)
+            if _pair.shape == (_safe_logits.shape[0], 18) and np.isfinite(_pair).all():
+                _pair = np.clip(_pair, 1e-8, None)
+                _pair /= _pair.sum(axis=1, keepdims=True)
+                _base_prob = _v38sp.softmax(_safe_logits, axis=1)
+                _ordered = np.sort(_base_prob, axis=1)
+                _margin = _ordered[:, -1] - _ordered[:, -2]
+                _gate = np.clip((0.35 - _margin) / 0.35, 0.0, 1.0)
+                _pair_log = np.log(_pair)
+                _pair_log -= _pair_log.mean(axis=1, keepdims=True)
+                _safe_logits = _safe_logits + 0.10 * _gate[:, None] * _pair_log
+                log(f'V34.1 Pairwise applied: {int((_gate > 0).sum())} disputed rows (mean gate {_gate.mean():.3f})')
+        except Exception as _p_err:
+            log('V34.1 Pairwise application error:', repr(_p_err))
+    def _v31_sub(z):
+        return pd.DataFrame({'id': test.id.values, 'model': [LABELS[int(i)] for i in z.argmax(axis=1)]})
+    _raw_sub = _v31_sub(_raw)
+    _safe = _v31_sub(_safe_logits)
+    _safe.to_parquet(_out, index=False)
+    assert _safe.id.is_unique and len(_safe) == len(test) and _safe.model.isin(LABELS).all()
+    with open(_out.with_name('v31_diagnostics.json'), 'w') as _fo:
+        _v38json.dump({
+            'method': 'hierarchical_beta_bernoulli_typography_v2',
+            'fit_scope': 'full official train labels, used only for final submission inference; not an OOF validation claim',
+            'pre_bayes_changed': int((_raw_sub.model.values != _safe.model.values).sum()),
+            'trained_rows': int(len(train)), 'tested_rows': int(len(test)),
+            'marker_count': int(len(_marks)), 'mean_gate': float(_gate.mean()),
+            'length_gate_mean': float(_length_gate.mean()), 'coverage_gate_mean': float(_coverage_gate.mean()),
+            'sinkhorn': float(a.sinkhorn), 'sinkhorn_target_mix': float(a.sinkhorn_target_mix)
+        }, _fo, indent=2)
+    log('V31 Bayesian typography completed; changed from pre-Bayes:', int((_raw_sub.model.values != _safe.model.values).sum()))
+
+
+# ===== CELL 29 [markdown] =====
+## 6. Complementary stack (`comp_stack.py`)
+The public frozen-feature ensemble (prvsiyan, Lucas Boesen, vnton37nguyn, Kirill Tymchyshyn): models that are only used to extract features, with small classifiers fitted on top. It runs as its own process and `infer.py` mixes its output in at 15%. It is written in eight cells.
+
+**6a. Configuration.** Paths, group thresholds, the frozen models and heads.
+
+# ===== CELL 30 [code] =====
+%%writefile comp_stack.py
+"""Complementary frozen-feature stack (public Apache-2.0 notebooks by prvsiyan / lucasboesen / vnton37nguyn / kirilltym,
+as embedded in the public 0.6xx ATLAS notebooks). Run as a separate process; writes its raw log-probability blend."""
+# ============================================================ 0. configuration
+import gc, glob, json, os, pathlib, re, time
+import numpy as np, pandas as pd
+try:
+    import torch
+except ImportError:   # local smoke without torch
+    torch = None
+from scipy.cluster.hierarchy import fcluster, linkage
+from scipy.sparse import csr_matrix, diags, hstack, vstack
+from scipy.spatial.distance import squareform
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS, TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+
+SMOKE = os.environ.get('NTL_SMOKE') == '1'   # local code-path check: pseudo features instead of checkpoints, CPU
+T0 = time.time()
+LABELS = sorted(['gpt-5.5', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra',
+                 'gemini-3.1-pro-preview', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash',
+                 'claude-fable-5', 'claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5', 'claude-sonnet-5',
+                 'qwen3.8-max', 'glm-5.3', 'glm-5.3-flash', 'kimi-k3'])
+K = len(LABELS)
+LAB2I = {l: i for i, l in enumerate(LABELS)}
+FAMILY_IDX = {f: np.array([i for i, l in enumerate(LABELS) if l.startswith(f)]) for f in ('claude', 'gpt', 'gemini', 'glm')}
+
+# ---- test-pool grouping
+GROUP_THRESH, GROUP_LAYER, GROUP_MIN, GROUP_MAX = 0.60, 24, 2, 18   # mixed content + GLM-L24 distance, average linkage
+STYLE_GROUP_THRESH = 0.90                                           # stylegram's own median-normalised content distance
+
+# ---- blend weights: log-probability multipliers of the 0.563 notebook (its L-BFGS fit on prompt-grouped OOF)
+W = {'stylegram': 1.516, 'stylometry_lgb': 0.063, 'ultrabert': 0.095,
+     'q3_8b': 0.0, 'q25_7b': 0.0, 'q3_4b': 0.0, 'glm9b': 0.0, 'debv3l': 0.05, 'electl': 0.032, 'desk': 0.132,
+     'lora24_public': 0.177, 'lora24_seed7': 0.113, 'lora24_claude': 0.177, 'lora20_q25_instyle': 0.17,
+     'tokattn_q35': 0.153, 'tokattn_deb': 0.185}
+TWIN_W = {'q3_8b': 1.5 * 0.219, 'q25_7b': 1.5 * 0.141, 'q3_4b': 1.5 * 0.083, 'glm9b': 1.5 * 0.110, 'debv3l': 0.25}
+LORA_TWIN_W = {'lora24_public': 0.15, 'lora24_claude': 0.15}
+GATE_LAM = {'claude_style': 1.5, 'claude_lora': 1.0, 'family': 0.25}  # used by confidence-aware within-family gates below
+EXTRA_MIN_LABELS, EXTRA_SHARE = 12, 0.5
+
+# ---- the addition: shared-prompt Gaussian group heads on four measured views, weight = the centred twin of the same backbone,
+#      reduction / temperatures from our production fit (research/gaussian/production_weights_v8g.json, 135 training prompts)
+GAUSS_HEADS = {'gauss_q3_8b_L22': dict(src='q3_8b', part='L22_mean', d=384, T1=2.351, Tg=2.306, w=TWIN_W['q3_8b']),
+               'gauss_glm9b_L8': dict(src='glm9b', part='L8_mean', d=384, T1=2.722, Tg=2.596, w=TWIN_W['glm9b']),
+               'gauss_q3_4b_L4': dict(src='q3_4b', part='L4_mean', d=384, T1=2.725, Tg=2.578, w=TWIN_W['q3_4b']),
+               'gauss_debv3l_L24': dict(src='debv3l', part='L24_mean', d=384, T1=3.112, Tg=3.069, w=TWIN_W['debv3l'])}
+GAUSS_SETTING = dict(red='wpca', se_shrink='lw', sp_shrink='lw', lam_floor=1e-4, n_exact=3, inj=True, iters=5, repel=True, sp_scale=1.0)
+
+# ---- member specifications
+LM_HEADS = [  # key, model_type, hidden size, parts of the plain head [(layer, pool)], extra parts extracted in the same pass, C
+    ('glm9b', 'glm4', 4096, [(8, 'mean'), (3, 'mean')], [(GROUP_LAYER, 'mean')], 0.0025),   # first: its L24 builds the groups
+    ('q3_8b', 'qwen3', 4096, [(7, 'mean'), (22, 'mean')], [], 0.0025),
+    ('q25_7b', 'qwen2', 3584, [(6, 'mean'), (20, 'mean')], [], 0.0025),
+    ('q3_4b', 'qwen3', 2560, [(4, 'style'), (7, 'style')], [(4, 'mean')], 0.0025)]
+ENC_HEADS = [  # key, input directory name, parts, C
+    ('debv3l', 'deberta-v3-large', [(24, 'mean'), (6, 'mean')], 0.005),
+    ('electl', 'electra-large-discriminator', [(21, 'mean'), (24, 'style')], 0.005),
+    ('desk', 'desklib-detector', [(23, 'mean'), (23, 'style')], 0.005)]
+LORA_RUNS = [  # (trunk model_type, hidden, kept layers), pooled layers, [(key, checkpoint marker, norms file, anchor features file)]
+    (('qwen3', 4096, 24), [2, 4, 6, 8, 12, 16, 20, 24], [
+        ('lora24_public', '**/lora24/final/COMPLETE.json', 'heads.safetensors', 'anchor_features.npz'),
+        ('lora24_seed7', '**/name-that-llm-train-lora24-s7/lora_out/job_final/COMPLETE.json', 'norms.safetensors', 'valid_features.npz'),
+        ('lora24_claude', '**/ntl-qwen3-8b-lora-claude-head/**/final/COMPLETE.json', 'heads.safetensors', 'anchor_features.npz')]),
+    (('qwen2', 3584, 20), [2, 4, 6, 8, 10, 12, 16, 20], [
+        ('lora20_q25_instyle', '**/ntl-train-lora-qwen25-instyle/lora_out/job_final/COMPLETE.json', 'norms.safetensors', 'valid_features.npz')])]
+LORA_MAX_LEN, LORA_BS = 447, 8
+TOKATTN_HEADS = [('tokattn_q35', 'tokattn_final.pt', 'qwen3_5'), ('tokattn_deb', 'tokattn_debl23_final.pt', 'deberta')]
+if os.environ.get('NTL_DROP_Q35') == '1':   # Qwen3.5-9B token-attention member: 1.7-2.7 h fixed cost on Kaggle, weight 0.153 of ~3.3
+    TOKATTN_HEADS = [t for t in TOKATTN_HEADS if t[0] != 'tokattn_q35']
+
+# ---- data
+if SMOKE:
+    _all = pd.read_csv(os.environ['NTL_DATA'] + '/train.csv')
+    _p = _all['prompt_id'].drop_duplicates().sample(frac=1, random_state=0).tolist()
+    train = _all[_all['prompt_id'].isin(_p[:30])].reset_index(drop=True)
+    test = _all[_all['prompt_id'].isin(_p[30:42])].sample(frac=1, random_state=1).reset_index(drop=True)
+    test = pd.concat([test[test['prompt_id'] == p].head(k) for p, k in zip(_p[30:42], [1, 1, 2, 2, 2, 3, 3, 4, 6, 9, 18, 18])]).reset_index(drop=True)
+    if os.environ.get('NTL_TINY') == '1':
+        test = test.head(3).reset_index(drop=True)
+    SMOKE_Y = test['model'].map(LAB2I).to_numpy(dtype=int)
+else:
+    DATA_DIR = next(p for p in [pathlib.Path('/kaggle/input/competitions/name-that-llm'), pathlib.Path('/kaggle/input/name-that-llm')]
+                    if (p / 'train.csv').exists())
+    train, test = pd.read_csv(DATA_DIR / 'train.csv'), pd.read_csv(DATA_DIR / 'test.csv')
+    if os.environ.get('NTL_FAKE_TEST'):   # timing probe: pool passages as a stand-in test (same rows/seed as infer.py --fake_test)
+        test = pd.read_parquet(os.environ['NTL_POOL']).sample(int(os.environ['NTL_FAKE_TEST']), random_state=0)[['text']].reset_index(drop=True)
+        test['id'] = [f'fake{i}' for i in range(len(test))]
+test['text'] = test['text'].fillna('').astype(str)
+TR, TE = train['text'].tolist(), test['text'].tolist()
+y = train['model'].map(LAB2I).to_numpy(dtype=int)
+PROMPT = train['prompt_id'].to_numpy(dtype=object)
+TINY = len(TE) < 50   # the interactive 3-row test: exercise the group paths on training rows so the hidden rerun cannot hit untested code
+DEV = 'cuda' if torch is not None and torch.cuda.is_available() else 'cpu'
+print(f'train {train.shape}  test {test.shape}  gpus {torch.cuda.device_count() if torch is not None else 0}  smoke {SMOKE}', flush=True)
+
+LOGIT = np.zeros((len(TE), K))           # the running log-probability blend
+
+
+def add_member(key, prob, rows=None, weight=None):
+    """Add weight * log(prob) to the blend (all rows, or the given row subset)."""
+    w = W[key] if weight is None else weight
+    lp = np.log(np.clip(prob, 1e-9, 1.0))
+    if rows is None:
+        LOGIT[:] += w * lp
+    else:
+        LOGIT[rows] += w * lp
+    print(f'  + {key:20s} weight {w:.3f} on {len(TE) if rows is None else int(np.sum(rows))} rows  ({time.time() - T0:.0f}s)', flush=True)
+
+
+def softmax_rows(S):
+    S = S - S.max(1, keepdims=True)
+    P = np.exp(S)
+    return P / P.sum(1, keepdims=True)
+
+
+def full_prob(P_part, classes):
+    """Expand a (n, len(classes)) probability block to (n, K) on the global label order."""
+    P = np.zeros((len(P_part), K))
+    P[:, classes] = P_part
+    return P
+
+
+def group_centre_dense(X, groups):
+    X = np.asarray(X, dtype=np.float32).copy()
+    for g in np.unique(groups):
+        i = groups == g
+        X[i] -= X[i].mean(0)
+    return X
+
+
+def self_test_rows():
+    """Training rows of the first three prompts, grouped by their true prompt (used only when the test file is tiny)."""
+    idx = np.where(np.isin(PROMPT, pd.unique(PROMPT)[:3]))[0]
+    return idx, np.unique(PROMPT[idx], return_inverse=True)[1]
+
+
+
+# ===== CELL 31 [markdown] =====
+**6b. Grouping the test pool.** Clusters the test passages into prompt groups from embeddings and content words.
+
+# ===== CELL 32 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 1. grouping the test pool
+def average_linkage_groups(D, thresh):
+    """Cluster ids (1-based) from a square distance matrix, average linkage, cut at thresh."""
+    if len(D) < 2:
+        return np.ones(len(D), dtype=int)
+    D = np.asarray(D, dtype=np.float64).copy()
+    np.fill_diagonal(D, 0.0)
+    return fcluster(linkage(squareform(D, checks=False), method='average'), thresh, criterion='distance')
+
+
+def content_cosine_distance(texts, max_features=None):
+    X = TfidfVectorizer(stop_words='english', sublinear_tf=True, max_features=max_features, dtype=np.float32).fit_transform(texts)
+    return np.clip(1.0 - (X @ X.T).toarray(), 0.0, 1.0)
+
+
+def mixed_groups(texts, E, thresh=GROUP_THRESH):
+    """Average of the content-word TF-IDF cosine distance and the cosine distance of mean-centred, L2-normalised embeddings E."""
+    if len(texts) < 2:
+        return np.ones(len(texts), dtype=int)
+    Z = np.asarray(E, dtype=np.float64)
+    Z = Z - Z.mean(0)
+    Z /= np.linalg.norm(Z, axis=1, keepdims=True) + 1e-12
+    D = 0.5 * (content_cosine_distance(texts) + np.clip(1.0 - Z @ Z.T, 0.0, 2.0))
+    return average_linkage_groups(D, thresh)
+
+
+def normalised_content_groups(texts, thresh=STYLE_GROUP_THRESH):
+    """The stylegram's grouping: content distance divided by its median off-diagonal value, cut at thresh."""
+    if len(texts) < 2:
+        return np.ones(len(texts), dtype=int)
+    D = content_cosine_distance(texts, max_features=100_000)
+    med = max(float(np.median(D[np.triu_indices(len(texts), 1)])), 1e-6)
+    return average_linkage_groups(D / med, thresh)
+
+
+def eligible(groups, lo=GROUP_MIN, hi=GROUP_MAX):
+    size = np.bincount(groups)[groups]
+    return (size >= lo) & (size <= hi)
+
+
+def describe_groups(name, groups):
+    size = np.bincount(groups)[groups]
+    print(f'{name}: {len(groups)} rows | singletons {int((size == 1).sum())}  2-3: {int(((size >= 2) & (size <= 3)).sum())}'
+          f'  4-18: {int(((size >= 4) & (size <= 18)).sum())}  >18: {int((size > 18).sum())}', flush=True)
+
+
+G_TE, GROUP_ROWS = None, None   # set after the GLM pass (section 4)
+
+
+
+# ===== CELL 33 [markdown] =====
+**6c. Style n-grams, extra passages and family gates.** Function-word and punctuation-shape n-grams, the extra passages mixed into training, and small gate classifiers that separate models inside one family.
+
+# ===== CELL 34 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 2. style n-grams + extra passages + gates
+FUNCTION_WORDS = frozenset("a an the and or but if while although because as so than that which who whom whose this these those it its "
+                           "they them their theirs he him his she her hers we us our ours you your yours i me my mine in on at to from with "
+                           "without for of by over under between through into about is are was were be been being have has had do does did "
+                           "can could will would shall should may might must not no nor all any some each every both either neither other "
+                           "another such only also just very too more most less least here there when where why how what whether then now "
+                           "still yet even much many few little".split())
+TOKEN_RE = re.compile(r"\w+|[^\w\s]")
+
+
+def shape_view(text):
+    return re.sub(r"[^\W\d_]+", lambda m: 'X' if m[0].isupper() else 'x', text)
+
+
+def function_view(text):
+    return ' '.join(t.lower() if (t.lower() in FUNCTION_WORDS or not t.isalnum()) else 'CONTENT' for t in TOKEN_RE.findall(text))
+
+
+class StyleGrams:
+    """Four stacked TF-IDF views: char 3-5, word 1-3, shape (char 2-6 of the x/X text), function-word (word 1-3 of the masked text)."""
+    VIEWS = [('char', str, (3, 5), 250_000, 1.0), ('word', str, (1, 3), 180_000, 0.7),
+             ('char', shape_view, (2, 6), 60_000, 0.5), ('word', function_view, (1, 3), 50_000, 0.5)]
+
+    def fit(self, texts):
+        self.vecs = []
+        for analyzer, view, ngr, maxf, w in self.VIEWS:
+            opts = dict(analyzer=analyzer, ngram_range=ngr, lowercase=False, sublinear_tf=True, min_df=2, max_features=maxf, dtype=np.float64)
+            if analyzer == 'word':
+                opts['token_pattern'] = r"(?u)\b\w+\b|[^\w\s]"
+            self.vecs.append((TfidfVectorizer(**opts).fit([view(t) for t in texts]), view, w))
+        return self
+
+    def transform(self, texts):
+        return hstack([v.transform([view(t) for t in texts]) * w for v, view, w in self.vecs], format='csr')
+
+
+def sparse_group_centre(X, groups, lo=GROUP_MIN, hi=GROUP_MAX):
+    """Subtract each group's mean row (sparse); groups outside [lo, hi] are left as they are."""
+    X = csr_matrix(X)
+    _, inv, cnt = np.unique(np.asarray(groups), return_inverse=True, return_counts=True)
+    keep = np.flatnonzero((cnt >= lo) & (cnt <= hi))
+    if not len(keep):
+        return X.copy()
+    col = np.full(len(cnt), -1); col[keep] = np.arange(len(keep))
+    rows = np.flatnonzero(col[inv] >= 0)
+    M = csr_matrix((np.ones(len(rows)), (rows, col[inv][rows])), shape=(X.shape[0], len(keep)))
+    means = diags(1.0 / cnt[keep]) @ (M.T @ X)
+    return (X - M @ means).tocsr()
+
+
+def svc_probs(svc, X):
+    return full_prob(softmax_rows(svc.decision_function(X)), svc.classes_)
+
+
+# ---- public in-style passages (prompt-bank protocol), one per (prompt, label); prompts answered by >= EXTRA_MIN_LABELS labels
+def load_extra_passages():
+    sources = [('**/ntl_extra_passages_claude.csv', 'model', None), ('**/gen_passages.csv', 'model', None),
+               ('**/ntl_generations.csv', 'label', 'finish_reason'), ('**/ntl_proxy_generations.csv', 'label', None),
+               ('**/ntl_generated*.csv', 'model', 'finish'), ('**/passages_clean.csv', 'model', None)]
+    parts = []
+    for pattern, label_col, finish_col in sources:
+        for f in sorted(glob.glob('/kaggle/input/' + pattern, recursive=True)):
+            d = pd.read_csv(f)
+            _pin = {'ntl_generations.csv': lambda d: d['batch'].astype(str).isin(
+                        {'b001', 'b001g', 'b003', 'b003a', 'd1028', 'd1029', 'd1030', 'pilot', 'pilot2', 'pilot3', 'pilotpro'}),
+                    'gen_passages.csv': lambda d: d['batch'].astype(str).isin(
+                        {f'b{i}' for i in (1, 2, *range(5, 16))} | {f'v2b{i:02d}' for i in range(1, 21)}),
+                    'passages_clean.csv': lambda d: pd.to_numeric(d['dataset_version_added'], errors='coerce').isin([1, 2, 4, 5])
+                    }.get(os.path.basename(f))
+            if _pin is not None:   # fork: only the batches these files had on 2026-10-30 (later additions dropped)
+                try:
+                    d = d[_pin(d)]
+                except KeyError as _e:
+                    print('extra-passage pin skipped for', f, repr(_e), flush=True)
+            if finish_col and finish_col in d:
+                d = d[d[finish_col].eq('stop')]
+            d = d.rename(columns={label_col: 'model'})[['prompt_id', 'model', 'text']].copy()
+            d['prompt_id'] = ('pv_' if f.endswith('passages_clean.csv') else '') + d['prompt_id'].astype(str)   # prvsiyan's prompts are a different bank
+            parts.append(d)
+    for f in sorted(glob.glob('/kaggle/input/**/ntl_open_pool.parquet', recursive=True))[:1]:   # fork (exp035): the open pool's prompts
+        d = pd.read_parquet(f, columns=['id', 'prompt_group', 'model', 'text']).rename(columns={'prompt_group': 'prompt_id'})
+        _n = d['id'].astype(str).str.extract(r'_(\d+)$')[0].astype('float'); d = d[(_n < 279271) | _n.isna()].drop(columns=['id'])   # ours: the same v13 row set as the SVM
+        d['prompt_id'] = 'op_' + d['prompt_id'].astype(str)   # its own prompt bank
+        parts.append(d)
+    if not parts:
+        return pd.DataFrame(columns=['prompt_id', 'model', 'text'])
+    x = pd.concat(parts, ignore_index=True)
+    x = x[x['model'].isin(LABELS)].copy()
+    x['text'] = x['text'].astype(str).map(lambda t: re.sub(r'\s+', ' ', re.sub(r'^\*\*(.*)\*\*$', r'\1', t.strip())).strip())
+    x = x[x['text'].str.split().str.len().between(30, 300)].drop_duplicates(subset=['model', 'text'])
+    x = x.drop_duplicates(subset=['prompt_id', 'model'])
+    x = x[x.groupby('prompt_id')['model'].transform('nunique') >= EXTRA_MIN_LABELS].reset_index(drop=True)
+    return x
+
+
+EXTRA = load_extra_passages()
+EX_T, EX_Y, EX_G = EXTRA['text'].tolist(), EXTRA['model'].map(LAB2I).to_numpy(dtype=int), EXTRA['prompt_id'].to_numpy(dtype=object)
+print(f'extra passages: {len(EXTRA)} rows, {EXTRA["prompt_id"].nunique()} prompts', flush=True)
+
+
+def extra_sample_weights():
+    """Per class: original rows keep (1 - EXTRA_SHARE) of the class weight, the class's extra rows share EXTRA_SHARE of it."""
+    n_tr, n_ex = np.bincount(y, minlength=K).astype(float), np.bincount(EX_Y, minlength=K).astype(float)
+    w_tr = np.where(n_ex[y] > 0, 1.0 - EXTRA_SHARE, 1.0)
+    w_ex = EXTRA_SHARE * n_tr[EX_Y] / np.maximum(n_ex[EX_Y], 1.0)
+    return np.concatenate([w_tr, w_ex])
+
+
+grams = StyleGrams().fit(TR + EX_T)                       # vocabulary and idf from train + extra
+X_tr, X_ex, X_te = grams.transform(TR), grams.transform(EX_T) if len(EX_T) else None, grams.transform(TE)
+
+
+def fit_svc(X, labels, C=0.5, **kw):
+    return LinearSVC(C=C, random_state=42, max_iter=4000).fit(X, labels, **kw)
+
+
+if X_ex is not None:
+    svc_plain = fit_svc(vstack([X_tr, X_ex]).tocsr(), np.concatenate([y, EX_Y]), sample_weight=extra_sample_weights())
+else:
+    svc_plain = fit_svc(X_tr, y)
+P_style = svc_probs(svc_plain, X_te)
+
+# centred twin: prompt-centred training rows (extra rows centred within their own prompts) -> inferred test groups
+X_tr_c = sparse_group_centre(X_tr, PROMPT)
+if X_ex is not None:
+    svc_centred = fit_svc(vstack([X_tr_c, sparse_group_centre(X_ex, EX_G, GROUP_MIN, 10 ** 6)]).tocsr(), np.concatenate([y, EX_Y]),
+                          sample_weight=extra_sample_weights())
+else:
+    svc_centred = fit_svc(X_tr_c, y)
+G_style = normalised_content_groups(TE)
+rows_style = eligible(G_style)
+describe_groups('stylegram groups', G_style)
+if rows_style.any():
+    P_style[rows_style] = svc_probs(svc_centred, sparse_group_centre(X_te[rows_style], G_style[rows_style]))
+if TINY:   # exercise the centred path on training rows grouped by their true prompt (output discarded)
+    st_idx, st_g = self_test_rows()
+    acc = np.mean(svc_centred.classes_[svc_centred.decision_function(sparse_group_centre(X_tr[st_idx], st_g)).argmax(1)] == y[st_idx])
+    print(f'  centred stylegram self-test on {len(st_idx)} training rows (seen in training): acc {acc:.2f}', flush=True)
+add_member('stylegram', P_style)
+del X_tr_c, svc_plain, svc_centred, P_style
+
+
+# ---- gates: style SVCs that only re-rank inside one family after the blend
+def family_gate(texts, labels, classes, C, sample_weight=None, balanced=False):
+    g = StyleGrams().fit(texts)
+    svc = LinearSVC(C=C, class_weight='balanced' if balanced else None, random_state=42, max_iter=4000).fit(
+        g.transform(texts), labels, sample_weight=sample_weight)
+    assert list(svc.classes_) == list(classes)
+    d = svc.decision_function(g.transform(TE))
+    return np.column_stack([-d, d]) if len(classes) == 2 else d
+
+
+GATES = {}
+api_claude = sorted(glob.glob('/kaggle/input/**/ntl_extra_passages_claude.csv', recursive=True))
+if api_claude:
+    api = pd.read_csv(api_claude[0])
+    m = np.isin(y, FAMILY_IDX['claude'])
+    GATES['claude'] = family_gate([t for t, k in zip(TR, m) if k] + api['text'].astype(str).tolist(),
+                                  np.concatenate([y[m], api['model'].map(LAB2I).to_numpy(dtype=int)]), FAMILY_IDX['claude'], 0.5)
+    print(f'claude gate: {int(m.sum())} official + {len(api)} API rows', flush=True)
+    del api
+else:
+    print('Claude API passages not attached: Claude gate off', flush=True)
+for fam, C in [('gpt', 1.0), ('gemini', 1.0), ('glm', 0.5)]:
+    m, me = np.isin(y, FAMILY_IDX[fam]), np.isin(EX_Y, FAMILY_IDX[fam])
+    GATES[fam] = family_gate([t for t, k in zip(TR, m) if k] + [t for t, k in zip(EX_T, me) if k], np.concatenate([y[m], EX_Y[me]]),
+                             FAMILY_IDX[fam], C, sample_weight=np.concatenate([np.ones(int(m.sum())), np.full(int(me.sum()), 0.25)]), balanced=True)
+    print(f'{fam} gate: {int(m.sum())} official + {int(me.sum())} extra rows', flush=True)
+del grams, X_tr, X_ex, X_te
+
+
+
+# ===== CELL 35 [markdown] =====
+**6d. Stylometric features.** Sentence lengths, punctuation and capitalisation rates and similar counts, fed to a LightGBM classifier.
+
+# ===== CELL 36 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 3. stylometric features + LightGBM
+PUNCT = list(',.;:!?()[]"\'-') + ['—', '–', '‘', '’', '“', '”', '…', '*', '/', '%']
+STOPS = sorted(ENGLISH_STOP_WORDS)
+SENT_RE, WORD_RE = re.compile(r'(?<=[.!?])\s+'), re.compile(r"[A-Za-z’']+")
+
+
+def stylometry(t):
+    words = WORD_RE.findall(t)
+    low = [w.lower() for w in words]
+    nw, nc = max(len(words), 1), max(len(t), 1)
+    sents = [s for s in SENT_RE.split(t.strip()) if s]
+    sl = np.array([len(WORD_RE.findall(s)) for s in sents] or [0], dtype=float)
+    wl = np.array([len(w) for w in words] or [0], dtype=float)
+    f = [np.log1p(nw), len(sents), sl.mean(), sl.std(), sl.max(), sl.min(), wl.mean(), wl.std(), (wl >= 9).mean(), len(set(low)) / nw,
+         sum(c.isupper() for c in t) / nc, sum(c.isdigit() for c in t) / nc, sum(ord(c) > 127 for c in t) / nc,
+         t.count(', ') / nw, t.count(' and ') / nw, t.count(' but ') / nw,
+         sum(1 for s in sents if s[:1].isupper() and s.split()[0].lower() in ('this', 'these', 'it', 'they')) / max(len(sents), 1),
+         sum(w.endswith('ly') for w in words) / nw, sum(w.endswith('ing') for w in words) / nw, sum(w.endswith('tion') for w in words) / nw]
+    f += [t.count(q) / nw for q in PUNCT]
+    counts = pd.Series(low).value_counts() if low else pd.Series(dtype=float)
+    f += [counts.get(s, 0) / nw for s in STOPS]
+    return f
+
+
+F_tr, F_te = (np.array([stylometry(t) for t in txt], dtype=np.float32) for txt in (TR, TE))
+try:
+    import lightgbm as lgb
+    booster = lgb.LGBMClassifier(n_estimators=400, learning_rate=0.03, num_leaves=15, min_child_samples=10, subsample=0.8, subsample_freq=1,
+                                 colsample_bytree=0.5, reg_lambda=1.0, random_state=0, verbose=-1, n_jobs=4).fit(F_tr, y)
+    add_member('stylometry_lgb', full_prob(booster.predict_proba(F_te), booster.classes_))
+    del booster
+except ImportError:
+    assert SMOKE, 'lightgbm missing'
+    print('smoke: lightgbm unavailable, stylometry member skipped', flush=True)
+del F_tr, F_te
+
+
+
+# ===== CELL 37 [markdown] =====
+**6e. Shared-prompt Gaussian head.** The same idea as section 2, on the stack's features.
+
+# ===== CELL 38 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 4b. shared-prompt Gaussian group head
+# Verbatim core of our research tool tools/group_gaussian.py (sha256 8a42427b77a37f56...), numpy only.
+# Model per dense view, in a reduced space z (standardise -> within-prompt-residual PCA, fitted on training rows):
+#   z_i = mu_{y_i} + p_g + e_i,  p_g ~ N(0, S_p) shared by every passage of prompt group g,  e_i ~ N(0, S_e).
+# A joint diagonalisation makes the dimensions independent; for a detected group of n passages the exact joint
+# log-likelihood of a label tuple is sum_i a_i(c_i) + sum_{i<j} b_ij(c_i, c_j). Groups of 2-3 are decoded exactly over
+# all label tuples with the at-most-once constraint; larger groups by a cavity EM with the finite-population-corrected
+# prompt-effect estimate lam / (1 + (n-1) lam); singletons integrate the prompt effect out (never used here).
+import itertools
+K = 18
+DEFAULT = {"red": "wpca", "d": 256, "se_shrink": "lw", "sp_shrink": "lw", "lam_floor": 1e-4, "n_exact": 3, "inj": True,
+           "iters": 5, "repel": True, "sp_scale": 1.0}
+
+# =================================================================== primitives ====
+def _lse(A, axis=None, keepdims=False):
+    m = np.max(A, axis=axis, keepdims=True); m = np.where(np.isfinite(m), m, 0.0)
+    out = np.log(np.sum(np.exp(A - m), axis=axis, keepdims=True)) + m
+    if keepdims: return out
+    return np.squeeze(out, axis=axis) if axis is not None else float(out.item())
+
+def log_softmax(L): return L - _lse(L, axis=1, keepdims=True)
+
+def _lw_shrinkage(X):
+    """Ledoit-Wolf shrinkage coefficient for rows X that are already centred (sklearn formula, assume_centered)."""
+    from sklearn.covariance import ledoit_wolf_shrinkage
+    return float(ledoit_wolf_shrinkage(X, assume_centered=True))
+
+def _shrunk(S, a):
+    d = S.shape[0]; return (1 - a) * S + a * (np.trace(S) / d) * np.eye(d)
+
+def _two_way(Z, y, pinv, G, iters=4):
+    """additive fit Z = mu[y] + P[prompt] + E by alternating means (balanced design -> converges in 1-2 rounds)."""
+    P = np.zeros((G, Z.shape[1])); cnt_p = np.bincount(pinv, minlength=G).astype(float)
+    cls = np.unique(y); mu = np.zeros((K, Z.shape[1]))
+    for _ in range(iters):
+        R = Z - P[pinv]
+        for c in cls: mu[c] = R[y == c].mean(0)
+        R = Z - mu[y]; P = np.zeros_like(P); np.add.at(P, pinv, R); P /= cnt_p[:, None]
+    return mu, P, cnt_p
+
+def fit(X, y, prompts, cfg=None):
+    """fit the shared-prompt Gaussian on training rows. X (N, D) raw features, y (N,) labels in 0..17, prompts (N,) group ids.
+    Returns a params dict (numpy arrays + floats); temperatures default to 1 (set by the caller's cross-fit)."""
+    c = dict(DEFAULT); c.update(cfg or {})
+    X = np.asarray(X, dtype=np.float64); y = np.asarray(y); N, D = X.shape
+    pu, pinv = np.unique(np.asarray(prompts), return_inverse=True); G = len(pu)
+    mx = X.mean(0); sx = X.std(0); sx = np.where(sx > 1e-8, sx, 1.0); Xs = (X - mx) / sx
+    if c["red"] == "none":
+        V = np.eye(D)
+    else:
+        if c["red"] == "wpca":
+            Pm = np.zeros((G, D)); np.add.at(Pm, pinv, Xs); Pm /= np.bincount(pinv)[:, None]; R = Xs - Pm[pinv]
+        elif c["red"] == "pca": R = Xs
+        else: raise ValueError(c["red"])
+        d = int(min(c["d"], N - G - 1, D))
+        # economy SVD through the (N x N) Gram matrix (N << D for the real views)
+        if N < D:
+            w, U = np.linalg.eigh(R @ R.T); o = np.argsort(w)[::-1][:d]; w, U = np.clip(w[o], 1e-12, None), U[:, o]
+            V = (R.T @ U) / np.sqrt(w)
+        else:
+            _, _, Vt = np.linalg.svd(R, full_matrices=False); V = Vt[:d].T
+    Z = Xs @ V; d = Z.shape[1]
+    mu, P, ng = _two_way(Z, y, pinv, G)
+    E = Z - mu[y] - P[pinv]; dof = max(N - G - len(np.unique(y)) + 1, 1)
+    Se_raw = E.T @ E / dof
+    ae = _lw_shrinkage(E) if c["se_shrink"] == "lw" else float(c["se_shrink"]); Se = _shrunk(Se_raw, ae)
+    Pc = P - P.mean(0); Sp_raw = Pc.T @ Pc / max(G - 1, 1) - np.mean(1.0 / ng) * Se_raw
+    ap = _lw_shrinkage(Pc) if c["sp_shrink"] == "lw" else float(c["sp_shrink"])
+    tr = max(np.trace(Sp_raw), 1e-8 * np.trace(Se)); Sp = (1 - ap) * Sp_raw + ap * (tr / d) * np.eye(d); Sp *= c["sp_scale"]
+    # joint diagonalisation: A Se A' = I, A Sp A' = diag(lam)
+    L = np.linalg.cholesky(Se); Li = np.linalg.inv(L); M = Li @ Sp @ Li.T; M = 0.5 * (M + M.T)
+    lam, Q = np.linalg.eigh(M); lam = np.clip(lam, c["lam_floor"], None); A = Q.T @ Li
+    W = V @ A.T
+    return {"mx": mx, "sx": sx, "W": W, "m": mu @ A.T, "lam": lam, "T1": 1.0, "Tg": 1.0,
+            "info": {"d": int(d), "a_e": round(ae, 4), "a_p": round(ap, 4), "lam_pct": np.round(np.percentile(lam, [5, 50, 95, 100]), 3).tolist()}, "cfg": c}
+
+def transform(X, prm): return ((np.asarray(X, dtype=np.float64) - prm["mx"]) / prm["sx"]) @ prm["W"]
+
+_MASK = {}
+def _inj_mask(n, C):
+    if (n, C) not in _MASK:
+        grids = np.meshgrid(*[np.arange(C)] * n, indexing="ij"); bad = np.zeros([C] * n, bool)
+        for i, j in itertools.combinations(range(n), 2): bad |= grids[i] == grids[j]
+        _MASK[(n, C)] = bad
+    return _MASK[(n, C)]
+
+def singleton_ll(U, m, lam):
+    """(n, C) log N(u; m_c, I + diag lam) up to a constant (p integrated out)."""
+    R = U[:, None, :] - m[None]; return -0.5 * (R ** 2 / (1 + lam)).sum(-1)
+
+def joint_terms(U, m, lam):
+    """a (n, C) and B (n, n, C, C) of the exact joint log-likelihood of one group (constant in c dropped)."""
+    n = len(U); gam = lam / (1 + n * lam); R = U[:, None, :] - m[None]
+    a = -0.5 * (R ** 2 * (1 - gam)).sum(-1); G = R * np.sqrt(gam); B = np.einsum("icd,jed->ijce", G, G)
+    return a, B
+
+def joint_table(a, B):
+    """full tuple table Q[c_1, ..., c_n] = sum_i a_i + sum_{i<j} B_ij."""
+    n, C = a.shape; Q = np.zeros([C] * n)
+    for i in range(n):
+        sh = [1] * n; sh[i] = C; Q = Q + a[i].reshape(sh)
+    for i, j in itertools.combinations(range(n), 2):
+        sh = [1] * n; sh[i] = C; sh[j] = C; Q = Q + B[i, j].reshape(sh)
+    return Q
+
+def exact_marginals(Q, T=1.0, inj=True):
+    """per-passage log marginal posteriors (n, C) from a tuple table Q (unnormalised log joint), tempered by 1/T."""
+    n = Q.ndim; C = Q.shape[0]; Qt = Q / T
+    if inj and n >= 2: Qt = np.where(_inj_mask(n, C), -np.inf, Qt)
+    lz = _lse(Qt); out = np.empty((n, C))
+    for i in range(n):
+        ax = tuple(k for k in range(n) if k != i); out[i] = (_lse(Qt, axis=ax) if ax else Qt) - lz
+    return out
+
+def em_marginals(U, m, lam, T=1.0, iters=5, repel=False, q0=None):
+    """cavity EM for one group (any n >= 2): returns (n, C) log q."""
+    n = len(U); v = lam / (1 + (n - 1) * lam)
+    L = singleton_ll(U, m, lam) / T if q0 is None else np.log(np.clip(q0, 1e-300, None))
+    q = np.exp(log_softmax(L))
+    for _ in range(iters):
+        s = U - q @ m; S = s.sum(0); Pm = (S[None] - s) * v                  # cavity prompt-effect means (n, d)
+        R = U[:, None, :] - Pm[:, None, :] - m[None]; L = -0.5 * (R ** 2 / (1 + v)).sum(-1) / T
+        if repel:   # mean-field at-most-once: discourage classes the other members already hold
+            lo = np.log(np.clip(1 - q, 1e-6, None)); L = L + (lo.sum(0)[None] - lo)
+        q = np.exp(log_softmax(L))
+    return log_softmax(L)
+
+LAM_DIFF = 1e6
+def lam_g(prm, cfg=None):
+    """lam used for groups: the fitted one, or ~infinity in the paired-difference ablation (cfg 'diff'): then the joint likelihood
+    only sees within-group differences (x_i - x_j around mu_a - mu_b with covariance 2 S_e; triples: centred observations vs
+    centred prototypes) and the prompt term cancels exactly."""
+    c = dict(prm.get("cfg", DEFAULT)); c.update(cfg or {})
+    return np.full_like(prm["lam"], LAM_DIFF) if c.get("diff") else prm["lam"]
+
+def group_logpost(U, prm, T1=None, Tg=None, cfg=None):
+    c = dict(prm.get("cfg", DEFAULT)); c.update(cfg or {}); n = len(U); lg = lam_g(prm, cfg)
+    T1 = prm["T1"] if T1 is None else T1; Tg = prm["Tg"] if Tg is None else Tg
+    if n == 1: return log_softmax(singleton_ll(U, prm["m"], prm["lam"]) / T1)
+    if n <= c["n_exact"]:
+        a, B = joint_terms(U, prm["m"], lg); return exact_marginals(joint_table(a, B), Tg, c["inj"])
+    return em_marginals(U, prm["m"], lg, Tg, c["iters"], c["repel"])
+
+def scores(X_pool, lab, prm, T1=None, Tg=None, cfg=None, U=None):
+    """(n, 18) log-probabilities for every pool row; lab = detected group labels of the pool rows (singletons allowed)."""
+    U = transform(X_pool, prm) if U is None else U; lab = np.asarray(lab); n = len(U); out = np.empty((n, prm["m"].shape[0]))
+    sizes = np.bincount(lab); s1 = sizes[lab] == 1
+    T1 = prm["T1"] if T1 is None else T1
+    if s1.any(): out[s1] = log_softmax(singleton_ll(U[s1], prm["m"], prm["lam"]) / T1)
+    for g in np.where(sizes >= 2)[0]:
+        ii = np.where(lab == g)[0]; out[ii] = group_logpost(U[ii], prm, T1, Tg, cfg)
+    return out
+
+
+
+# ===== CELL 39 [markdown] =====
+**6f. Frozen models.** Pooled hidden states from frozen encoders and decoders, with plain and prompt-centred classifiers and the Gaussian head fitted on them.
+
+# ===== CELL 40 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 4. frozen models: plain heads, centred twins, Gaussian group heads
+if not SMOKE:
+    from transformers import AutoConfig, AutoModel, AutoTokenizer
+CACHED_PARTS = {}   # key -> {part name: (train features, test features)}
+
+
+def find_checkpoint(model_type, hidden=None, dir_name=None):
+    """A checkpoint directory under /kaggle/input by model_type (+ hidden size) or by directory name."""
+    pattern = f'/kaggle/input/**/{dir_name}/config.json' if dir_name else '/kaggle/input/**/config.json'
+    for cfg in sorted(glob.glob(pattern, recursive=True)):
+        try:
+            c = json.load(open(cfg))
+        except Exception:
+            continue
+        if dir_name or (c.get('model_type') == model_type and (hidden is None or c.get('hidden_size') == hidden)):
+            return os.path.dirname(cfg)
+    return None
+
+
+def load_truncated_decoder(path, keep, dtype):
+    cfg = AutoConfig.from_pretrained(path)
+    cfg.num_hidden_layers = keep
+    if getattr(cfg, 'layer_types', None):
+        cfg.layer_types = cfg.layer_types[:keep]
+    kw = dict(config=cfg, dtype=dtype)
+    if DEV == 'cuda':
+        kw['device_map'] = 'auto'
+    return AutoModel.from_pretrained(path, **kw).eval()
+
+
+def style_token_mask(tok):
+    """Vocabulary mask of 'style' tokens: the decoded piece is an English stop word or pure punctuation."""
+    pieces = [tok.decode([i]) for i in range(len(tok))]
+    return torch.tensor([(p.strip().lower() in ENGLISH_STOP_WORDS) or bool(re.fullmatch(r'\s*[^\w\s]+\s*', p)) for p in pieces])
+
+
+@torch.no_grad()
+def pooled_states(model, tok, texts, parts, decoder, bs, max_len=512):
+    """{'L{layer}_{pool}': (n, hidden)} masked mean pools of hidden_states[layer] (all tokens, or style tokens only)."""
+    H = model.config.hidden_size
+    out = {f'L{L}_{pool}': np.zeros((len(texts), H), dtype=np.float32) for L, pool in parts}
+    smask = style_token_mask(tok) if any(pool == 'style' for _, pool in parts) else None
+    dev = next(model.parameters()).device
+    order = np.argsort([len(t) for t in texts])
+    retried = 0
+    for b0 in range(0, len(texts), bs):
+        idx = order[b0:b0 + bs]
+        if decoder:
+            batch = [(tok.bos_token or '') + texts[i] for i in idx]
+            enc = tok(batch, return_tensors='pt', padding=True, truncation=True, max_length=max_len, add_special_tokens=False).to(dev)
+        else:
+            enc = tok([texts[i] for i in idx], return_tensors='pt', padding=True, truncation=True, max_length=max_len).to(dev)
+        hs = model(**enc, output_hidden_states=True).hidden_states
+        if decoder and not all(torch.isfinite(hs[L]).all() for L, _ in parts):   # fp16 overflow: redo the batch in bf16
+            retried += 1
+            model.to(torch.bfloat16)
+            hs = model(**enc, output_hidden_states=True).hidden_states
+        m_all = enc['attention_mask'].float()
+        for L, pool in parts:
+            m = m_all * smask.to(m_all.device)[enc['input_ids']].float() if pool == 'style' else m_all
+            m = m.unsqueeze(-1).to(hs[L].device)
+            out[f'L{L}_{pool}'][idx] = ((hs[L].float() * m).sum(1) / m.sum(1).clamp(min=1)).cpu().numpy()
+        del hs, enc
+    if retried:
+        print(f'  {retried} batches redone in bf16', flush=True)
+    return {k: np.nan_to_num(v) for k, v in out.items()}
+
+
+def pseudo_parts(parts, dim=48):
+    """SMOKE only: deterministic stand-ins for the model passes (TF-IDF SVD of the texts), same downstream code."""
+    from sklearn.decomposition import TruncatedSVD
+    tf = TfidfVectorizer(analyzer='char', ngram_range=(2, 4), sublinear_tf=True, min_df=2).fit(TR + TE)
+    out = {}
+    for j, (L, pool) in enumerate(parts):
+        svd = TruncatedSVD(dim, random_state=L + 7 * j).fit(tf.transform(TR))
+        out[f'L{L}_{pool}'] = (svd.transform(tf.transform(TR)).astype(np.float32), svd.transform(tf.transform(TE)).astype(np.float32))
+    return out
+
+
+def extract_parts(key, parts, loader):
+    """Train and test pools for every requested part; loader() returns (model, tok, decoder flag, batch size)."""
+    if SMOKE:
+        return pseudo_parts(parts)
+    model, tok, decoder, bs = loader()
+    tr, te = pooled_states(model, tok, TR, parts, decoder, bs), pooled_states(model, tok, TE, parts, decoder, bs)
+    del model, tok
+    gc.collect()
+    if DEV == 'cuda':
+        torch.cuda.empty_cache()
+    return {k: (tr[k], te[k]) for k in tr}
+
+
+def decoder_loader(model_type, hidden, keep):
+    def load():
+        path = find_checkpoint(model_type, hidden)
+        assert path, f'no {model_type} checkpoint with hidden size {hidden} under /kaggle/input'
+        tok = AutoTokenizer.from_pretrained(path)
+        tok.padding_side = 'right'
+        if tok.pad_token is None:
+            tok.pad_token = tok.eos_token
+        return load_truncated_decoder(path, keep, torch.float16 if DEV == 'cuda' else torch.float32), tok, True, 8
+    return load
+
+
+def encoder_loader(dir_name):
+    def load():
+        path = find_checkpoint(None, dir_name=dir_name)
+        assert path, f'encoder directory {dir_name} not found under /kaggle/input'
+        return AutoModel.from_pretrained(path, dtype=torch.float32).to(DEV).eval(), AutoTokenizer.from_pretrained(path), False, 16
+    return load
+
+
+def concat_parts(cache, parts):
+    return (np.concatenate([cache[f'L{L}_{p}'][0] for L, p in parts], 1), np.concatenate([cache[f'L{L}_{p}'][1] for L, p in parts], 1))
+
+
+def plain_and_twin(key, Etr, Ete, C):
+    """Plain head (test-side standardisation) for the blend; centred twin evidence on grouped rows."""
+    if W[key] > 0:
+        sc = StandardScaler().fit(Etr)
+        clf = LogisticRegression(C=C, max_iter=5000).fit(sc.transform(Etr), y)
+        Xte = (Ete - Ete.mean(0)) / (Ete.std(0) + 1e-6) if len(Ete) >= 2 else sc.transform(Ete)
+        add_member(key, full_prob(clf.predict_proba(Xte), clf.classes_))
+    else:
+        print(f'  {key}: plain head has weight 0 in the 0.563 blend, not fitted', flush=True)
+    if key in TWIN_W:
+        csc = StandardScaler().fit(group_centre_dense(Etr, PROMPT))
+        twin = LogisticRegression(C=C, max_iter=5000).fit(csc.transform(group_centre_dense(Etr, PROMPT)), y)
+        if GROUP_ROWS.any():
+            pc = twin.predict_proba(csc.transform(group_centre_dense(Ete[GROUP_ROWS], G_TE[GROUP_ROWS])))
+            add_member(key + '_twin', full_prob(pc, twin.classes_), rows=GROUP_ROWS, weight=TWIN_W[key])
+        if TINY:
+            st_idx, st_g = self_test_rows()
+            ps = twin.predict_proba(csc.transform(group_centre_dense(Etr[st_idx], st_g)))
+            print(f'  {key} twin self-test on {len(st_idx)} training rows (seen in training): acc {np.mean(twin.classes_[ps.argmax(1)] == y[st_idx]):.2f}', flush=True)
+
+
+def gaussian_group_head(name, spec, Xtr, Xte):
+    """Our addition: fit the shared-prompt Gaussian on the training prompts, score the grouped test rows jointly within their group."""
+    prm = fit(Xtr, y, PROMPT, dict(GAUSS_SETTING, d=spec['d']))
+    prm['T1'], prm['Tg'] = spec['T1'], spec['Tg']
+    print(f'  {name}: d {prm["info"]["d"]}, shrinkage e/p {prm["info"]["a_e"]}/{prm["info"]["a_p"]}, lam pct {prm["info"]["lam_pct"]}', flush=True)
+    if GROUP_ROWS.any():
+        LP = scores(Xte[GROUP_ROWS], np.unique(G_TE[GROUP_ROWS], return_inverse=True)[1], prm)
+        add_member(name, np.exp(LP), rows=GROUP_ROWS, weight=spec['w'])
+    if TINY:
+        st_idx, st_g = self_test_rows()
+        LP = scores(Xtr[st_idx], st_g, prm)
+        print(f'  {name} self-test on {len(st_idx)} training rows (seen in training): acc {np.mean(LP.argmax(1) == y[st_idx]):.2f}', flush=True)
+
+
+for key, model_type, hidden, parts, extra_parts, C in LM_HEADS:
+    print(f'[{key}] {model_type} hidden {hidden} parts {parts + extra_parts}', flush=True)
+    cache = extract_parts(key, parts + extra_parts, decoder_loader(model_type, hidden, max(L for L, _ in parts + extra_parts) + 1))
+    if G_TE is None:   # the GLM pass comes first: its layer-24 pool defines the test groups
+        G_TE = mixed_groups(TE, cache[f'L{GROUP_LAYER}_mean'][1])
+        GROUP_ROWS = eligible(G_TE)
+        describe_groups('test groups (content + GLM L24)', G_TE)
+        if SMOKE:
+            same_g, same_p = G_TE[:, None] == G_TE[None, :], test['prompt_id'].to_numpy(dtype=object)[:, None] == test['prompt_id'].to_numpy(dtype=object)[None, :]
+            off = ~np.eye(len(TE), dtype=bool)
+            print(f'  smoke grouping: pair precision {(same_g & same_p & off).sum() / max((same_g & off).sum(), 1):.2f} '
+                  f'recall {(same_g & same_p & off).sum() / max((same_p & off).sum(), 1):.2f}', flush=True)
+    CACHED_PARTS[key] = cache
+    plain_and_twin(key, *concat_parts(cache, parts), C)
+    for name, spec in GAUSS_HEADS.items():
+        if spec['src'] == key:
+            gaussian_group_head(name, spec, *cache[spec['part']])
+    del cache
+    CACHED_PARTS.pop(key)
+    gc.collect()
+
+for key, dir_name, parts, C in ENC_HEADS:
+    print(f'[{key}] {dir_name} parts {parts}', flush=True)
+    cache = extract_parts(key, parts, encoder_loader(dir_name))
+    plain_and_twin(key, *concat_parts(cache, parts), C)
+    for name, spec in GAUSS_HEADS.items():
+        if spec['src'] == key:
+            gaussian_group_head(name, spec, *cache[spec['part']])
+    del cache
+    gc.collect()
+
+
+
+# ===== CELL 41 [markdown] =====
+**6g. LoRA classifiers.** Inference-only scoring of the public LoRA checkpoints of Lucas Boesen and vnton37nguyn.
+
+# ===== CELL 42 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 5. LoRA classifiers (inference only)
+@torch.no_grad()
+def score_lora_checkpoints(trunk_spec, pool_layers, checkpoints):
+    """One truncated trunk, adapters swapped in turn. Plain readout -> blend member; centred readout -> twin on grouped rows;
+    within-Claude readout -> Claude gate."""
+    import importlib.util as iu
+    _find = iu.find_spec   # Kaggle's torchao build is rejected by peft; hide it (unused here)
+    iu.find_spec = lambda name, *a, **k: None if name.split('.')[0] == 'torchao' else _find(name, *a, **k)
+    from peft import PeftModel
+    import peft.import_utils as pi
+    pi.is_torchao_available = lambda *a, **k: False
+    from safetensors.torch import load_file
+    model_type, H, keep = trunk_spec
+    base = find_checkpoint(model_type, H)
+    assert base, f'no {model_type} base checkpoint under /kaggle/input'
+    cfg = AutoConfig.from_pretrained(base)
+    cfg.num_hidden_layers, cfg.use_cache = keep, False
+    if getattr(cfg, 'layer_types', None) is not None:
+        cfg.layer_types = cfg.layer_types[:keep]
+    trunk = AutoModel.from_pretrained(base, config=cfg, dtype=torch.float16, device_map='auto').eval()
+    for key, marker, norms_file, anchor_file in checkpoints:
+        hits = sorted(glob.glob('/kaggle/input/' + marker, recursive=True))
+        if not hits:   # upstream training kernel no longer public: drop this member, keep the rest of the stack
+            print(f'  SKIP {key}: checkpoint not attached ({marker})', flush=True); continue
+        ck = pathlib.Path(os.path.dirname(hits[0]))
+        print(f'[{key}] {ck}', flush=True)
+        tok = AutoTokenizer.from_pretrained(ck / 'tokenizer')
+        tok.padding_side = 'right'
+        if tok.pad_token is None:
+            tok.pad_token = tok.eos_token
+        lm = PeftModel.from_pretrained(trunk, ck / 'adapter').eval()
+        state = load_file(str(ck / norms_file))
+        norms = torch.nn.ModuleList([torch.nn.LayerNorm(H) for _ in pool_layers])
+        norms.load_state_dict({k[len('norms.'):]: v for k, v in state.items() if k.startswith('norms.')})
+        ro = np.load(ck / 'readouts.npz')
+        assert list(ro['classes']) == LABELS and list(ro['pool_layers']) == pool_layers
+        dev = lm.get_input_embeddings().weight.device
+        norms = norms.to(dev).float()
+
+        def token_ids(texts):
+            return [ids + [tok.eos_token_id] for ids in tok(list(texts), add_special_tokens=False, truncation=True, max_length=LORA_MAX_LEN)['input_ids']]   # these checkpoints' anchors match the tokenizer's own eos
+
+        def features(texts, bs):
+            ids = token_ids(texts)
+            Z = np.zeros((len(ids), H * len(pool_layers)), dtype=np.float32)
+            order = np.argsort([len(t) for t in ids], kind='stable')
+            for b0 in range(0, len(order), bs):
+                idx = order[b0:b0 + bs]
+                batch = tok.pad({'input_ids': [ids[i] for i in idx]}, return_tensors='pt').to(dev)
+                with torch.autocast('cuda', dtype=torch.float16):
+                    hs = lm(**batch, output_hidden_states=True, use_cache=False).hidden_states
+                m = batch['attention_mask'].unsqueeze(-1).float()
+                m[:, 0] = 0   # the first token is masked out of the mean, as in training
+                Z[idx] = torch.cat([nm((hs[L].float() * m.to(hs[L].device)).sum(1).to(dev) / m.sum(1).to(dev))
+                                    for L, nm in zip(pool_layers, norms)], -1).cpu().numpy()
+                del hs, batch
+            return Z
+
+        if (ck / anchor_file).exists():   # the checkpoint's own features for training rows 0..2: our forward pass must reproduce them
+            saved = np.load(ck / anchor_file)['features'].astype(np.float32)
+            ours = features(TR[:3], 3)
+            rel = float(np.abs(ours - saved).mean() / (np.abs(saved).mean() + 1e-9))
+            print(f'  parity with the checkpoint anchors: max abs {float(np.abs(ours - saved).max()):.4f}, mean rel {rel:.5f}', flush=True)
+            assert rel < 0.02, f'{key}: our features do not match the checkpoint'
+        Z = features(TE, LORA_BS)
+        add_member(key, softmax_rows(Z @ ro['plain_coef'].T + ro['plain_intercept']))
+        if 'claude_coef' in ro.files:
+            lc = Z @ ro['claude_coef'].T + ro['claude_intercept']
+            GATES['claude_lora'] = lc - np.log(np.exp(lc - lc.max(1, keepdims=True)).sum(1, keepdims=True)) - lc.max(1, keepdims=True)
+        if key in LORA_TWIN_W and GROUP_ROWS.any():
+            Zc = group_centre_dense(Z[GROUP_ROWS], G_TE[GROUP_ROWS])
+            add_member(key + '_twin', softmax_rows(Zc @ ro['center_coef'].T + ro['center_intercept']), rows=GROUP_ROWS, weight=LORA_TWIN_W[key])
+        trunk = lm.unload()
+        del lm, Z
+        gc.collect()
+        torch.cuda.empty_cache()
+    del trunk
+    gc.collect()
+    torch.cuda.empty_cache()
+
+
+if not SMOKE:
+    for trunk_spec, pool_layers, checkpoints in LORA_RUNS:
+        score_lora_checkpoints(trunk_spec, pool_layers, checkpoints)
+
+
+
+# ===== CELL 43 [markdown] =====
+**6h. Token-attention heads and UltraBERT.** Lucas Boesen's attention-pooling heads, pjmathematician's UltraBERT, the within-family gates and the stack's final blend (`comp_logit.npy`).
+
+# ===== CELL 44 [code] =====
+%%writefile -a comp_stack.py
+# ============================================================ 6. token-attention heads + UltraBERT
+class TokenAttention(torch.nn.Module if torch is not None else object):   # the module of the public training kernels (lucasboesen/name-that-llm-train-tokattn, -tokattn2)
+    def __init__(self, k, h=4096):
+        super().__init__()
+        self.drop, self.proj, self.score, self.out = torch.nn.Dropout(0.2), torch.nn.Linear(h, 64), torch.nn.Linear(64, 1), torch.nn.Linear(128, k)
+
+    def forward(self, x, m):
+        h = torch.tanh(self.proj(self.drop(x)))
+        a = torch.softmax(self.score(h).squeeze(-1).masked_fill(~m, -1e4), -1).unsqueeze(-1)
+        mf = m.unsqueeze(-1).float()
+        return self.out(self.drop(torch.cat([(h * mf).sum(1) / mf.sum(1).clamp(min=1), (a * h).sum(1)], -1)))
+
+
+@torch.no_grad()
+def token_attention_probs(texts, head_file, backbone, bs=8):
+    hits = sorted(glob.glob('/kaggle/input/**/' + head_file, recursive=True))
+    assert hits, f'training-kernel output holding {head_file} not attached'
+    d = torch.load(hits[0], map_location='cpu')
+    assert list(d['classes']) == LABELS
+    decoder = d.get('decoder', True)
+    path = find_checkpoint('qwen3_5') if backbone == 'qwen3_5' else find_checkpoint(None, dir_name='deberta-v3-large')
+    assert path, f'backbone {backbone} not attached'
+    cfg = AutoConfig.from_pretrained(path)
+    if decoder:
+        tc = getattr(cfg, 'text_config', None) or cfg
+        tc.num_hidden_layers = d['keep']
+        if getattr(tc, 'layer_types', None):
+            tc.layer_types = tc.layer_types[:d['keep']]
+        lm = AutoModel.from_pretrained(path, config=cfg, dtype=torch.float16, device_map='auto').eval()
+    else:
+        lm = AutoModel.from_pretrained(path, dtype=torch.float32).to(DEV).eval()
+    tok = AutoTokenizer.from_pretrained(path)
+    tok.padding_side = 'right'
+    if tok.pad_token is None:
+        tok.pad_token = tok.eos_token
+    H = d.get('hidden', 4096)
+    net = TokenAttention(K, H)
+    net.load_state_dict(d['state_dict'])
+    dev = lm.get_input_embeddings().weight.device
+    net, mu, sd = net.to(dev).eval(), d['mu'].float().to(dev), d['sd'].float().to(dev)
+    ids = tok(list(texts), add_special_tokens=not decoder, truncation=True, max_length=d['max_len'])['input_ids']
+    P = np.zeros((len(texts), K))
+    order = np.argsort([len(t) for t in ids])
+    for b0 in range(0, len(order), bs):
+        idx = order[b0:b0 + bs]
+        batch = tok.pad({'input_ids': [ids[i] for i in idx]}, return_tensors='pt').to(dev)
+        out = lm(input_ids=batch['input_ids'], attention_mask=batch['attention_mask'], output_hidden_states=True)
+        hs = (out.hidden_states if getattr(out, 'hidden_states', None) is not None else out.language_model_outputs.hidden_states)[d['layer']]
+        n = batch['attention_mask'].sum(1)
+        T = max(int(n.max()) - 1, 1)
+        x = torch.zeros(len(idx), T, H, device=dev)
+        m = torch.zeros(len(idx), T, dtype=torch.bool, device=dev)
+        for r in range(len(idx)):   # first token dropped, states rounded through fp16, as in training
+            k = int(n[r]) - 1
+            if k > 0:
+                x[r, :k] = ((torch.nan_to_num(hs[r, 1:k + 1].to(dev).float()).half().float() - mu) / sd).clamp(-8, 8)
+                m[r, :k] = True
+        P[idx] = torch.softmax(net(x, m), -1).cpu().numpy()
+        del hs, out, batch
+    del lm
+    gc.collect()
+    torch.cuda.empty_cache()
+    return P
+
+
+@torch.no_grad()
+def ultrabert_probs(texts):
+    from transformers import AutoModelForSequenceClassification
+    folds = None
+    for root in glob.glob('/kaggle/input/**/ultrabert-380m-ntl', recursive=True):
+        fs = [f for f in sorted(glob.glob(os.path.join(root, 'fold*'))) if os.path.exists(os.path.join(f, 'config.json'))
+              and json.load(open(os.path.join(f, 'config.json'))).get('model_type') == 'ultrabert']
+        if len(fs) == 5:
+            folds = fs
+            break
+    assert folds, 'ultrabert-380m-ntl (5 folds) not attached'
+    tok = AutoTokenizer.from_pretrained(folds[0], trust_remote_code=True)
+    ids = tok(texts, truncation=True, max_length=512)['input_ids']
+    order = np.argsort([len(e) for e in ids])
+    P = np.zeros((len(texts), K))
+    for fp in folds:
+        em = AutoModelForSequenceClassification.from_pretrained(fp, trust_remote_code=True, dtype=torch.float16, attn_implementation='sdpa').to(DEV).eval()
+        cols = [LAB2I[em.config.id2label[i]] for i in range(len(em.config.id2label))]
+        for b0 in range(0, len(order), 32):
+            idx = order[b0:b0 + 32]
+            b = tok.pad({'input_ids': [ids[j] for j in idx]}, return_tensors='pt').to(DEV)
+            P[np.ix_(idx, cols)] += em(**b).logits.float().softmax(-1).cpu().numpy() / len(folds)
+        del em
+        gc.collect()
+        torch.cuda.empty_cache()
+    return P
+
+
+if not SMOKE:
+    # Optional community heads are enabled when both the trained head and matching backbone are attached.
+    _available_tokattn = []
+    for _key, _head_file, _backbone in TOKATTN_HEADS:
+        _head_hits = glob.glob('/kaggle/input/**/' + _head_file, recursive=True)
+        _base_hit = find_checkpoint('qwen3_5') if _backbone == 'qwen3_5' else find_checkpoint(None, dir_name='deberta-v3-large')
+        if _head_hits and _base_hit:
+            _available_tokattn.append((_key, _head_file, _backbone))
+        else:
+            print(f'  OPTIONAL HEAD SKIPPED {_key}: head={bool(_head_hits)} backbone={bool(_base_hit)}', flush=True)
+    TOKATTN_HEADS = _available_tokattn
+    for key, head_file, backbone in TOKATTN_HEADS:
+        if TINY:   # in-sample check on training rows the head was fitted on: must be high, or the checkpoint is not being reproduced
+            acc = float(np.mean(token_attention_probs(TR[:40], head_file, backbone).argmax(1) == y[:40]))
+            print(f'  {key} in-sample check on 40 training rows: acc {acc:.2f}', flush=True)
+            assert acc > 0.5, f'{key} does not reproduce its training fit'
+        add_member(key, token_attention_probs(TE, head_file, backbone))
+    add_member('ultrabert', ultrabert_probs(TE))
+
+
+def _np_logsoftmax(z):
+    from scipy.special import logsumexp as _lse_np
+    z = np.asarray(z, dtype=np.float64)
+    return z - _lse_np(z, axis=1, keepdims=True)
+
+def _apply_conditional_family_gate(gate_key, family, lam, scores_are_logprob=False):
+    '''Use the already-trained family gate only to rerank siblings, preserving total family mass.
+    Confidence-aware interpolation avoids overriding high-confidence cross-family decisions.'''
+    score = GATES.get(gate_key)
+    if score is None:
+        print(f'  family gate skipped {gate_key}: no fitted scores', flush=True)
+        return
+    idx = FAMILY_IDX[family]
+    score = np.asarray(score, dtype=np.float64)
+    if score.shape != (len(TE), len(idx)):
+        print(f'  family gate skipped {gate_key}: shape {score.shape} expected {(len(TE), len(idx))}', flush=True)
+        return
+    if scores_are_logprob:
+        gate_lp = _np_logsoftmax(score)
+    else:
+        score = score - score.mean(axis=1, keepdims=True)
+        scale = np.sqrt(np.mean(score * score, axis=1, keepdims=True))
+        score = score / np.maximum(scale, 0.25)
+        gate_lp = _np_logsoftmax(score)
+    base = LOGIT[:, idx].copy()
+    base_lp = _np_logsoftmax(base)
+    base_p = np.exp(base_lp)
+    sp = np.sort(base_p, axis=1)
+    margin = sp[:, -1] - sp[:, -2]
+    confidence_gate = np.clip((0.45 - margin) / 0.45, 0.0, 1.0)
+    strength = min(0.45, float(lam) / (1.0 + float(lam))) * confidence_gate
+    mixed_lp = _np_logsoftmax((1.0 - strength[:, None]) * base_lp + strength[:, None] * gate_lp)
+    # Preserve the ensemble's probability mass assigned to this family; only adjust within-family identity.
+    from scipy.special import logsumexp as _lse_np
+    family_mass = _lse_np(base, axis=1)
+    LOGIT[:, idx] = family_mass[:, None] + mixed_lp
+    print(f'  family gate applied {gate_key}: mean strength={strength.mean():.4f}, active rows={int((strength > 0).sum())}', flush=True)
+
+# These gates were fitted above but were previously never added to LOGIT. Apply them conservatively.
+if not SMOKE:
+    _apply_conditional_family_gate('claude', 'claude', GATE_LAM['claude_style'])
+    _apply_conditional_family_gate('claude_lora', 'claude', GATE_LAM['claude_lora'], scores_are_logprob=True)
+    for _fam in ('gpt', 'gemini', 'glm'):
+        _apply_conditional_family_gate(_fam, _fam, GATE_LAM['family'])
+
+np.save('/kaggle/working/comp_logit.npy', LOGIT.astype(np.float32))
+json.dump({'labels': LABELS, 'ids': test['id'].astype(str).tolist(), 'seconds': time.time() - T0,
+           'family_gates_applied': bool(not SMOKE)}, open('/kaggle/working/comp_meta.json', 'w'))
+print(f'COMP STACK DONE {time.time() - T0:.0f}s', flush=True)
+
+
+# ===== CELL 45 [markdown] =====
+## 7. Run the complementary stack
+In its own process, so all GPU memory is free again afterwards. Its running time (`COMP_SEC`) is subtracted from ATLAS's time budget. Skipped on the 3-row commit run.
+
+# ===== CELL 46 [code] =====
+# complementary public stack in its own process (frees all GPU memory when done); its wall time is charged to the ATLAS budget
+import time as _t
+_c0 = _t.time()
+import os; os.environ['NTL_DROP_Q35'] = '0'
+if not FAST_COMMIT:
+    !python comp_stack.py 2>&1 | grep -vE 'Warning|warn'
+COMP_SEC = _t.time() - _c0
+print('comp stack wall time', round(COMP_SEC))
+
+
+# ===== CELL 47 [markdown] =====
+## 8. The native embedding expert
+### 8a. The worker (`native_embedding_worker.py`)
+CHEN Han's expert, with the worker code lightningv08 wrote for it, unchanged.
+* **Backbone:** the full **Qwen3-Embedding-8B** (all 36 layers), split across the two T4s in half precision.
+* **Adapter:** one LoRA (rank 16) per fold. Only one fold's trainable state sits in memory at a time; the backbone is loaded once.
+* **Readout:** the hidden state of the last token at eight depths (layers 3 to 36) goes into two heads, a plain one and a prompt-centred one.
+* **Long passages** are covered by overlapping windows.
+* **Output:** per fold and per passage, the plain and centred scores for the 18 authors, saved to `native_q8.npz`.
+
+Why "native": the decoder members in section 5 are truncated, so they read only the first 20 to 27 layers. This expert keeps the whole embedding model and reads it at several depths, and that gives it a different view of style. On its own it reaches about 0.65 balanced accuracy out of fold on train.
+
+# ===== CELL 48 [code] =====
+%%writefile native_embedding_worker.py
+"""CHEN Han's trained eight-depth Qwen3-Embedding expert, with covering windows.
+
+The full backbone is split over two T4s. Task LoRA/head values stay FP32;
+the original BF16 backbone values are loaded as FP16. Only one fold's
+trainable state is resident at a time; the backbone is loaded once.
+"""
+import argparse
+import gc
+import json
+import os
+from pathlib import Path
+import shutil
+import time
+
+os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
+os.environ.setdefault('TOKENIZERS_PARALLELISM', 'false')
+import numpy as np
+import pandas as pd
+import torch
+from torch import nn
+from torch.nn import functional as F
+from safetensors.torch import load_file
+from transformers import AutoModel, AutoTokenizer
+
+INSTRUCTION = 'Instruct: Identify the language model that generated the text based on its writing style.\nQuery: '
+DEPTHS = (3, 6, 9, 12, 18, 24, 30, 36)
+SUFFIXES = ('q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj')
+
+
+class TaskLoRA(nn.Module):
+    def __init__(self, base):
+        super().__init__()
+        self.base_layer = base
+        device = base.weight.device
+        self.a = nn.Linear(base.in_features, 16, bias=False, device=device, dtype=torch.float32)
+        self.b = nn.Linear(16, base.out_features, bias=False, device=device, dtype=torch.float32)
+
+    def forward(self, x):
+        result = self.base_layer(x)
+        delta = self.b(self.a(x.float())) * 2.0
+        return (result + delta).to(result.dtype)
+
+
+class NativeQwen:
+    def __init__(self, base, assets, work):
+        torch.set_num_threads(2)
+        torch.use_deterministic_algorithms(True)
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.allow_tf32 = False
+        for key in ('allow_tf32', 'allow_fp16_reduced_precision_reduction', 'allow_bf16_reduced_precision_reduction'):
+            setattr(torch.backends.cuda.matmul, key, False)
+        assert torch.cuda.device_count() == 2, 'The native expert uses both T4 devices'
+        self.assets = Path(assets)
+        self.labels = json.loads((self.assets/'manifest.json').read_text())['classes']
+        origin = Path(base)
+        index = json.loads((origin/'model.safetensors.index.json').read_text())
+        shards = sorted(set(index['weight_map'].values()))
+        names = ['config.json','model.safetensors.index.json','tokenizer.json','tokenizer_config.json',
+                 'merges.txt','vocab.json'] + shards
+        # Use the original training tokenizer, not a same-named Kaggle revision.
+        sources = {name:(origin/name if name in shards else self.assets/'base'/name) for name in names}
+        for name in names:
+            assert sources[name].is_file(), str(sources[name])
+        for fold in range(5):
+            assert (self.assets/f'fold{fold}/trainables.safetensors').is_file()
+        self.staged = Path(work)/'native-q8-base'
+        self.staged.mkdir(parents=True, exist_ok=True)
+        for name in names:
+            destination = self.staged/name
+            if not destination.exists():
+                shutil.copyfile(sources[name], destination)
+            assert destination.stat().st_size == sources[name].stat().st_size
+        cfg = json.loads((self.staged/'config.json').read_text())
+        assert cfg['num_hidden_layers'] == 36 and cfg['hidden_size'] == 4096
+        self.tokenizer = AutoTokenizer.from_pretrained(self.staged, local_files_only=True)
+        self.tokenizer.padding_side = 'right'
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        placement = {'embed_tokens':0, 'norm':1, 'rotary_emb':1}
+        placement.update({f'layers.{i}':0 if i<16 else 1 for i in range(36)})
+        self.model, info = AutoModel.from_pretrained(self.staged, local_files_only=True,
+            torch_dtype=torch.float16, device_map=placement, attn_implementation='sdpa',
+            output_loading_info=True)
+        assert not any(info.get(k) for k in ('missing_keys','mismatched_keys','error_msgs')), info
+        assert not info.get('unexpected_keys'), info
+        self.model.config.use_cache = False
+        self.modules = {}
+        for name, layer in list(self.model.named_modules()):
+            if isinstance(layer, nn.Linear) and name.rsplit('.',1)[-1] in SUFFIXES:
+                wrapped = TaskLoRA(layer)
+                parent, attr = name.rsplit('.',1)
+                setattr(self.model.get_submodule(parent), attr, wrapped)
+                self.modules[name] = wrapped
+        assert len(self.modules) == 252, len(self.modules)
+        self.norms = nn.ModuleList([nn.LayerNorm(4096, device='cuda:0', dtype=torch.float32) for _ in DEPTHS])
+        self.plain = nn.Linear(32768,18,device='cuda:0',dtype=torch.float32)
+        self.centered = nn.Linear(32768,18,device='cuda:0',dtype=torch.float32)
+        self.model.requires_grad_(False).eval()
+        for module in (self.norms,self.plain,self.centered): module.requires_grad_(False).eval()
+        self.current = None
+        self.expected = {}
+        for name, module in self.modules.items():
+            for suffix, parameter in [('lora_A.default.weight',module.a.weight),('lora_B.default.weight',module.b.weight)]:
+                self.expected['encoder.backbone.base_model.model.'+name+'.'+suffix] = parameter
+        for prefix, module in [('norms',self.norms),('plain',self.plain),('centered',self.centered)]:
+            self.expected.update({prefix+'.'+name:parameter for name,parameter in module.named_parameters()})
+        assert len(self.expected) == 524
+
+    @torch.inference_mode()
+    def load_fold(self, fold):
+        if self.current == fold: return
+        state = load_file(str(self.assets/f'fold{fold}/trainables.safetensors'))
+        assert set(state) == set(self.expected), (set(state)-set(self.expected), set(self.expected)-set(state))
+        for name, parameter in self.expected.items():
+            assert state[name].shape == parameter.shape and state[name].dtype == torch.float32, name
+            assert torch.isfinite(state[name]).all(), name
+            parameter.copy_(state[name].to(parameter.device))
+        del state
+        gc.collect()
+        self.current = fold
+
+    def windows(self, texts):
+        prefix = self.tokenizer(INSTRUCTION,add_special_tokens=False)['input_ids']
+        terminal = self.tokenizer('',add_special_tokens=True)['input_ids']
+        assert terminal == [151643], 'The training tokenizer appends its native end-of-text token'
+        capacity = 512-len(prefix)-len(terminal)
+        assert capacity>0
+        full = self.tokenizer([INSTRUCTION+str(t) for t in texts],truncation=False,add_special_tokens=False)['input_ids']
+        windows=[]; owners=[]; weights=[]; lengths=[]
+        for row,tokens in enumerate(full):
+            assert len(tokens)>0
+            first_capacity=512-len(terminal)
+            windows.append(tokens[:first_capacity]+terminal);owners.append(row)
+            weights.append(max(1,min(len(tokens),first_capacity)-len(prefix)))
+            position=first_capacity
+            while position<len(tokens):
+                content=tokens[position:position+capacity]
+                windows.append(prefix+content+terminal);owners.append(row);weights.append(len(content))
+                position+=len(content)
+            lengths.append(len(tokens)+len(terminal))
+            assert position>=len(tokens)
+        return windows,np.asarray(owners),np.asarray(weights,dtype=np.float64),lengths
+
+    @torch.inference_mode()
+    def predict(self, texts, folds=range(5), batch_size=4):
+        windows,owners,weights,lengths=self.windows(texts)
+        # A token sequence provides a deterministic tie-break independent of row order.
+        order=sorted(range(len(windows)),key=lambda i:(len(windows[i]),windows[i]))
+        outputs={'plain':[],'centered':[],'centered_bias':[]}
+        timings=[]
+        for fold in folds:
+            self.load_fold(fold)
+            began=time.monotonic()
+            values={name:np.zeros((len(texts),18),dtype=np.float64) for name in ('plain','centered')}
+            for start in range(0,len(order),batch_size):
+                chosen=order[start:start+batch_size]
+                batch=self.tokenizer.pad({'input_ids':[windows[i] for i in chosen]},padding=True,return_tensors='pt').to('cuda:0')
+                output=self.model(**batch,output_hidden_states=True,use_cache=False,return_dict=True)
+                assert len(output.hidden_states)==37
+                positions=batch['attention_mask'].sum(1)-1
+                parts=[]
+                for depth,norm in zip(DEPTHS,self.norms):
+                    hidden=output.last_hidden_state if depth==36 else output.hidden_states[depth]
+                    pooled=hidden[torch.arange(len(chosen),device=hidden.device),positions.to(hidden.device)].float()
+                    if depth==36: pooled=F.normalize(pooled,dim=-1)
+                    parts.append(norm(pooled.to('cuda:0')))
+                features=torch.cat(parts,dim=-1)
+                for name,head in [('plain',self.plain),('centered',self.centered)]:
+                    scores=head(features).cpu().numpy().astype(np.float64)
+                    np.add.at(values[name],owners[chosen],scores*weights[chosen,None])
+                del output,features,parts,batch
+            denominator=np.bincount(owners,weights=weights,minlength=len(texts))[:,None]
+            for name in values: outputs[name].append(values[name]/denominator)
+            outputs['centered_bias'].append(self.centered.bias.cpu().numpy().copy())
+            torch.cuda.synchronize(0);torch.cuda.synchronize(1)
+            timings.append(dict(fold=int(fold),seconds=time.monotonic()-began))
+            print(json.dumps(dict(completed_fold=int(fold),documents=len(texts),windows=len(windows),seconds=timings[-1]['seconds'])),flush=True)
+        for key in outputs:
+            outputs[key]=np.stack(outputs[key]);assert np.isfinite(outputs[key]).all(),key
+        return outputs,dict(documents=len(texts),windows=len(windows),discarded_tokens=0,
+            formatted_token_lengths=lengths,fold_timings=timings,
+            peak_reserved=[torch.cuda.max_memory_reserved(i) for i in range(2)])
+
+
+def main():
+    parser=argparse.ArgumentParser()
+    for name in ('base','assets','query','out','work'): parser.add_argument('--'+name,type=Path,required=True)
+    args=parser.parse_args()
+    frame=pd.read_csv(args.query,dtype={'id':str});assert frame.id.is_unique and len(frame)
+    began=time.monotonic()
+    model=NativeQwen(args.base,args.assets,args.work)
+    values,report=model.predict(frame.text.fillna('').astype(str).tolist())
+    np.savez(args.out,ids=frame.id.to_numpy(dtype=str),labels=np.asarray(model.labels),**values)
+    report['seconds_including_load_and_staging']=time.monotonic()-began
+    args.out.with_suffix('.json').write_text(json.dumps(report,indent=2))
+    print(json.dumps(report),flush=True)
+
+
+if __name__=='__main__': main()
+
+
+# ===== CELL 49 [markdown] =====
+### 8b. Calibration and mixture (`native_mix.py`)
+* **`calibrate_native`** is lightningv08's code, unchanged. Each fold's plain head is rescaled by that fold's own temperature. On test passages that share a recovered prompt group of 2 to 18 passages, it is blended with the prompt-centred head (centred within the group), using the weight chosen for that fold in training.
+* **`native_mix`**, ours, puts the two together:
+  1. it reorders the expert's labels to the pipeline's order and checks the row order;
+  2. for each fold, it computes `softmax((1 − s) · log P_blend + s · log p_native)` with `s = 0.40`;
+  3. it averages the five folds.
+
+  The pipeline's own Sinkhorn balancing comes after it.
+
+# ===== CELL 50 [code] =====
+%%writefile native_mix.py
+"""The native Qwen3-Embedding-8B expert's calibration and geometric mixture (lightningv08's native_fusion.py, 0.680).
+
+calibrate_native is verbatim: per fold, the plain head (fold scale) blended with the prompt-centred head on test rows that
+share a prompt group of 2-18 passages. native_mix: per fold softmax((1 - share) log P + share log p_native), then the five
+folds are averaged (the 0.680 balances each fold before averaging; here the notebook's own balancing follows the average)."""
+import json
+from pathlib import Path
+import numpy as np
+from scipy.special import log_softmax, softmax
+
+
+def calibrate_native(plain,centered,bias,groups,selections):
+    plain,centered,bias=(np.asarray(a,dtype=np.float64) for a in (plain,centered,bias))
+    groups=np.asarray(groups)
+    assert plain.shape==centered.shape and plain.ndim==3 and plain.shape[0]==5 and plain.shape[-1]==18
+    assert bias.shape==(5,18) and groups.shape==(plain.shape[1],) and groups.dtype.kind in 'iu'
+    assert all(np.isfinite(x).all() for x in (plain,centered,bias))
+    _,inverse=np.unique(groups,return_inverse=True)
+    count=np.bincount(inverse);eligible=(count[inverse]>=2)&(count[inverse]<=18)
+    result=[]
+    for fold,selection in enumerate(selections):
+        state=selection['models']['qwen8']
+        assert not state['outer_labels_used'] and state['centered_head_trained']
+        assert state['plain_scale']>0 and state['centered_scale']>0
+        means=np.zeros((len(count),18),dtype=np.float64)
+        np.add.at(means,inverse,centered[fold]);means/=count[:,None]
+        relative=centered[fold]-means[inverse]+bias[fold]
+        a=log_softmax(plain[fold]*state['plain_scale'],axis=1)
+        b=log_softmax(relative*state['centered_scale'],axis=1)
+        weight=float(state['selected_centered_weight']);assert 0<=weight<=.5
+        fraction=np.where(eligible,weight,0)[:,None]
+        result.append(log_softmax((1-fraction)*a+fraction*b,axis=1))
+    return np.stack(result)
+
+
+def native_mix(P, npz, assets, ids, labels, groups, share):
+    """P: (n, 18) probabilities in `labels` order; returns the mixed probabilities and a short report."""
+    P = np.asarray(P, dtype=np.float64)
+    with np.load(npz, allow_pickle=False) as z:
+        assert z['ids'].tolist() == list(ids), 'native expert row order differs'
+        saved = z['labels'].tolist(); assert sorted(saved) == sorted(labels) and len(saved) == 18
+        order = [saved.index(l) for l in labels]
+        plain, centered, bias = z['plain'][:, :, order], z['centered'][:, :, order], z['centered_bias'][:, order]
+    selections = [json.loads((Path(assets) / f'calibration/fold{k}.json').read_text()) for k in range(5)]
+    lp = calibrate_native(plain, centered, bias, np.asarray(groups).astype(np.int64), selections)
+    logp = np.log(np.maximum(P / P.sum(1, keepdims=True), 1e-15))
+    mixed = np.mean([softmax((1 - share) * logp + share * lp[k], axis=1) for k in range(5)], axis=0)
+    mixed /= mixed.sum(1, keepdims=True)
+    assert mixed.shape == P.shape and np.isfinite(mixed).all()
+    alone = lp.mean(0).argmax(1)
+    return mixed, dict(changed=int((mixed.argmax(1) != P.argmax(1)).sum()), agree_native_parent=float((alone == P.argmax(1)).mean()))
+
+
+# ===== CELL 51 [markdown] =====
+### 8c. Run the expert
+* It runs in its own process, after the complementary stack and before `infer.py`, with a time cap: 2.5 hours on the hidden test, where loading and copying are included. Past the cap the notebook goes on without it.
+* Its time (`NATIVE_SEC`) is also subtracted from ATLAS's budget.
+* **On the commit run** it scores the 3 sample rows with all five folds and tests the mixture on them (with a flat blend, as a format check). A missing file or a format change therefore fails the commit, not the submission.
+
+# ===== CELL 52 [code] =====
+# ours: the native Qwen3-Embedding-8B expert (CHEN Han's five fold states from his 0.679, as lightningv08's 0.680 runs them)
+# in its own process on both T4s, after the comp stack and before infer.py; its wall time is charged to ATLAS's budget.
+# The commit run scores the 3 sample rows with all five folds, so a load or format error fails the commit, not the rerun.
+import glob as _g, os as _os, shutil as _sh, subprocess as _sp, sys as _sys, time as _t
+import numpy as _np, pandas as _pd2
+_n0 = _t.time()
+NATIVE_ASSETS = _os.path.dirname(sorted(_g.glob('/kaggle/input/**/ntl-native-q8-multidepth-fivefold-0679/manifest.json', recursive=True))[0])
+NATIVE_BASE = _os.path.dirname(sorted(p for p in _g.glob('/kaggle/input/**/model.safetensors.index.json', recursive=True)
+                                      if 'qwen-3-embedding' in p.lower() and '/8b/' in p.lower())[0])
+NATIVE_NPZ = '/kaggle/working/native_q8.npz'
+print('native expert: assets', NATIVE_ASSETS, '| base', NATIVE_BASE, sorted(_os.listdir(NATIVE_BASE))[:6], flush=True)
+_q = _pd2.read_csv(_os.path.join(DATA, 'test.csv'), dtype={'id': str})[['id', 'text']]
+_q.to_csv('/kaggle/working/native_query.csv', index=False)
+_cap = 1800 if FAST_COMMIT else 9000   # 2.5 h at most on the hidden test (load + copy included); past that the notebook goes on without it
+try:
+    _r = _sp.run([_sys.executable, '-u', 'native_embedding_worker.py', '--base', NATIVE_BASE, '--assets', NATIVE_ASSETS,
+                  '--query', '/kaggle/working/native_query.csv', '--out', NATIVE_NPZ, '--work', '/tmp/native'], timeout=_cap)
+    print('native expert exit code', _r.returncode, flush=True)
+except _sp.TimeoutExpired:
+    print('NATIVE TIMED OUT after', _cap, 's; continuing without it', flush=True)
+    if _os.path.exists(NATIVE_NPZ): _os.remove(NATIVE_NPZ)
+_sh.rmtree('/tmp/native', ignore_errors=True)
+NATIVE_SEC = _t.time() - _n0
+print('native expert wall time', round(NATIVE_SEC), 's; output', _os.path.exists(NATIVE_NPZ), flush=True)
+if FAST_COMMIT:   # check the whole path on the sample rows: the worker's output and the mixture infer.py will apply
+    assert _os.path.exists(NATIVE_NPZ), 'native expert failed on the sample rows'
+    from native_mix import native_mix as _nm
+    _LAB = ['claude-fable-5','claude-opus-4-6','claude-opus-4-8','claude-opus-5','claude-sonnet-5','gemini-3.1-pro-preview','gemini-3.6-flash',
+            'gemini-3.7-flash','gemini-3.8-flash','glm-5.3','glm-5.3-flash','gpt-5.5','gpt-5.6-luna','gpt-5.6-sol','gpt-5.6-terra','gpt-6-astra','kimi-k3','qwen3.8-max']
+    _mx, _rep = _nm(_np.full((len(_q), 18), 1 / 18), NATIVE_NPZ, NATIVE_ASSETS, _q.id.tolist(), _LAB, _np.arange(len(_q)), 0.4)
+    print('native mixture on the sample rows:', [_LAB[i] for i in _mx.argmax(1)], _rep, flush=True)
+
+
+# ===== CELL 53 [markdown] =====
+## 9. Members and run
+`MODELS` lists the neural members: the base model (`path`), the adapters to average, the layers to keep (`keep`), the depths to read (`layers`), the weight in the blend (`w`), and flags (`twin`: prompt-centred head weight, `gauss`: Gaussian head weight, `dp`: one copy per GPU).
+
+| member | what it is | weight |
+|---|---|---|
+| `q14v5`, `q8v5`, `ll8v5` | Dhruv Tibarewal's Qwen3-14B, Qwen3-8B and Llama-3.1-8B members | 3.0, 2.0, 1.0 |
+| **`q8v7`** | **ours:** Qwen3-8B-Base, first 24 layers, two-stage LoRA | **2.0** |
+| **`glm9v3`** | **ours:** GLM-4-9B, first 20 layers, two-stage LoRA | **1.0** |
+| `n14b_proven` | Nishant Dahal's Qwen3-14B adapter averaged with nuridudak's two | 2.8 |
+| `q25_14` | Nishant Dahal's Qwen2.5-14B member | 1.0 |
+| `deb` | DeBERTa-v3-large encoder | 1.0 |
+
+The command then runs `infer.py` with the 0.672 recipe's settings, **our master pool as `--pool`** and **the native expert at `--native_share 0.4`**. On the commit run it writes a placeholder instead; the checks at the end run either way.
+
+# ===== CELL 54 [code] =====
+W_N14, W_N8 = 1.0, 0.5
+L = [2, 4, 6, 8, 12, 16, 20, 24]
+MODELS = [
+  {"name": "q14v5", "type": "l24", "path": B14, "adapters": AQ14V5, "keep": 27, "layers": L, "w": 3.0, "bs": 8, "max_len": 384, "twin": 0.35, "gauss": 0.70},
+  {"name": "q8v5", "type": "l24", "path": B8, "adapters": AQ8V5, "keep": 24, "layers": L, "w": 2.0, "bs": 16, "max_len": 384, "twin": 0.35, "gauss": 0.44, "dp": True},
+  {"name": "ll8v5", "type": "l24", "path": BL, "adapters": ALL8V5, "keep": 24, "layers": L, "w": 1.0, "bs": 16, "max_len": 384, "twin": 0.35, "dp": True},
+  {"name": "q8v7", "type": "l24", "path": OWN_Q8V7_BASE, "adapters": OWN_Q8V7, "keep": 24, "layers": [2, 4, 6, 8, 12, 16, 20, 24], "w": 2.0, "bs": 16, "max_len": 384, "twin": 0.35, "no_final_norm": True, "dp": True},
+  {"name": "glm9v3", "type": "l24", "path": OWN_GLM9V3_BASE, "adapters": OWN_GLM9V3, "keep": 20, "layers": [2, 4, 6, 8, 10, 12, 16, 20], "w": 1.0, "bs": 16, "max_len": 384, "twin": 0.35, "no_final_norm": True, "dp": True},
+  {"name": "n14b_proven", "type": "l24", "path": B14, "adapters": [N14B, OQ1, OQ4], "adapter_weights": [0.34, 0.33, 0.33], "keep": N14BC['keep'], "layers": N14BC['layers'], "w": 2.8, "bs": 8, "max_len": N14BC['max_len'], "twin": 0.35, "no_final_norm": True, "eos_id": N14BC['eos_id']},
+  {"name": "q25_14", "type": "l24", "path": B25_14, "adapters": [Q25_14], "keep": Q25_14C['keep'], "layers": Q25_14C['layers'], "w": 1.0, "bs": 8, "max_len": Q25_14C['max_len'], "twin": 0.35, "no_final_norm": True, "eos_id": Q25_14C['eos_id']},
+  {"name": "deb", "type": "enc", "ckpt": DEB, "w": 1.0},
+]
+import pandas as pd
+ATLAS_BUDGET = int(8.3 * 3600 - COMP_SEC - NATIVE_SEC - 600)   # ours: the native expert's time too
+import subprocess, sys
+cmd = [sys.executable, 'infer.py', '--data', str(DATA), '--models', json.dumps(MODELS),
+       '--perpassage', '1', '--extra', str(EXTRA), '--extra_w', '0.5', '--tfidf_w', '0.25',
+       '--distort_w', '0.10', '--svc_w', '10.0', '--ours_svc', str(OSVC_FINAL), '--ours_svc_w', '1.2', '--top34_w', '0.20', '--pool', str(POOL), '--adapt_w', '1.0',
+       '--adapt_thr', '0.15', '--sinkhorn', '0.30', '--sinkhorn_target_mix', '0.35', '--post', '0', '--atlas_dir', str(ATLAS),
+       '--atlas_base', str(B8), '--atlas_w', '0.22', '--atlas_margin', '0.36',
+       '--atlas_bs', '4', '--atlas_chunk', '3', '--atlas_budget', str(max(180, ATLAS_BUDGET)),
+       '--comp_path', '/kaggle/working/comp_logit.npy', '--comp_w', '0.15', '--native_npz', NATIVE_NPZ, '--native_assets', NATIVE_ASSETS, '--native_share', '0.4',
+       '--out', '/kaggle/working/submission.parquet', '--cache', '/kaggle/working/cache']
+print('RUNNING MAIN INFERENCE', flush=True)
+if FAST_COMMIT:   # fork: placeholder from the commit run; Kaggle reruns the notebook on the hidden test
+    _test_ph = pd.read_csv(os.path.join(DATA, 'test.csv'))
+    pd.DataFrame({'id': _test_ph.id, 'model': 'gpt-5.5'}).to_parquet('/kaggle/working/submission.parquet', index=False)
+else:
+    subprocess.run(cmd, check=True)
+submission = pd.read_parquet('/kaggle/working/submission.parquet')
+assert len(submission) == len(pd.read_csv(os.path.join(DATA, 'test.csv')))
+assert set(submission.columns) == {'id', 'model'} and submission.id.is_unique and submission.model.notna().all()
+print(submission.head())
+

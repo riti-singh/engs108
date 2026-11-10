@@ -1,6 +1,6 @@
 {
  "experiment_id": "V2",
- "config_version": 2,
+ "config_version": 3,
  "frozen": true,
  "base": "A0",
  "slug": "engs108-v2-a0-balance025",
@@ -14,6 +14,15 @@
   "original_value": ".30",
   "modified_value": ".25",
   "what": "probability-level calibration: interpolation strength between the raw posterior P and its Sinkhorn class-balanced version Q, total=(1-strength)*log P + strength*log Q, applied in core_math.finalize before typography/native fusion",
-  "why": "Ref A exposes no free logit temperature (gauss-head temperatures are cross-fit; ATLAS prod temperatures come from the bundle). balance_logits strength is the existing scalar that reshapes final class posteriors; lowering it 0.30->0.25 relaxes the train-prior/marginal balancing. Note the provenance line 'sinkhorn_strength': .30 in ensemble.py's execution-contract.json is a hardcoded record and is left unchanged."
+  "why": "Ref A exposes no free logit temperature (gauss-head temperatures are cross-fit; ATLAS prod temperatures come from the bundle). balance_logits strength is the existing scalar that reshapes final class posteriors; lowering it 0.30->0.25 relaxes the train-prior/marginal balancing.",
+  "provenance_edits": [
+   {
+    "id": "record_sinkhorn_strength",
+    "cell": 41,
+    "old": "'sinkhorn_strength': .30,",
+    "new": "'sinkhorn_strength': .25,",
+    "why": "ensemble.py writes a hardcoded 'sinkhorn_strength': .30 into /kaggle/working/inference-logs/execution-contract.json; nothing reads it back. Recording .25 makes the log match the effective balance_logits strength. No effect on predictions."
+   }
+  ]
  }
 }

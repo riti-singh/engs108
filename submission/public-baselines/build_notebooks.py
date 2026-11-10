@@ -23,6 +23,10 @@ LABELS = ['claude-fable-5', 'claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5
           'qwen3.8-max']
 
 
+# Literals that are only written to /kaggle/working/inference-logs/execution-contract.json and never read back.
+PROVENANCE_ONLY = {"'sinkhorn_strength': .30,"}
+
+
 def load_config(exp_id):
     cfg = json.loads((HERE / 'configs' / f'{exp_id}.json').read_text())
     if cfg.get('base'):
@@ -158,6 +162,9 @@ def build(exp_id, mode):
         apply_edit(cells, edit)
     if cfg.get('change'):
         apply_edit(cells, cfg['change'])
+        for edit in cfg['change'].get('provenance_edits', []):
+            assert edit['old'] in PROVENANCE_ONLY, 'provenance edits may only touch execution-contract.json records'
+            apply_edit(cells, edit)
     src_meta = json.loads((HERE / cfg['source']['metadata']).read_text())
 
     if mode == 'validate':

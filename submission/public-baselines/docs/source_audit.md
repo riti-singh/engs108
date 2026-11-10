@@ -75,12 +75,20 @@ new prefit artifacts (= retraining). **Decision (user, 2026-11-10): keep the sou
 
 ## Blockers and risks
 
-* **Ref B v2 execution blocker (verified on Kaggle, B0 validate v1):** `infer.py` references `pathlib` (line 753,
+Ref B v2 has two separate problems, both observed on Kaggle in B0 validate v1 (540 rows, `ERROR` after ~2h46m). Neither is
+patched: each fix would be a code change, not an environment fix. On the public 3-row sample the source never reaches either
+(`FAST_COMMIT` placeholder). B0 stays **blocked**; no B0 submit version exists.
+
+* **B0 blocker 1 — missing `pathlib` import (crash).** `infer.py` references `pathlib` (line 753,
   `_pairwise_path = pathlib.Path('/kaggle/working/v34_pairwise_probs.npy')`) but only imports
-  `os, sys, time, gc, argparse, json, re`, so the full path raises `NameError` and the notebook fails; its `ours_svc`/`top34`
-  members are skipped by the same error, and `comp_stack.py`'s `lora24_public` parity assert fails (max abs 6.06, mean rel 0.54;
-  likely asset/library drift), dropping the complementary stack. On the public 3-row sample the source never reaches this code
-  (`FAST_COMMIT` placeholder). Not patched (would be a code change). Logs: `docs/raw/runs/B0_validate_v1/`.
+  `os, sys, time, gc, argparse, json, re`. The `NameError` makes `infer.py` exit 1 after it has written the parquet, so the
+  notebook's `subprocess.run(cmd, check=True)` raises and the run ends `ERROR`. The same error earlier makes `infer.py` skip its
+  `ours_svc`/`top34` members (`WARNING: ours_svc / top34 skipped`).
+* **B0 blocker 2 — complementary-stack parity mismatch (silent component loss).** Independently of blocker 1, `comp_stack.py`'s
+  self-check `lora24_public: our features do not match the checkpoint` fails (max abs diff 6.0615, mean rel diff 0.54065), so the
+  complementary stack produces no output and is dropped (`COMP SKIPPED: no stack output`). Likely asset or library drift between
+  the attached checkpoint and today's datasets/image; adding `import pathlib` would not fix this. Compact error record:
+  `docs/raw/runs/runs.json` (`B0`); the raw kernel log was removed from git (sha256 in `docs/raw/runs/artifact_hashes.json`).
 * **No private/disallowed assets**: all 26 datasets, 8 kernel outputs and 9 model instances resolve and are public.
 * **Version drift (not a hard blocker):** `kaggle kernels push` attaches the *latest* dataset/kernel versions. Several datasets were
   updated after the sources' last run (2026-11-07 01:43 UTC): `lightningv08/ntl-olmo2-native24-final-inference-assets` (v22,

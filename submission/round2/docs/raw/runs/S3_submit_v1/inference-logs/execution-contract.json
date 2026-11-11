@@ -1,0 +1,32 @@
+{
+  "mode": "competition",
+  "rows": 3,
+  "experiment": "native50",
+  "open_pool_dataset_version": 13,
+  "svc4_weight": 12.0,
+  "stages": [
+    "q14v5",
+    "q8v5",
+    "ll8v5",
+    "n14b",
+    "q25_14",
+    "deb",
+    "core-readouts-cpu",
+    "complementary",
+    "atlas",
+    "gsq-two-t4",
+    "native-q8-fivefold"
+  ],
+  "gsq_share": 0.03,
+  "complementary_share": 0.15,
+  "native_embedding_share": 0.4,
+  "native_source_script_version_id": 365653660,
+  "native_folds": 5,
+  "native_full_document_windows": true,
+  "q35_token_attention_enabled": false,
+  "deberta_token_attention_enabled": true,
+  "sinkhorn_strength": 0.15,
+  "sinkhorn_target_mix": 0.35,
+  "typography_markers": 37,
+  "final_writer": "ensemble.py:output.to_parquet"
+}

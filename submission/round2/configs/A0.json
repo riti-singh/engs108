@@ -1,0 +1,29 @@
+{
+ "experiment_id": "A0",
+ "config_version": 1,
+ "frozen": true,
+ "description": "Faithful reproduction of Ref A (lightningv08 0.681) with only the 3-row public-sample preview shortcut removed.",
+ "source": {
+  "ref": "lightningv08/0-681-qwen3-embedding-lora-qwen3-8-27b",
+  "version": 16,
+  "file": "refA/0-681-qwen3-embedding-lora-qwen3-8-27b.ipynb",
+  "metadata": "refA/kernel-metadata.json"
+ },
+ "slug": "engs108-a0-qwen3-embed-lora",
+ "compat_edits": [
+  {
+   "id": "remove_public_sample_preview",
+   "cell": 2,
+   "old": "preview = emit_known_preview(DATA,None,OUTPUT)",
+   "new": "preview = False  # engs108: the source's fingerprint-matched 3-row CPU preview (constant 'claude-fable-5' output) is disabled; every input runs the full pipeline",
+   "why": "The source writes a constant 3-row placeholder when test.csv is exactly the public sample; the user requires no 3-row-stub paths."
+  }
+ ],
+ "change": null,
+ "validation": {
+  "n_prompts": 30,
+  "seed": 108
+ },
+ "map_input_layout": true,
+ "map_input_layout_why": "Ref A hardcodes a mix of flat (/kaggle/input/<slug>) and nested (/kaggle/input/datasets/<owner>/<slug>, /kaggle/input/competitions/name-that-llm) paths; our GPU session mounted the flat layout and a CPU session the nested one. An IPython input transformer rewrites paths to the mounted layout; no logic changes."
+}

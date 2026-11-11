@@ -1,0 +1,49 @@
+{
+ "experiment_id": "S4",
+ "config_version": 1,
+ "frozen": true,
+ "base": "A0",
+ "slug": "engs108-s4-a0-atlasmargin035",
+ "description": "A0 + native share 0.5->0.4 + balance_logits strength .30->.25 + ATLAS margin .3->.35",
+ "changes": [
+  {
+   "id": "nativeshare040",
+   "cell": 49,
+   "old": "'share': 0.5}",
+   "new": "'share': 0.4}",
+   "parameter": "CONFIG['native_embedding']['share']",
+   "original_value": "0.5",
+   "modified_value": "0.4",
+   "what": "share of the native Qwen3-Embedding-8B five-fold expert in native_fusion.native_mixture's log-linear pool ((1-share)*log(parent) + share*native_logp); same cell-49 literal as V1"
+  },
+  {
+   "id": "balance025",
+   "cell": 6,
+   "old": "strength=.30",
+   "new": "strength=.25",
+   "parameter": "core_math.balance_logits(strength=...)",
+   "original_value": ".30",
+   "modified_value": ".25",
+   "what": "interpolation strength between the raw posterior P and its Sinkhorn class-balanced version Q, total=(1-strength)*log P + strength*log Q (core_math.finalize); same cell-6 literal as V2",
+   "provenance_edits": [
+    {
+     "id": "record_sinkhorn_strength",
+     "cell": 41,
+     "old": "'sinkhorn_strength': .30,",
+     "new": "'sinkhorn_strength': .25,",
+     "why": "ensemble.py writes a hardcoded 'sinkhorn_strength': .30 into /kaggle/working/inference-logs/execution-contract.json; nothing reads it back. Recording .25 makes the log match the effective balance_logits strength (same provenance-only edit as V2). No effect on predictions."
+    }
+   ]
+  },
+  {
+   "id": "atlasmargin035",
+   "cell": 41,
+   "old": "< .3)",
+   "new": "< .35)",
+   "parameter": "ensemble.py ATLAS top-2 margin threshold",
+   "original_value": ".3",
+   "modified_value": ".35",
+   "what": "ATLAS (Qwen3-8B adapter) rescoring is applied to rows whose top-2 prior margin is < threshold (only when the test has >= 50 rows; smaller tests rescore every row, unchanged); same cell-41 literal as V3"
+  }
+ ]
+}

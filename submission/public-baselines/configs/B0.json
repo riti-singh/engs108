@@ -1,0 +1,17 @@
+{
+ "experiment_id": "B0",
+ "config_version": 1,
+ "frozen": true,
+ "description": "Faithful reproduction of Ref B (mathleteutd 0.678) with only the FAST_COMMIT placeholder shortcut removed.",
+ "source": {"ref": "mathleteutd/0-678-embedding-expert-lora-pool", "version": 2,
+            "file": "refB/0-678-embedding-expert-lora-pool.ipynb", "metadata": "refB/kernel-metadata.json"},
+ "slug": "engs108-b0-embed-expert-pool",
+ "compat_edits": [
+  {"id": "remove_fast_commit_placeholder", "cell": 2,
+   "old": "FAST_COMMIT = len(_pd.read_csv(DATA + '/test.csv')) < 50",
+   "new": "FAST_COMMIT = False  # engs108: was len(test) < 50; the source then skipped the comp stack and infer.py and wrote a constant 'gpt-5.5' placeholder",
+   "why": "The source skips the heavy cells and writes a constant placeholder whenever test.csv has < 50 rows; the user requires no 3-row-stub paths."}
+ ],
+ "change": null,
+ "validation": {"n_prompts": 30, "seed": 108}
+}

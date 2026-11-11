@@ -1,0 +1,83 @@
+{
+ "A0": {
+  "validate": {
+   "version": 3,
+   "dir": "A0_validate_v3",
+   "status": "COMPLETE"
+  },
+  "submit": {
+   "version": 4,
+   "dir": "A0_submit_v4",
+   "status": "COMPLETE"
+  },
+  "failed": [
+   {
+    "version": 1,
+    "error": "FileNotFoundError /kaggle/input/competitions/name-that-llm/train.csv (flat mount layout)"
+   },
+   {
+    "version": 2,
+    "error": "AssertionError /kaggle/input/datasets/pjmathematician/ultrabert-380m-ntl/fold0/config.json (first layout fix rewrote to the nested layout; GPU session mounted flat)"
+   }
+  ]
+ },
+ "B0": {
+  "validate": {
+   "version": 1,
+   "dir": "B0_validate_v1",
+   "status": "ERROR",
+   "wall_seconds_approx": 9962,
+   "peak_gpu_mem_mib": {
+    "0": 14469,
+    "1": 14175
+   },
+   "error": "Source bug in Ref B v2 infer.py: NameError: name 'pathlib' is not defined at infer.py line 753 (post-processing after the parquet was written), so infer.py exits 1 and the notebook cell subprocess.run(cmd, check=True) raises CalledProcessError. The same NameError earlier made infer.py skip ours_svc/top34 ('WARNING: ours_svc / top34 skipped'). Separately comp_stack.py failed its parity assert (lora24_public: our features do not match the checkpoint, max abs 6.06, mean rel 0.54) so the complementary stack was skipped (COMP SKIPPED: no stack output)."
+  },
+  "submit": null
+ },
+ "V2": {
+  "validate": {
+   "version": 1,
+   "dir": "V2_validate_v1",
+   "status": "COMPLETE",
+   "agreement_with_A0_validate": 1.0
+  },
+  "submit": {
+   "version": 3,
+   "dir": "V2_submit_v3",
+   "status": "COMPLETE",
+   "config_version": 3,
+   "supersedes": {
+    "version": 2,
+    "dir": "V2_submit_v2",
+    "status": "COMPLETE",
+    "note": "config v2: identical behaviour; execution-contract recorded sinkhorn_strength .30. v3 output is byte-identical in content (same 3 ids/labels)."
+   }
+  }
+ },
+ "V1": {
+  "validate": {
+   "version": 1,
+   "dir": "V1_validate_v1",
+   "status": "COMPLETE",
+   "agreement_with_A0_validate": 0.9944
+  },
+  "submit": {
+   "version": 2,
+   "dir": "V1_submit_v2",
+   "status": "COMPLETE"
+  }
+ },
+ "V3": {
+  "validate": {
+   "version": 1,
+   "dir": "V3_validate_v1",
+   "status": "COMPLETE"
+  },
+  "submit": {
+   "version": 2,
+   "dir": "V3_submit_v2",
+   "status": "COMPLETE"
+  }
+ }
+}

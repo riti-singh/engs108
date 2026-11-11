@@ -1,0 +1,184 @@
+{
+ "abdullah1afify/ntl-generations": {
+  "version": 11,
+  "private": false,
+  "last": "2026-11-04 00:46:07.903000",
+  "size": 12218344,
+  "title": "Name That LLM: extra GPT and Gemini generations"
+ },
+ "bbucxi/qwen35-9b-safetensors": {
+  "version": 1,
+  "private": false,
+  "last": "2026-08-16 11:56:41.020000",
+  "size": 19329294373,
+  "title": "Qwen3.5-9B safetensors"
+ },
+ "crtproduction/name-that-llm-open-pool": {
+  "version": 16,
+  "private": false,
+  "last": "2026-11-09 04:41:58.513000",
+  "size": 123932622,
+  "title": "Name That LLM Open Pool: 224k Clean Passages"
+ },
+ "dhruvtibarewal/nlm-enc-v5": {
+  "version": 3,
+  "private": false,
+  "last": "2026-10-25 17:06:42.517000",
+  "size": 793240517,
+  "title": "NTL Two-Stage Encoders (120k pool)"
+ },
+ "dhruvtibarewal/nlm-l24-adapters": {
+  "version": 7,
+  "private": false,
+  "last": "2026-10-21 16:52:23.293000",
+  "size": 3730983134,
+  "title": "Identify the model behind text"
+ },
+ "dhruvtibarewal/nlm-l24-adapters-v5": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-25 04:45:56.100000",
+  "size": 2591835972,
+  "title": "NTL Two-Stage LoRA24 Adapters (120k pool)"
+ },
+ "dhruvtibarewal/nlm-matched-clean": {
+  "version": 3,
+  "private": false,
+  "last": "2026-10-23 17:10:01.517000",
+  "size": 83376272,
+  "title": "nlm-matched-clean"
+ },
+ "dhruvtibarewal/nlm-offline-wheels": {
+  "version": 2,
+  "private": false,
+  "last": "2026-10-17 12:20:52.603000",
+  "size": 45193795,
+  "title": "nlm-offline-wheels"
+ },
+ "dophuchung/ntl-proxy-generations": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-17 07:22:31.420000",
+  "size": 891947,
+  "title": "Name That LLM: free-proxy generations"
+ },
+ "josephadamski91/ntl-atlas-qwen3-8b-v1": {
+  "version": 3,
+  "private": false,
+  "last": "2026-10-20 14:22:33.173000",
+  "size": 462803915,
+  "title": "NTL ATLAS Qwen3 8B v1"
+ },
+ "kirilltym/ntl-spectral-style-heads-paired-4404": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-24 00:59:10.490000",
+  "size": 34371381,
+  "title": "NTL Spectral Style Heads - Paired 4404"
+ },
+ "lightningv08/ntl-olmo2-native24-final-inference-assets": {
+  "version": 22,
+  "private": false,
+  "last": "2026-11-07 16:24:25.907000",
+  "size": 104723912198,
+  "title": "Name That LLM Artifacts"
+ },
+ "lucasboesen/ntl-free-proxy-generations": {
+  "version": 12,
+  "private": false,
+  "last": "2026-11-01 14:39:54",
+  "size": 7671212,
+  "title": "NTL free-proxy GPT and Gemini generations"
+ },
+ "mathleteutd/ntl-public-pool-v2": {
+  "version": 6,
+  "private": false,
+  "last": "2026-11-07 13:05:26.473000",
+  "size": 108912039,
+  "title": "NTL public pool v2"
+ },
+ "mathleteutd/ntl-two-stage-lora24-members-q8-glm9": {
+  "version": 1,
+  "private": false,
+  "last": "2026-11-08 06:26:42.597000",
+  "size": 1329783000,
+  "title": "NTL two-stage LoRA24 members q8 glm9"
+ },
+ "mercurydust/ntllm-chatgpt-a-b": {
+  "version": 2,
+  "private": false,
+  "last": "2026-11-06 06:36:36.133000",
+  "size": 196135320,
+  "title": "NTLLM-ChatGPT-A_B"
+ },
+ "nishantdahal/ntl-handwriting-blend": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-23 02:17:46.923000",
+  "size": 1281363560,
+  "title": "NTL two-stage LoRA part two"
+ },
+ "nishantdahal/ntl-two-stage-lora": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-19 01:34:11.527000",
+  "size": 317728259,
+  "title": "NTL two-stage LoRA checkpoints and public pool"
+ },
+ "nuridudak/ntl-q14-lora": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-23 21:42:39.220000",
+  "size": 179686727,
+  "title": "NTL Ours Qwen3-14B LoRA"
+ },
+ "nuridudak/ntl-q14-lora-v4": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-26 07:09:30.130000",
+  "size": 179686820,
+  "title": "NTL Ours Qwen3-14B LoRA v4"
+ },
+ "nuridudak/ntl-svc-prefit-pool-v4n": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-28 18:37:07.557000",
+  "size": 206810114,
+  "title": "NTL SVC Prefit Pool v4n and Top34"
+ },
+ "nuridudak/ntl-two-stage-encoders": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-23 08:53:28.203000",
+  "size": 1813026893,
+  "title": "NTL Two-Stage Encoders: ModernBERT + DeBERTa"
+ },
+ "pjmathematician/ultrabert-380m-ntl": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-14 21:10:11.313000",
+  "size": 3819222687,
+  "title": "UltraBERT-380M Name That LLM 5-fold"
+ },
+ "prvsiyan/prvsiyans-extended-name-that-llm-dataset": {
+  "version": 12,
+  "private": false,
+  "last": "2026-11-08 18:41:00.667000",
+  "size": 133239496,
+  "title": "prvsiyan's Extended Name That LLM Dataset"
+ },
+ "seyitkaangunes/ntl-extra-api-passages": {
+  "version": 2,
+  "private": false,
+  "last": "2026-10-16 15:52:16.823000",
+  "size": 4660571,
+  "title": "Name That LLM: Extra API Passages"
+ },
+ "zbigniewkirchner/ntl-qwen3-8b-lora-claude-head": {
+  "version": 1,
+  "private": false,
+  "last": "2026-10-16 21:51:36.877000",
+  "size": 321066208,
+  "title": "Name That LLM: Qwen3-8B LoRA + Claude Head"
+ }
+}

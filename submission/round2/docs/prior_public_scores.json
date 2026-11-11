@@ -1,0 +1,7 @@
+{
+ "_note": "Public leaderboard scores confirmed by the user for the submission/public-baselines submit versions; not measured in this directory.",
+ "A0": {"slug": "engs108-a0-qwen3-embed-lora", "saved_version": 4, "change": "none (baseline; compat edits only)", "public_score": "0.679"},
+ "V1": {"slug": "engs108-v1-a0-nativeshare040", "saved_version": 2, "change": "native share 0.5 -> 0.4", "public_score": "0.680"},
+ "V2": {"slug": "engs108-v2-a0-balance025", "saved_version": 3, "change": "balance_logits strength .30 -> .25 (+ provenance record .25)", "public_score": "0.680"},
+ "V3": {"slug": "engs108-v3-a0-atlasmargin025", "saved_version": 2, "change": "ATLAS margin .3 -> .25", "public_score": "0.679"}
+}

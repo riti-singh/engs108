@@ -5,11 +5,14 @@
 `train.csv` at inference time (Ref A's native fusion, Sinkhorn balancing, typography guards and Gaussian heads;
 see `docs/source_audit.md`; kept as-is by decision). So the pipeline has seen these exact passages and labels. Treat everything below as an in-sample diagnostic.
 
-* No independent labeled evaluation set exists for this competition: the only labeled data is `train.csv`, and the
-  hidden test labels are not public.
+* No independent labeled data was used for this matrix: the only labeled data the competition provides is
+  `train.csv`, and the hidden test labels are not public. A candidate independent set, the protocol needed to use it,
+  and what is still missing are in `INDEPENDENT_EVAL.md`.
 * A fresh random split of `train.csv` would still be contaminated: the pipeline reads the whole `train.csv` at
   inference regardless of how we split it, and its prefit public members were trained by their authors on the
-  competition train set, which we cannot undo without retraining.
+  competition train set, which we cannot undo without retraining. No such split is reported anywhere here.
+
+**Do not quote 98.7% as validation or generalization performance.**
 
 ## Result (in-sample)
 
@@ -24,11 +27,24 @@ see `docs/source_audit.md`; kept as-is by decision). So the pipeline has seen th
 The 533/540 figure matches `in_sample_accuracy_not_a_score` = 0.987037037037037 in
 `docs/raw/runs/V1_validate_v1/engs108_run/run_report.json`.
 
-**Public leaderboard score: none for this branch.** `docs/readiness.md` records that nothing here has been
-submitted and `manifest.csv` leaves the leaderboard column blank. The only 0.680 in this repo is a credit inside
-Ref B's notebook text to a third-party public notebook (lightningv08, "0.680 | ModernBERT + LoRA + Sparse Ensemble");
-it is not a score of V1 and is not attributed to this branch. Any future leaderboard result must be reported
-separately from the in-sample number above.
+## Official Kaggle public leaderboard (separate from the diagnostic above)
+
+V1 was submitted to the competition and scored **0.680** on the public leaderboard. This is the only number in this
+document measured on text the pipeline did not have labels for. Source: the Kaggle submissions API for account
+`ritisingh123`, queried 2026-11-15:
+
+| | |
+|---|---|
+| Submission ref | `58222435` |
+| Notebook | `ritisingh123/engs108-v1-a0-nativeshare040`, scriptVersionId `367976120` |
+| Submitted (UTC) | 2026-11-11 02:43:18 |
+| Status | COMPLETE |
+| Public score | **0.680** |
+
+The public leaderboard is scored on a subset of the hidden test set; the private score is not yet available.
+`docs/readiness.md` and the leaderboard column of `manifest.csv` predate this submission and do not record it.
+The 0.680 and the in-sample 533/540 measure different things and must not be combined or compared as if
+they were the same kind of number.
 
 ## Top confusions (true -> predicted)
 
@@ -49,6 +65,7 @@ Ties are broken by the 18-label order (true, then predicted).
 * `confusion_matrix_counts.png`: raw counts, 300 DPI.
 * `class_metrics.csv`: per-class precision, recall, F1, support (plus predicted count and correct count).
 * `top_confusions.csv`: the five largest off-diagonal cells.
+* `INDEPENDENT_EVAL.md`: pipeline leakage audit, independent-data feasibility, and what is missing (hand-written).
 
 Label order on both axes is the 18-label list in the run-report cell of
 `build/V1/validate/engs108-v1-a0-nativeshare040.ipynb`.

@@ -109,7 +109,7 @@ Evaluation input built from it (not committed; regenerate with the script): only
   ("with an awe-struck and vivid tone", "in about N words"); complete panels skew short (89 of 121 panels are the
   ~55-word instruction, versus a train mean of ~115 words). Accuracy here measures transfer to a shifted
   distribution, not the hidden test distribution, and is expected to sit below the 0.680 leaderboard number.
-* **Size.** 121 rows per label gives roughly +-8 percentage points (95%) on each per-class recall.
+* **Size.** 121 rows per label gives a 95% interval of up to about +-9 percentage points on each per-class recall.
 * **The uploader's own models were trained on it**; that does not affect V1 (V1's assets pre-date it) but it does
   mean it is not secret, only unseen by V1.
 

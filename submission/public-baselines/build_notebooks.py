@@ -9,6 +9,11 @@ Two modes are generated per experiment:
   validate  - identical code, except the competition directory literal is
               replaced by a synthetic data dir (real train.csv, a held-out-style
               test.csv of whole train prompts) built by a prepended cell.
+A third mode is built on request only (--mode independent):
+  independent - identical code to validate, except the prepended cell copies a
+              hash-pinned test.csv (id,text only; labels never leave the local
+              machine) from a private dataset of passages that are not in
+              train.csv. See evaluation/INDEPENDENT_EVAL.md.
 """
 import argparse, copy, json, pathlib, re, sys
 
@@ -17,6 +22,8 @@ COMP_DIR = '/kaggle/input/competitions/name-that-llm'
 VAL_DIR = '/kaggle/working/ntl_val_data'
 RUN_DIR = '/kaggle/working/engs108_run'
 OWNER = 'ritisingh123'
+INDEP_DATASET = f'{OWNER}/engs108-v1-independent-input'
+INDEP_TEST_SHA256 = '711ed56b79e07b5b14ec0af3b26a25b2a4266d4437307a23e7204d49262dbe4d'
 LABELS = ['claude-fable-5', 'claude-opus-4-6', 'claude-opus-4-8', 'claude-opus-5', 'claude-sonnet-5',
           'gemini-3.1-pro-preview', 'gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash', 'glm-5.3',
           'glm-5.3-flash', 'gpt-5.5', 'gpt-5.6-luna', 'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-6-astra', 'kimi-k3',
@@ -113,8 +120,26 @@ print('engs108 validation test.csv:', len(_e_te), 'rows from', len(_e_pick), 'tr
 '''
 
 
+def independent_cell():
+    name = INDEP_DATASET.split('/')[1]
+    return f'''# engs108: independent-evaluation input (not part of the source; absent from the submit notebook).
+# test.csv holds id,text only for passages that are not in train.csv; the labels stay outside Kaggle.
+import glob as _e_glob, hashlib as _e_h, os as _e_os, shutil as _e_sh
+_e_src = next(p for p in ['/kaggle/input/competitions/' + 'name-that-llm', '/kaggle/input/' + 'name-that-llm'] if _e_os.path.isfile(p + '/train.csv'))
+_e_os.makedirs({VAL_DIR!r}, exist_ok=True)
+for _e_f in ['train.csv', 'sample_submission.parquet']:
+    _e_dst = {VAL_DIR!r} + '/' + _e_f
+    if not _e_os.path.lexists(_e_dst): _e_os.symlink(_e_src + '/' + _e_f, _e_dst)
+_e_in = sorted(set(_e_glob.glob('/kaggle/input/{name}/test.csv') + _e_glob.glob('/kaggle/input/**/{name}/test.csv', recursive=True)))
+assert len(_e_in) == 1, _e_in
+assert _e_h.sha256(open(_e_in[0], 'rb').read()).hexdigest() == {INDEP_TEST_SHA256!r}, 'independent test.csv changed'
+_e_sh.copyfile(_e_in[0], {VAL_DIR!r} + '/test.csv')
+print('engs108 independent test.csv:', _e_in[0], flush=True)
+'''
+
+
 def report_cell(cfg, mode):
-    data_dir = VAL_DIR if mode == 'validate' else COMP_DIR
+    data_dir = COMP_DIR if mode == 'submit' else VAL_DIR
     return f'''# engs108: submission contract check and run report (not part of the source).
 import json as _e_json, os as _e_os, time as _e_time, pandas as _e_pd
 ENGS108_SMI.terminate(); _e_log.close()
@@ -167,7 +192,7 @@ def build(exp_id, mode):
             apply_edit(cells, edit)
     src_meta = json.loads((HERE / cfg['source']['metadata']).read_text())
 
-    if mode == 'validate':
+    if mode in ('validate', 'independent'):
         for c in cells:
             if c['cell_type'] == 'code':
                 c['source'] = c['source'].replace(COMP_DIR, VAL_DIR)
@@ -176,16 +201,19 @@ def build(exp_id, mode):
         head.append(code_cell(layout_cell(src_meta)))
     if mode == 'validate':
         head.append(code_cell(validation_cell(cfg)))
+    if mode == 'independent':
+        head.append(code_cell(independent_cell()))
     nb['cells'] = head + cells + [code_cell(report_cell(cfg, mode))]
     for c in nb['cells']:
         if c['cell_type'] == 'code':
             c['source'] = c['source']
-    slug = cfg['slug']
+    slug = cfg['slug'] + ('-indep' if mode == 'independent' else '')
     meta = {
         'id': f'{OWNER}/{slug}', 'title': slug, 'code_file': f'{slug}.ipynb', 'language': 'python',
         'kernel_type': 'notebook', 'is_private': True, 'enable_gpu': True, 'enable_tpu': False,
         'enable_internet': False, 'competition_sources': src_meta['competition_sources'],
-        'dataset_sources': src_meta['dataset_sources'], 'kernel_sources': src_meta['kernel_sources'],
+        'dataset_sources': src_meta['dataset_sources'] + ([INDEP_DATASET] if mode == 'independent' else []),
+        'kernel_sources': src_meta['kernel_sources'],
         'model_sources': src_meta['model_sources'], 'machine_shape': src_meta['machine_shape'],
         'docker_image_pinning_type': 'original', 'docker_image': src_meta['docker_image'], 'keywords': [],
     }
@@ -199,7 +227,7 @@ def build(exp_id, mode):
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('experiments', nargs='+')
-    ap.add_argument('--mode', choices=['submit', 'validate', 'both'], default='both')
+    ap.add_argument('--mode', choices=['submit', 'validate', 'independent', 'both'], default='both')
     a = ap.parse_args()
     for e in a.experiments:
         for m in (['submit', 'validate'] if a.mode == 'both' else [a.mode]):

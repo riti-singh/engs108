@@ -141,8 +141,9 @@ EVALUATION_MD = """# V1 validation confusion matrix: training-derived, in-sample
 see `docs/source_audit.md`; kept as-is by decision). So the pipeline has seen these exact passages and labels. Treat everything below as an in-sample diagnostic.
 
 * No independent labeled data was used for this matrix: the only labeled data the competition provides is
-  `train.csv`, and the hidden test labels are not public. A candidate independent set, the protocol needed to use it,
-  and what is still missing are in `INDEPENDENT_EVAL.md`.
+  `train.csv`, and the hidden test labels are not public. A separate evaluation of the unchanged V1 notebook on an
+  independent, externally labeled set (2,178 passages not in `train.csv`) is in `INDEPENDENT_EVAL.md` and
+  `independent/`; it is not mixed into the numbers on this page.
 * A fresh random split of `train.csv` would still be contaminated: the pipeline reads the whole `train.csv` at
   inference regardless of how we split it, and its prefit public members were trained by their authors on the
   competition train set, which we cannot undo without retraining. No such split is reported anywhere here.
@@ -194,7 +195,8 @@ Ties are broken by the 18-label order (true, then predicted).{tie_note}
 * `confusion_matrix_counts.png`: raw counts, {dpi} DPI.
 * `class_metrics.csv`: per-class precision, recall, F1, support (plus predicted count and correct count).
 * `top_confusions.csv`: the five largest off-diagonal cells.
-* `INDEPENDENT_EVAL.md`: pipeline leakage audit, independent-data feasibility, and what is missing (hand-written).
+* `INDEPENDENT_EVAL.md`: pipeline leakage audit, independent-data protocol, and the independent-set result
+  (hand-written); its matrices and metrics are in `independent/`.
 
 Label order on both axes is the 18-label list in the run-report cell of
 `build/V1/validate/engs108-v1-a0-nativeshare040.ipynb`.

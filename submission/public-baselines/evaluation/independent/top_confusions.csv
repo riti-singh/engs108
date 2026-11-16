@@ -1,0 +1,6 @@
+rank,true,predicted,count,share_of_true_row
+1,gemini-3.7-flash,gemini-3.8-flash,62,0.5124
+2,gemini-3.6-flash,gemini-3.1-pro-preview,35,0.2893
+3,glm-5.3-flash,glm-5.3,32,0.2645
+4,glm-5.3-flash,claude-opus-5,28,0.2314
+5,glm-5.3,claude-opus-5,27,0.2231

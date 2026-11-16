@@ -1,10 +1,10 @@
-# Independent evaluation of the frozen V1 pipeline: audit, feasibility, and what is missing
+# Independent evaluation of the frozen V1 pipeline: audit, protocol, and result
 
-**Status: no independent confusion matrix exists yet.** A dataset that passes every independence check we can run
-without GPU has been found and the evaluation input has been built (below), but scoring it requires one Kaggle GPU
-inference run of the unchanged V1 notebook, which this branch has not done (the brief for this work said not to
-rerun the GPU pipeline). Nothing in this directory reports performance on unseen text except the official
-public leaderboard score (0.680, see `EVALUATION.md`).
+**Result: 1,179 / 2,178 correct (54.1%, 95% Wilson interval 52.0-56.2%), macro F1 0.518**, from one run of the
+unchanged V1 notebook on 2,178 externally labeled passages that are not in `train.csv` (121 per label, 121 complete
+18-model prompt panels; section 4). This is accuracy on a **shifted distribution** (different prompts, uploader-claimed
+labels, mostly short passages), not an estimate of the hidden-test score. The official public leaderboard score
+(0.680, see `EVALUATION.md`) remains the only measurement on the competition's own test distribution.
 
 The 533/540 matrix in `EVALUATION.md` stays a training-derived, in-sample diagnostic. No split of the competition
 `train.csv` is used or reported as held out anywhere here.
@@ -40,7 +40,7 @@ Consequences for any evaluation of the frozen pipeline:
   the 18 models), a roughly balanced label mix, and a size well above the 50-row ATLAS threshold and the 18-row
   Sinkhorn threshold.
 * **Upstream prefit members** were trained by their authors on the competition train set plus public pools
-  (V1 mounts, among others, `prvsiyan/prvsiyans-extended-name-that-llm-dataset` v12, and prefit heads fitted on
+  (V1 mounts, among others, `prvsiyan/prvsiyans-extended-name-that-llm-dataset`, recorded at v12, and prefit heads fitted on
   `crtproduction/name-that-llm-open-pool`). Any passage published before the last of those asset versions may
   have been training data, whatever its labels.
 
@@ -56,7 +56,7 @@ Consequences for any evaluation of the frozen pipeline:
 4. Score the whole set as one batch with balanced, prompt-paneled composition (because of the batch-dependent
    steps above); report the batch composition with the result.
 5. Run the unchanged V1 notebook (same code, same mounted asset versions); the only edit is the input cell
-   pointing at the new `test.csv`, as in the existing validate mode.
+   pointing at the new `test.csv`, as in the existing validate mode (`build_notebooks.py --mode independent`).
 6. Decide nothing (no thresholds, weights, or subsets) after seeing the labels.
 
 ## 3. Does a suitable dataset already exist?
@@ -113,14 +113,58 @@ Evaluation input built from it (not committed; regenerate with the script): only
 * **The uploader's own models were trained on it**; that does not affect V1 (V1's assets pre-date it) but it does
   mean it is not secret, only unseen by V1.
 
-## 4. What is missing
+## 4. Independent run and result
 
-To produce the independent matrix with this dataset, one thing is missing: **a Kaggle GPU inference run of the
-unchanged V1 notebook on the 2,178-row `test.csv` above** (V1's 540-row validate run took 1h52m on 2 GPUs; expect a
-few hours). After it, `prepare_independent_eval.py score --truth truth.csv --submission submission.parquet` writes
-`independent/confusion_matrix_normalized.png`, `independent/confusion_matrix_counts.png`,
-`independent/class_metrics.csv` and `independent/top_confusions.csv` using the same label order and plotting code as
-the in-sample matrix.
+### Run
+
+| | |
+|---|---|
+| Notebook | `ritisingh123/engs108-v1-a0-nativeshare040-indep` v1, built by `build_notebooks.py V1 --mode independent` (`build/V1/independent/`) |
+| Difference from the V1 validate notebook | 3 cells: the input cell (copies `test.csv` from the private dataset `ritisingh123/engs108-v1-independent-input` after asserting its sha256), and the mode label in the run-monitor and run-report cells. All model code, config and mounted model assets are identical; rebuilding A0/B0/V1-V3 after the change left every existing notebook byte-identical |
+| Input mounted on Kaggle | `test.csv` (`id,text` only), sha256 `711ed56b...4dbe4d` (asserted in the notebook and re-checked on the downloaded copy). `truth.csv` never left the local machine |
+| Hardware / wall time | 2x T4, 12,036 s (3h21m); run-report contract checks all passed (ids and order match `test.csv`, 18 valid labels) |
+| Execution contract | `native_embedding_share` 0.4, Open Pool v13, 11 stages, Sinkhorn 0.30 / 0.35, 37 typography markers (`docs/raw/runs/V1_independent_v1/engs108_run/execution-contract.json`) |
+| Output | `docs/raw/runs/V1_independent_v1/submission.parquet`, sha256 `df2cc0fc9572886d7808ff1c01c36cb9074a4ffba7bed564ca6e140f6a0306f0` |
+| Scoring | `prepare_independent_eval.py score --truth truth.csv --submission submission.parquet --out independent` (locally, after the run; no thresholds or weights touched) |
+
+**Asset-version caveat.** Kaggle mounts the latest version of each dataset listed by slug. All V1 datasets were
+still at the versions recorded in `docs/raw/dataset_versions.json` except
+`prvsiyan/prvsiyans-extended-name-that-llm-dataset` (recorded v12, 2026-11-08; a newer version was published
+2026-11-11). V1 references that dataset only as `EXPLICIT_PATHS['lists']['extra_clean']` (`passages_clean.csv`); the only
+reader of that ledger's lists is `asset_paths('ultrabert_folds')`, so nothing in the notebook loads the file and we
+do not expect it to change predictions, but the original V1 runs and this run
+did not necessarily mount the same version of it.
+
+### Result
+
+Files in `independent/`: `confusion_matrix_normalized.png`, `confusion_matrix_counts.png`, `class_metrics.csv`,
+`top_confusions.csv` (same label order and plotting code as the in-sample matrix).
+
+| | |
+|---|---|
+| Accuracy | 1,179 / 2,178 = 54.1% (Wilson 95%: 52.0-56.2%; rows within a panel are not independent, so the true interval is wider) |
+| Macro F1 | 0.518 |
+| Correct vendor family (claude / gemini / glm / gpt / kimi / qwen) | 80.2%; 568 of the 999 errors stay inside the true family |
+| By instruction length | short 779/1,602 (48.6%), median 262/396 (66.2%), long 138/180 (76.7%) |
+| Best recall | gpt-6-astra 0.88, claude-opus-5 0.87, gemini-3.1-pro-preview 0.87, claude-sonnet-5 0.79 |
+| Worst recall | kimi-k3 0.12, gemini-3.7-flash 0.13, glm-5.3-flash 0.24, glm-5.3 0.30 |
+
+Top confusions (true -> predicted, of 121 per row): gemini-3.7-flash -> gemini-3.8-flash 62;
+gemini-3.6-flash -> gemini-3.1-pro-preview 35; glm-5.3-flash -> glm-5.3 32; glm-5.3-flash -> claude-opus-5 28;
+glm-5.3 -> claude-opus-5 27.
+
+Reading it:
+
+* Predictions are not balanced although the truth is (121 each): kimi-k3 is predicted 38 times and gemini-3.7-flash
+  41 times, while gemini-3.1-pro-preview, gpt-5.5, claude-opus-5 and gpt-6-astra are each predicted 170-180 times.
+  The Sinkhorn target mixes in the `train.csv` label prior, and the batch-dependent steps were tuned on
+  competition-style batches, so part of this skew is the distribution shift itself.
+* Most errors are between sibling models (Gemini Flash versions, GLM vs GLM-Flash, GPT-5.6 Luna/Sol/Terra), the same
+  pattern as the 7 in-sample errors, but far more often.
+* Accuracy rises steeply with length; 74% of this set is the ~55-word instruction, shorter than the competition's
+  passages, which is one reason this number sits below 0.680.
+* The low gemini-3.7-flash and kimi-k3 recalls may partly be label noise: the dataset does not record served model
+  ids, and gemini-3.7-flash is the label other uploaders flag as served inconsistently (section 3).
 
 To meet a stricter standard (verified served-model provenance and the competition's own prompt protocol), no
 existing public dataset qualifies; new passages would have to be generated: fresh prompts written in the

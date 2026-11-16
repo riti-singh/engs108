@@ -1,0 +1,92 @@
+[{"stream_name":"stderr","time":7.3934726,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.393536379,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.393543151,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.393546954,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.977930805,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.977954887,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.977959675,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.977963441,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.070812643,"data":"engs108 experiment V1 mode independent\n"}
+,{"stream_name":"stdout","time":9.072555353,"data":"engs108 mounts: ['/kaggle/input/competitions', '/kaggle/input/datasets', '/kaggle/input/models', '/kaggle/input/notebooks'] ['/kaggle/input/competitions/name-that-llm'] ['/kaggle/input/competitions/name-that-llm']\n"}
+,{"stream_name":"stdout","time":9.105526165,"data":"engs108 input layout: nested\n"}
+,{"stream_name":"stdout","time":20.874506349,"data":"engs108 independent test.csv: /kaggle/input/datasets/ritisingh123/engs108-v1-independent-input/test.csv\n"}
+,{"stream_name":"stdout","time":21.92866181,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_math.py\n"}
+,{"stream_name":"stdout","time":21.949663791,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/cache_contract.py\n"}
+,{"stream_name":"stdout","time":21.972782058,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gauss.py\n"}
+,{"stream_name":"stdout","time":21.994214882,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/svc4_runtime.py\n"}
+,{"stream_name":"stdout","time":22.020919505,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/ntl660_readout.py\n"}
+,{"stream_name":"stdout","time":22.043444775,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/stage_assets.py\n"}
+,{"stream_name":"stdout","time":22.065651815,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_readout.py\n"}
+,{"stream_name":"stdout","time":22.101153518,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/stage_checkpoint_files.py\n"}
+,{"stream_name":"stdout","time":22.127389562,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/core_worker.py\n"}
+,{"stream_name":"stdout","time":22.253744841,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/stage_dataset_weights.py\n"}
+,{"stream_name":"stdout","time":22.277355001,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/asset_paths.py\n"}
+,{"stream_name":"stdout","time":22.299689138,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/runtime_support.py\n"}
+,{"stream_name":"stdout","time":22.323965668,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/reference_helpers.py\n"}
+,{"stream_name":"stdout","time":22.346587564,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/portable.py\n"}
+,{"stream_name":"stdout","time":22.369336275,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/reference_gauss.py\n"}
+,{"stream_name":"stdout","time":22.40735489,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/comp_cached.py\n"}
+,{"stream_name":"stdout","time":22.441172273,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/__init__.py\n"}
+,{"stream_name":"stdout","time":22.465664175,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/model.py\n"}
+,{"stream_name":"stdout","time":22.486687573,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_atlas/inference.py\n"}
+,{"stream_name":"stdout","time":22.507668046,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_rlcd/__init__.py\n"}
+,{"stream_name":"stdout","time":22.529448851,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ntl_rlcd/data.py\n"}
+,{"stream_name":"stdout","time":22.552456169,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ultra/configuration_ultrabert.py\n"}
+,{"stream_name":"stdout","time":22.589082065,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/inline_support/ultra/modeling_ultrabert.py\n"}
+,{"stream_name":"stdout","time":22.611860897,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/legacy/atlas_worker.py\n"}
+,{"stream_name":"stdout","time":22.653067962,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/gsq_infer_model.py\n"}
+,{"stream_name":"stdout","time":22.679023209,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/gsq_infer_layers.py\n"}
+,{"stream_name":"stdout","time":22.70416865,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/delta_turing.py\n"}
+,{"stream_name":"stdout","time":22.727050164,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/adapter.py\n"}
+,{"stream_name":"stdout","time":22.751869815,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/gsq/infer.py\n"}
+,{"stream_name":"stdout","time":22.791576237,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/stage_dataset_weights.py\n"}
+,{"stream_name":"stdout","time":22.818571552999998,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/ensemble.py\n"}
+,{"stream_name":"stdout","time":24.868779977,"data":"{\"mode\": \"lossless_numeric_cache_parts\", \"parts\": 12, \"files\": 51, \"archive_bytes\": 277787338, \"manifest_status\": \"COMPLETE\", \"source_script_version_id\": 363008892, \"runtime_source_in_parts\": false}\n"}
+,{"stream_name":"stdout","time":25.750945882,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/native_embedding_worker.py\n"}
+,{"stream_name":"stdout","time":25.775070205,"data":"Writing /kaggle/temp/ntl-gsq-v27-runtime/native_fusion.py\n"}
+,{"stream_name":"stdout","time":9034.971195197,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/accelerate-1.15.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":9035.056558322,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/bitsandbytes-0.50.2-py3-none-manylinux_2_24_x86_64.whl\n"}
+,{"stream_name":"stdout","time":9035.204737715,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/accelerate-1.15.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":9035.204770023,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/bitsandbytes-0.50.2-py3-none-manylinux_2_24_x86_64.whl\n"}
+,{"stream_name":"stdout","time":9035.398637886,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/huggingface_hub-1.32.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":9035.469005085,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":9035.527249863,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":9035.595111786,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/transformers-5.14.1-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":9035.601011135,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/huggingface_hub-1.32.0-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":9035.601028279,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/safetensors-0.8.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":9035.601033581,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl\n"}
+,{"stream_name":"stdout","time":9035.601038267,"data":"Processing /kaggle/input/datasets/lightningv08/ntl-olmo2-native24-final-inference-assets/name-that-llm-artifacts/qwen38-offline-linux/transformers-5.14.1-py3-none-any.whl\n"}
+,{"stream_name":"stdout","time":9035.834221893,"data":"Installing collected packages: transformers, tokenizers, safetensors, huggingface-hub, bitsandbytes, accelerate\n"}
+,{"stream_name":"stdout","time":9036.036527901,"data":"Installing collected packages: transformers, tokenizers, safetensors, huggingface-hub, bitsandbytes, accelerate\n"}
+,{"stream_name":"stdout","time":9044.96097033,"data":"Successfully installed accelerate-1.15.0 bitsandbytes-0.50.2 huggingface-hub-1.32.0 safetensors-0.8.0 tokenizers-0.22.2 transformers-5.14.1\n"}
+,{"stream_name":"stdout","time":9045.163437816,"data":"Successfully installed accelerate-1.15.0 bitsandbytes-0.50.2 huggingface-hub-1.32.0 safetensors-0.8.0 tokenizers-0.22.2 transformers-5.14.1\n"}
+,{"stream_name":"stdout","time":9045.195346874,"data":"{\"stage\": \"gsq3-base\", \"file\": \"config.json\", \"bytes\": 5038, \"elapsed_seconds\": 0.03}\n"}
+,{"stream_name":"stdout","time":9045.252741272,"data":"{\"stage\": \"gsq3-base\", \"file\": \"merges.txt\", \"bytes\": 3353259, \"elapsed_seconds\": 0.08}\n"}
+,{"stream_name":"stdout","time":9045.275809597,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model.safetensors.index.json\", \"bytes\": 198539, \"elapsed_seconds\": 0.11}\n"}
+,{"stream_name":"stdout","time":9045.37903728,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer.json\", \"bytes\": 12809320, \"elapsed_seconds\": 0.21}\n"}
+,{"stream_name":"stdout","time":9045.397653588,"data":"{\"stage\": \"gsq3-base\", \"file\": \"config.json\", \"bytes\": 5038, \"elapsed_seconds\": 0.03}\n"}
+,{"stream_name":"stdout","time":9045.397679622,"data":"{\"stage\": \"gsq3-base\", \"file\": \"merges.txt\", \"bytes\": 3353259, \"elapsed_seconds\": 0.08}\n"}
+,{"stream_name":"stdout","time":9045.397685802,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model.safetensors.index.json\", \"bytes\": 198539, \"elapsed_seconds\": 0.11}\n"}
+,{"stream_name":"stdout","time":9045.397690365,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer.json\", \"bytes\": 12809320, \"elapsed_seconds\": 0.21}\n"}
+,{"stream_name":"stdout","time":9045.402342152,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer_config.json\", \"bytes\": 17928, \"elapsed_seconds\": 0.23}\n"}
+,{"stream_name":"stdout","time":9045.465004339,"data":"{\"stage\": \"gsq3-base\", \"file\": \"vocab.json\", \"bytes\": 6722759, \"elapsed_seconds\": 0.29}\n"}
+,{"stream_name":"stdout","time":9045.604816889,"data":"{\"stage\": \"gsq3-base\", \"file\": \"tokenizer_config.json\", \"bytes\": 17928, \"elapsed_seconds\": 0.23}\n"}
+,{"stream_name":"stdout","time":9045.604864763,"data":"{\"stage\": \"gsq3-base\", \"file\": \"vocab.json\", \"bytes\": 6722759, \"elapsed_seconds\": 0.29}\n"}
+,{"stream_name":"stdout","time":9051.165174165,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00001-of-00003.safetensors\", \"bytes\": 2272369784, \"elapsed_seconds\": 5.99}\n"}
+,{"stream_name":"stdout","time":9051.368215987,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00001-of-00003.safetensors\", \"bytes\": 2272369784, \"elapsed_seconds\": 5.99}\n"}
+,{"stream_name":"stdout","time":9087.330942428,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00002-of-00003.safetensors\", \"bytes\": 4777704120, \"elapsed_seconds\": 42.16}\n"}
+,{"stream_name":"stdout","time":9087.559009356,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00002-of-00003.safetensors\", \"bytes\": 4777704120, \"elapsed_seconds\": 42.16}\n"}
+,{"stream_name":"stdout","time":9107.047409216,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00003-of-00003.safetensors\", \"bytes\": 4777704376, \"elapsed_seconds\": 61.88}\n"}
+,{"stream_name":"stdout","time":9107.249883049,"data":"{\"stage\": \"gsq3-base\", \"file\": \"model-00003-of-00003.safetensors\", \"bytes\": 4777704376, \"elapsed_seconds\": 61.88}\n"}
+,{"stream_name":"stdout","time":10167.811974587,"data":"{\"stage\": \"gsq3-base\", \"event\": \"STAGING_CLEANED\"}\n"}
+,{"stream_name":"stdout","time":10168.030874748,"data":"{\"stage\": \"gsq3-base\", \"event\": \"STAGING_CLEANED\"}\n"}
+,{"stream_name":"stdout","time":12045.277104147,"data":"ENGS108_RUN_REPORT {\"experiment\": \"V1\", \"mode\": \"independent\", \"config_version\": 2, \"rows\": 2178, \"checks\": {\"columns_exactly_id_model\": true, \"row_count_matches_test\": true, \"ids_and_order_match_test\": true, \"ids_unique\": true, \"no_null_labels\": true, \"labels_in_18_valid\": true}, \"all_checks_passed\": true, \"wall_seconds\": 12036.2, \"peak_gpu_mem_mib\": {\"0\": 10795, \"1\": 14849}, \"label_counts\": {\"gemini-3.1-pro-preview\": 180, \"gpt-5.5\": 176, \"claude-opus-5\": 172, \"gpt-6-astra\": 170, \"gpt-5.6-luna\": 152, \"claude-sonnet-5\": 130, \"qwen3.8-max\": 127, \"gemini-3.8-flash\": 122, \"gpt-5.6-sol\": 119, \"claude-fable-5\": 114, \"claude-opus-4-6\": 113, \"glm-5.3\": 110, \"gemini-3.6-flash\": 109, \"gpt-5.6-terra\": 104, \"claude-opus-4-8\": 103, \"glm-5.3-flash\": 98, \"gemini-3.7-flash\": 41, \"kimi-k3\": 38}}\n"}
+,{"stream_name":"stderr","time":12050.791752092,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":12050.791796862,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":12051.132560484,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":12051.132601907,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":12052.749959812,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":12052.873162563,"data":"[NbConvertApp] Writing 362492 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":12055.440580943,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":12057.137622445,"data":"[NbConvertApp] Writing 1759851 bytes to __results__.html\n"}
+]

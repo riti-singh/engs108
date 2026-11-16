@@ -1,0 +1,40 @@
+{
+ "experiment": "V1",
+ "mode": "independent",
+ "config_version": 2,
+ "rows": 2178,
+ "checks": {
+  "columns_exactly_id_model": true,
+  "row_count_matches_test": true,
+  "ids_and_order_match_test": true,
+  "ids_unique": true,
+  "no_null_labels": true,
+  "labels_in_18_valid": true
+ },
+ "all_checks_passed": true,
+ "wall_seconds": 12036.2,
+ "peak_gpu_mem_mib": {
+  "0": 10795,
+  "1": 14849
+ },
+ "label_counts": {
+  "gemini-3.1-pro-preview": 180,
+  "gpt-5.5": 176,
+  "claude-opus-5": 172,
+  "gpt-6-astra": 170,
+  "gpt-5.6-luna": 152,
+  "claude-sonnet-5": 130,
+  "qwen3.8-max": 127,
+  "gemini-3.8-flash": 122,
+  "gpt-5.6-sol": 119,
+  "claude-fable-5": 114,
+  "claude-opus-4-6": 113,
+  "glm-5.3": 110,
+  "gemini-3.6-flash": 109,
+  "gpt-5.6-terra": 104,
+  "claude-opus-4-8": 103,
+  "glm-5.3-flash": 98,
+  "gemini-3.7-flash": 41,
+  "kimi-k3": 38
+ }
+}
